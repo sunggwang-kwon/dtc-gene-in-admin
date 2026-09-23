@@ -1,10 +1,15 @@
 <template>
   <v-app>
-    <!-- 상단 앱바 (모바일) -->
+    <!-- 상단 앱바 (모바일/데스크탑) -->
     <v-app-bar color="primary" elevation="2">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-app-bar-title>
-        <span class="text-body-1 font-weight-bold">유전자 검사 관리</span>
+        <div class="d-flex align-center">
+          <v-avatar size="28" color="white" class="mr-2">
+            <v-img :src="symbolUrl" width="18" height="18" contain alt="로고" />
+          </v-avatar>
+          <span class="text-body-1 font-weight-bold">유전자 검사 관리</span>
+        </div>
       </v-app-bar-title>
       <template #append>
         <v-menu>
@@ -33,6 +38,13 @@
 
     <!-- 사이드 네비게이션 -->
     <v-navigation-drawer v-model="drawer" :temporary="mobile">
+      <!-- 드로어 상단 로고 -->
+      <div class="pa-4 d-flex align-center justify-center border-b">
+        <router-link to="/" class="d-flex align-center justify-center text-decoration-none">
+          <v-img :src="logoUrl" max-width="140" height="42" contain alt="지니인사이트 로고" />
+        </router-link>
+      </div>
+
       <v-list density="compact" nav class="py-2">
         <v-list-item
           v-if="authStore.hasAuth('M001') === 'Y'"
@@ -105,6 +117,8 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import axios from 'axios'
+import logoUrl from '@/assets/geni-in-logo.svg'
+import symbolUrl from '@/assets/symbol-logo.svg'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()

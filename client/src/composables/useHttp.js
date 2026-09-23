@@ -39,7 +39,8 @@ const createHttp = () => {
     }
   }
 
-  const post = async (path, data = {}) => {
+  const post = async (path, data = {}, options = {}) => {
+    const { suppressAlert = false } = options
     const formData = new FormData()
     for (const key in data) {
       if (data[key] !== null && data[key] !== undefined) {
@@ -56,13 +57,13 @@ const createHttp = () => {
       })
       if (res.status === 200) {
         if (res.data.ret === '0000') return res
-        alert(res.data.msg || '오류가 발생했습니다.')
-        return null
+        if (!suppressAlert) alert(res.data.msg || '오류가 발생했습니다.')
+        return res
       }
-      alert('네트워크 오류가 발생했습니다.')
+      if (!suppressAlert) alert('네트워크 오류가 발생했습니다.')
       return null
     } catch (err) {
-      alert(err.message)
+      if (!suppressAlert) alert(err.message)
       return null
     }
   }
