@@ -1,0 +1,30 @@
+{
+  "login": {
+    "title": "관리자 로그인",
+    "idPlaceholder": "아이디",
+    "passwordPlaceholder": "비밀번호",
+    "submit": "로그인",
+    "rememberId": "아이디 기억"
+  },
+  "validation": {
+    "required": "필수 입력 항목입니다."
+  },
+  "app": {
+    "logout": "로그아웃",
+    "autoLogout": "장시간 미사용으로 자동 로그아웃 되었습니다.",
+    "confirmLogout": "로그아웃 하시겠습니까?",
+    "menu": {
+      "member": "회원 관리",
+      "type": "검사 유형",
+      "manage": "검체 관리",
+      "result": "결과 관리",
+      "gene": "유전자 관리",
+      "banner": "배너 관리",
+      "company": "업체 관리"
+    }
+  },
+  "common": {
+    "networkError": "네트워크 오류가 발생했습니다. 담당자에게 문의해주세요.",
+    "serverError": "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+  }
+}
