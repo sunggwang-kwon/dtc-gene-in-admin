@@ -17,7 +17,7 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/server': {
-        target: 'https://lims.hlscience.com', // 개발 중 확인 후 변경
+        target: 'http://218.153.133.118/', // @@TODO: https 도메인 생성되면 변경 필요
         changeOrigin: true,
         secure: false,
       },
