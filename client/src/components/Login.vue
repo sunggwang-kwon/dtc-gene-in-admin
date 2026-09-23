@@ -66,13 +66,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCookies } from 'vue-cookies'
+import VueCookies from 'vue-cookies'
 import { useAuthStore } from '@/stores/auth'
 import { useHttp } from '@/composables/useHttp'
 import { useValidation } from '@/composables/useValidation'
 
 const router = useRouter()
-const $cookies = useCookies()
+
 const authStore = useAuthStore()
 const { post } = useHttp()
 const rules = useValidation()
@@ -85,7 +85,7 @@ const loading = ref(false)
 
 onMounted(() => {
   // 저장된 아이디 불러오기
-  const savedId = $cookies.get('admin_user_id')
+  const savedId = VueCookies.get('admin_user_id')
   if (savedId) {
     userId.value = savedId
     rememberMe.value = true
@@ -114,9 +114,9 @@ const login = async () => {
 
   // 아이디 기억
   if (rememberMe.value) {
-    $cookies.set('admin_user_id', userId.value, '365d')
+    VueCookies.set('admin_user_id', userId.value, '365d')
   } else {
-    $cookies.remove('admin_user_id')
+    VueCookies.remove('admin_user_id')
   }
 
   // 첫 번째 권한 메뉴로 이동
