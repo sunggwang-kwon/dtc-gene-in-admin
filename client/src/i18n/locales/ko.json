@@ -4,7 +4,7 @@
     "idPlaceholder": "아이디",
     "passwordPlaceholder": "비밀번호",
     "submit": "로그인",
-    "rememberId": "아이디 기억"
+    "rememberId": "아이디 저장"
   },
   "validation": {
     "required": "필수 입력 항목입니다."

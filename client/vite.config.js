@@ -14,6 +14,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: '0.0.0.0',
     proxy: {
       '/server': {
         target: 'https://lims.hlscience.com', // 개발 중 확인 후 변경
