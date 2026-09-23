@@ -1,0 +1,149 @@
+.v-text-field .v-input__control .v-input__slot {
+  min-height: auto !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  border-radius: 2px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  padding-top: 3px !important;
+}
+.v-input__append-inner{
+  margin-top:0px !important;
+}
+.v-select .v-input__icon{
+  margin-top:6px !important;
+}
+.v-btn{
+  border-radius: 2px !important;
+  text-transform: none !important;
+}
+.v-list--nav .v-list-item, .v-list--nav .v-list-item:before{
+  border-radius: 1px !important;
+}
+.v-list-item__title, .v-tab, .v-btn__content{
+  text-transform: none !important;
+}
+::-webkit-input-placeholder {
+  font-style: italic;
+}
+:-moz-placeholder {
+  font-style: italic;  
+}
+::-moz-placeholder {
+  font-style: italic;  
+}
+:-ms-input-placeholder {  
+  font-style: italic; 
+}
+.content-background{
+  background-color:#f5f9fa;
+}
+.table-layout{
+  overflow:auto;
+}
+table{
+  background-color:white;
+  width:100%;
+  border-collapse:collapse;
+  border:1px solid rgba(0,0,0,0.12);
+}
+table > thead > tr > th{
+  font-weight:100;
+  font-size:11pt;
+  background-color:#e9eff5;
+  border:1px solid rgba(0,0,0,0.12);
+  /*
+  position: sticky;
+  top: 0;
+  */
+  text-align:left;
+  text-transform: none !important;
+  /*
+  border-left:1px solid rgba(0,0,0,0.1);
+  z-index:1;
+  */
+}
+/*
+table > tbody > tr{
+  border-bottom:1px solid rgba(0,0,0,0.1);
+}
+*/
+table > tbody > tr > td{
+  font-size:11pt;
+  border:1px solid rgba(0,0,0,0.12);
+  /*
+  border-left:1px solid rgba(0,0,0,0.1);
+  */
+}
+table > tbody > tr:hover{
+  background-color:rgba(0,0,0,0.01);
+}
+.v-input--selection-controls__input{
+  margin: 0 !important;
+}
+.v-text-field__details{
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.v-select.v-input--dense .v-select__selection--comma{
+  margin: 3px 4px 3px 0 !important;
+}
+.cursor-pointer :hover{
+  cursor:pointer;
+}
+.v-input__prepend-outer{
+  margin-top:2px !important;
+}
+
+.radio-class .v-icon.v-icon{
+  font-size:20px;
+}
+
+/*tiny editor warning 메시지 제거 */
+.tox-notifications-container { display: none !important }
+
+/*tiny editor 하단바 제거 */
+.tox-statusbar{display:none !important}
+
+@page{
+  size:A4;
+  margin:10mm;
+  align-content: center;
+}
+@media print{
+  html, body{
+      width: 211mm;
+      height:297mm;
+  }
+  td{
+      font-size:10pt;
+      height:min-content;
+  }
+}
+
+.resizable-box {
+  min-width: 300px;
+  min-height: 200px;
+  border: 1px solid black;
+  resize: both; /* 가로 및 세로 크기 조정 가능 */
+  overflow: auto;
+  position: relative; /* 가상 요소 위치를 위해 필요 */
+}
+
+/* 모서리에 textarea처럼 리사이즈 힌트 표시 */
+.resizable-box::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 20px;
+  height: 20px;
+  opacity: 0.3; /* 약간의 투명도 */
+  cursor: se-resize;
+}
+
+/* 마우스를 올렸을 때 커서를 변경 */
+.resizable-box:hover {
+  cursor: se-resize;
+}

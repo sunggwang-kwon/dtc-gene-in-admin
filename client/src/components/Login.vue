@@ -1,137 +1,129 @@
 <template>
-  <v-app>
-    <v-main class="d-flex align-center justify-center bg-blue-lighten-5" style="min-height: 100vh;">
-      <v-card width="420" class="pa-8" rounded="xl" elevation="2">
-        <!-- 로고 -->
-        <div class="text-center mb-8">
-          <v-img :src="logoUrl" max-width="180" height="60" contain class="mx-auto mb-4" alt="로고" />
-          <div class="text-body-2 text-medium-emphasis">관리자 시스템에 로그인하세요</div>
-        </div>
-
-        <v-form ref="formRef" @submit.prevent="login">
-          <v-text-field
-            v-model="userId"
-            label="아이디"
-            prepend-inner-icon="mdi-account-outline"
-            autofocus
-            hide-details="auto"
-            class="mb-4"
-          />
-
-          <v-text-field
-            v-model="userPw"
-            label="비밀번호"
-            type="password"
-            prepend-inner-icon="mdi-lock-outline"
-            hide-details="auto"
-            class="mb-2"
-          />
-
-          <v-checkbox
-            v-model="rememberMe"
-            label="아이디 저장"
-            density="compact"
-            hide-details
-            color="primary"
-            class="mb-6"
-          />
-
-          <v-btn
-            type="submit"
-            color="primary"
-            block
-            size="large"
-            :loading="loading"
-            rounded="lg"
-          >
-            로그인
-          </v-btn>
-        </v-form>
-      </v-card>
-    </v-main>
-
-    <v-snackbar
-      v-model="showError"
-      :timeout="4000"
-      location="bottom right"
-      color="error"
-      rounded="lg"
-    >
-      <div class="d-flex align-center">
-        <v-icon icon="mdi-alert-circle-outline" class="mr-2" />
-        {{ errorMessage }}
-      </div>
-      <template #actions>
-        <v-btn variant="text" icon="mdi-close" size="small" @click="showError = false" />
-      </template>
-    </v-snackbar>
-  </v-app>
+  <v-container fluid style="height:100%; background:linear-gradient(rgb(255, 255, 255), rgb(245, 249, 250));">
+    <v-row align="center" justify="center" style="height:100%;">
+      <v-col cols="12" sm="8" md="6" lg="4" xl="3">
+        <v-card class="px-5 py-10" outlined>
+          <v-form ref="form">
+            <v-row align="center">
+              <v-col>
+                <v-img src="@/assets/images/geni-in-logo.svg" max-width="200" height="70" contain style="left:50%; transform: translate(-50%);" alt="지니인사이트 로고"></v-img>
+              </v-col>
+            </v-row>
+            <v-row align="center">
+              <v-col class="pb-0">
+              <v-text-field v-model="user_id" :autofocus="true" dense outlined :placeholder="$t('login.idPlaceholder')" :rules="[required]"></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row align="center">
+              <v-col class="py-0">
+              <v-text-field v-model="user_pw" @keydown.enter="login" type="password" dense outlined :placeholder="$t('login.passwordPlaceholder')" :rules="[required]"></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row align="center">
+              <v-col class="pt-0">
+              <v-btn @click="login" dark block dense :elevation="0">{{ $t('login.submit') }}</v-btn>
+              </v-col>
+            </v-row>
+            <v-row align="center">
+              <v-col class="pb-0">
+              <v-checkbox v-model="reg" class="pa-0 ma-0" hide-details :label="$t('login.rememberId')"></v-checkbox>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import VueCookies from 'vue-cookies'
-import logoUrl from '@/assets/geni-in-logo.svg'
-import { useAuthStore } from '@/stores/auth'
-import { useHttp } from '@/composables/useHttp'
+<script>
+import http from '@/mixin/http'
+import authority from '@/mixin/authority'
+import validation from '@/mixin/validation'
+import { setI18nLocale } from '@/i18n'
+export default {
+  name: 'login-vue',
+  mixins: [validation, http, authority],
+  data: function(){
+    return {
+      reg: false,
+      user_id: null,
+      user_pw: null,
+    }
+  },
+  beforeCreate:function(){
+    if ( this.$session.has('Lang') ){
+      setI18nLocale(this.$session.get('Lang'));
+    }
+    if ( this.$session.has("jwt") ){
+      if ( this.get_menu_authority('M001') ){
+        this.$router.replace({name:'Member'});
+      }
+      else if ( this.get_menu_authority('M002') ){
+        this.$router.replace({name:'Type'});
+      }
+      else if ( this.get_menu_authority('M003') ){
+        this.$router.replace({name:'Manage'});
+      }
+      else if ( this.get_menu_authority('M004') ){
+        this.$router.replace({name:'Result'});
+      }
+      else if ( this.get_menu_authority('M005') ){
+        this.$router.replace({name:'Gene'});
+      }
+    }
+  },
+  created:function(){
+    if ( this.$cookies.isKey('user_id') ){
+      this.user_id = this.$cookies.get('user_id');
+      this.reg = true;
+    }
+  },
+  methods:{
+    login: async function(){
+      const valid = this.$refs.form.validate();
+      if ( !valid ) return;
 
-const router = useRouter()
-const authStore = useAuthStore()
-const { post } = useHttp()
+      let data = {
+        user_id: this.user_id,
+        user_pw: this.user_pw
+      };
+      let res = await this.post(this.$rootUrl + '/server/member/login.php', data);
+      if ( res ){
+        this.$session.set('jwt', res.data.jwt);
+        this.$session.set('Level', res.data.Level);
+        this.$session.set('Userid', res.data.Userid);
+        this.$session.set('Username', res.data.Username);
+        this.$session.set('Email', res.data.Email);
+        this.$session.set('Lang', res.data.Lang);
+        this.$session.set('Lastaccesstime', res.data.Lastaccesstime);
+        this.$session.set('Auth', res.data.Auth);
+        setI18nLocale(res.data.Lang);
+        if ( this.reg ){
+          this.$cookies.set('user_id', this.user_id);
+        }
+        else{
+          this.$cookies.remove('user_id');
+        }
 
-const formRef = ref(null)
-const userId = ref('')
-const userPw = ref('')
-const rememberMe = ref(false)
-const loading = ref(false)
-const errorMessage = ref('')
-const showError = ref(false)
-
-const setError = (msg) => {
-  errorMessage.value = msg
-  showError.value = true
-}
-
-onMounted(() => {
-  const savedId = VueCookies.get('admin_user_id')
-  if (savedId) {
-    userId.value = savedId
-    rememberMe.value = true
-  }
-  if (authStore.isLoggedIn) {
-    const route = authStore.firstAuthorizedRoute
-    if (route) router.replace({ name: route })
-  }
-})
-
-const login = async () => {
-  const u = (userId.value || '').trim()
-  const p = (userPw.value || '').trim()
-
-  if (!u) return setError('아이디를 입력해주세요.')
-  if (!p) return setError('비밀번호를 입력해주세요.')
-
-  loading.value = true
-  const res = await post('/server/member/login.php', { user_id: u, user_pw: p }, { suppressAlert: true })
-  loading.value = false
-
-  if (!res) return setError('네트워크 오류가 발생했습니다.')
-  if (res.data?.ret !== '0000') return setError(res.data?.msg || '아이디 또는 비밀번호를 확인해주세요.')
-
-  authStore.setSession(res.data)
-
-  if (rememberMe.value) {
-    VueCookies.set('admin_user_id', u, '365d')
-  } else {
-    VueCookies.remove('admin_user_id')
-  }
-
-  const route = authStore.firstAuthorizedRoute
-  if (route) {
-    router.replace({ name: route })
-  } else {
-    setError('접근 가능한 메뉴가 없습니다.')
+        //router
+        if ( this.get_menu_authority('M001') ){
+          this.$router.replace({name:'Member'});
+        }
+        else if ( this.get_menu_authority('M002') ){
+          this.$router.replace({name:'Type'});
+        }
+        else if ( this.get_menu_authority('M003') ){
+          this.$router.replace({name:'Manage'});
+        }
+        else if ( this.get_menu_authority('M004') ){
+          this.$router.replace({name:'Result'});
+        }
+        else if ( this.get_menu_authority('M005') ){
+          this.$router.replace({name:'Gene'});
+        }
+      }
+    }
   }
 }
 </script>

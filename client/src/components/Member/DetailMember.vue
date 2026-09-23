@@ -1,548 +1,417 @@
 <template>
-  <v-container fluid class="pa-6">
-    <!-- 상단 헤더 -->
-    <v-card flat border rounded="lg" class="mb-4">
-      <v-card-text class="py-4">
-        <v-row align="center" justify="space-between">
-          <v-col cols="auto" class="d-flex align-center">
-            <v-btn icon variant="text" size="small" class="mr-2" @click="goBack">
-              <v-icon icon="mdi-chevron-left" size="28" />
-            </v-btn>
-            <h2 class="text-h6 font-weight-bold mb-0">
-              {{ transaction === 'insert' ? '사용자 추가' : (transaction === 'update' ? '사용자 정보 수정' : '사용자 정보') }}
-            </h2>
+  <v-container class="pa-0 content-background" style="border-left:1px solid rgba(0,0,0,0.12);border-right:1px solid rgba(0,0,0,0.12);min-height:100%;" fluid>
+    <div id="header" :style="{
+      position: 'sticky',
+      top: $vuetify.application.top+'px',
+      zIndex:1
+    }">
+      <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
+        <v-row class="mx-1" align="center">
+          <v-col cols="auto" class="pr-0">
+            <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
-          <v-col cols="auto" class="d-flex ga-2 align-center">
-            <!-- 조회 모드 버튼 -->
-            <template v-if="transaction === 'view'">
-              <v-btn
-                v-if="canManage"
-                color="error"
-                variant="tonal"
-                @click="onDelete"
-              >
-                삭제
-              </v-btn>
-              <v-btn
-                v-if="canManage || isSelf"
-                color="primary"
-                @click="transaction = 'update'"
-              >
-                수정
-              </v-btn>
-            </template>
-
-            <!-- 수정 모드 버튼 -->
-            <template v-else-if="transaction === 'update'">
-              <v-btn variant="outlined" color="primary" @click="cancelUpdate">
-                취소
-              </v-btn>
-              <v-btn color="primary" :loading="saving" @click="saveMember">
-                저장
-              </v-btn>
-            </template>
-
-            <!-- 등록 모드 버튼 -->
-            <template v-else-if="transaction === 'insert'">
-              <v-btn variant="outlined" color="primary" @click="goBack">
-                취소
-              </v-btn>
-              <v-btn color="primary" :loading="saving" @click="saveMember">
-                저장
-              </v-btn>
-            </template>
+          <v-col cols="auto" class="pl-0">
+            <h3 v-if="transaction=='insert'">사용자 추가</h3>
+            <h3 v-else>사용자 정보</h3>
           </v-col>
         </v-row>
-      </v-card-text>
-    </v-card>
-
-    <!-- 사용자 정보 입력 폼 -->
-    <v-card flat border rounded="lg">
-      <v-card-text class="pa-6">
-        <v-form ref="formRef" @submit.prevent="saveMember">
-          <!-- 기본 정보 섹션 -->
-          <div class="text-subtitle-1 font-weight-bold mb-4 pb-2 border-b d-flex align-center">
-            <v-icon icon="mdi-card-account-details-outline" size="20" class="mr-2 text-primary" />
-            기본 정보
-          </div>
-
-          <v-row>
+      </div>
+      <v-divider style="border-color: rgb(223, 223, 223)"></v-divider>
+    </div>
+    <div v-if="is_open" id="content" class="pa-5">
+      <v-card flat>
+        <v-card-text>
+          <v-form ref="form">
             <!-- 아이디 -->
-            <v-col cols="12" md="6">
-              <v-row no-gutters align="center">
-                <v-col>
-                  <v-text-field
-                    v-model="form.userId"
-                    label="아이디"
-                    :placeholder="transaction === 'insert' ? '4~20자의 영문, 숫자' : ''"
-                    :readonly="transaction !== 'insert'"
-                    :disabled="transaction === 'update'"
-                    :rules="transaction === 'insert' ? [rules.required, rules.idRule] : []"
-                    variant="outlined"
-                    density="comfortable"
-                    @update:model-value="idChecked = false"
-                  />
-                </v-col>
-                <v-col v-if="transaction === 'insert'" cols="auto" class="pl-2">
-                  <v-btn
-                    color="primary"
-                    variant="flat"
-                    height="44"
-                    @click="checkIdDuplicate"
-                  >
-                    {{ idChecked ? '확인완료' : '중복확인' }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-col>
-
-            <!-- 사용자명 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="form.name"
-                label="사용자명"
-                :readonly="transaction === 'view'"
-                :rules="transaction !== 'view' ? [rules.required] : []"
-                variant="outlined"
-                density="comfortable"
-              />
-            </v-col>
-
-            <!-- 비밀번호 (수정/등록 시) -->
-            <template v-if="transaction !== 'view'">
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="form.password"
-                  :label="transaction === 'insert' ? '비밀번호' : '변경할 비밀번호'"
-                  :placeholder="transaction === 'insert' ? '8~16자 영문, 숫자, 특수문자' : '변경 시에만 입력'"
-                  :type="showPassword ? 'text' : 'password'"
-                  :rules="transaction === 'insert' ? [rules.required, rules.passwordRule] : [rules.passwordRule]"
-                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                  variant="outlined"
-                  density="comfortable"
-                  @click:append-inner="showPassword = !showPassword"
-                />
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">아이디<span v-if="transaction!='view'" style="color:red">(*)</span></div>
               </v-col>
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="form.passwordConfirm"
-                  :label="transaction === 'insert' ? '비밀번호 확인' : '변경할 비밀번호 확인'"
-                  :placeholder="transaction === 'insert' ? '동일한 비밀번호 재입력' : '변경 시에만 입력'"
-                  :type="showPassword ? 'text' : 'password'"
-                  :rules="transaction !== 'view' ? [passwordMatchRule] : []"
-                  variant="outlined"
-                  density="comfortable"
-                />
+              <v-col :lg="transaction=='insert'?3:4" :xl="transaction=='insert'?2:3">
+                <v-text-field v-model="lims_id" ref="limsid" @input="check=false;" :readonly="transaction=='view'" :disabled="transaction=='update'" dense outlined placeholder="4~20자 영문, 숫자" :rules="[required, id_rule]"></v-text-field>
               </v-col>
-            </template>
-
-            <!-- 관리자구분 -->
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="form.level"
-                label="관리자 구분"
-                :items="levelItems"
-                item-title="text"
-                item-value="value"
-                :readonly="transaction === 'view' || !canManage"
-                variant="outlined"
-                density="comfortable"
-              />
-            </v-col>
-
-            <!-- 이메일 -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="form.email"
-                label="이메일"
-                placeholder="example@domain.com"
-                :readonly="transaction === 'view'"
-                :rules="[rules.emailRule]"
-                variant="outlined"
-                density="comfortable"
-              />
-            </v-col>
-
-            <!-- 조직 -->
-            <v-col cols="12" md="4">
-              <v-select
-                v-model="form.orgCode"
-                label="조직"
-                :items="orgList"
-                item-title="value"
-                item-value="code"
-                :readonly="transaction === 'view'"
-                :rules="transaction !== 'view' ? [rules.required] : []"
-                variant="outlined"
-                density="comfortable"
-              />
-            </v-col>
-
-            <!-- 소속기관/회사 -->
-            <v-col cols="12" md="4">
-              <v-select
-                v-model="form.companyNo"
-                label="소속기관/회사"
-                :items="companyList"
-                item-title="company_name"
-                item-value="seq"
-                :readonly="transaction === 'view'"
-                :rules="transaction !== 'view' ? [rules.required] : []"
-                variant="outlined"
-                density="comfortable"
-              />
-            </v-col>
-
-            <!-- 사용 언어 -->
-            <v-col cols="12" md="4">
-              <v-select
-                v-model="form.langCd"
-                label="기본 언어"
-                :items="langList"
-                item-title="value"
-                item-value="code"
-                :readonly="transaction === 'view'"
-                :rules="transaction !== 'view' ? [rules.required] : []"
-                variant="outlined"
-                density="comfortable"
-              />
-            </v-col>
-          </v-row>
-
-          <!-- 메뉴 접근 권한 섹션 (관리자만 설정 가능) -->
-          <div v-if="canManage || transaction === 'view'" class="mt-6">
-            <div class="text-subtitle-1 font-weight-bold mb-4 pb-2 border-b d-flex align-center">
-              <v-icon icon="mdi-shield-account-outline" size="20" class="mr-2 text-primary" />
-              메뉴 접근 권한 설정
-            </div>
-
-            <!-- 메뉴 선택 체크박스 그리드 -->
-            <div class="text-caption text-medium-emphasis mb-2">접근 가능한 메뉴를 선택하세요.</div>
-            <v-row class="mb-4">
-              <v-col
-                v-for="menu in menuList"
-                :key="menu.code"
-                cols="6"
-                sm="4"
-                md="3"
-                lg="auto"
-              >
-                <v-checkbox
-                  v-model="checkedMenus"
-                  :value="menu.code"
-                  :label="menu.value"
-                  :disabled="transaction === 'view'"
-                  density="compact"
-                  hide-details
-                />
+              <v-col v-if="transaction=='insert'" cols="auto" lg="1" class="pl-1">
+                <v-btn @click="id_check" :color="check?'grey':'primary'" dark small :elevation="0">중복확인</v-btn>
               </v-col>
             </v-row>
-
-            <!-- 메뉴별 권한 레벨 (읽기 vs 읽기/쓰기) -->
-            <template v-if="checkedMenus.length > 0">
-              <div class="text-caption text-medium-emphasis mb-2">선택한 메뉴의 상세 권한을 설정하세요.</div>
-              <v-table density="compact" class="border rounded">
-                <thead>
-                  <tr>
-                    <th style="width: 200px">메뉴명</th>
-                    <th>권한 레벨</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="menuCode in checkedMenus" :key="menuCode">
-                    <td class="font-weight-medium">{{ getMenuName(menuCode) }}</td>
-                    <td>
-                      <v-radio-group
-                        v-model="menuAuth[menuCode]"
-                        inline
-                        density="compact"
-                        hide-details
-                        :disabled="transaction === 'view'"
-                      >
-                        <v-radio label="읽기 (조회)" value="N" class="mr-4" />
-                        <v-radio label="읽기/쓰기 (관리)" value="A" />
-                      </v-radio-group>
-                    </td>
-                  </tr>
-                </tbody>
-              </v-table>
-            </template>
-          </div>
-        </v-form>
-      </v-card-text>
-    </v-card>
+            <!-- 사용자명 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">사용자명<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-model="name" :readonly="transaction=='view'" dense outlined :rules="[required]"></v-text-field>
+              </v-col>
+            </v-row>
+            <!-- 비밀번호 -->
+            <v-row v-if="transaction!='view'" align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">{{transaction=='insert'?'비밀번호':'변경할비밀번호'}}<span v-if="transaction=='insert'" style="color:red">(*)</span></div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-model="password" :type="!show_password?'password':'text'" dense outlined :placeholder="$t('phrases.8~16자 영문, 숫자, 특수문자')" :rules="transaction=='insert'?[required, password_rule]:[password_rule]" :append-icon="!show_password?'mdi-eye':'mdi-eye-off'" @click:append="show_password=!show_password;"></v-text-field>
+              </v-col>
+            </v-row>
+            <!-- 비밀번호확인 -->
+            <v-row v-if="transaction!='view'" align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">{{transaction=='insert'?'비밀번호확인':'변경할비밀번호확인'}}<span v-if="transaction=='insert'" style="color:red">(*)</span></div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-model="password2" :type="!show_password?'password':'text'" dense outlined :placeholder="$t('phrases.8~16자 영문, 숫자, 특수문자')" :rules="transaction=='insert'?[required, password2_rule]:[password2_rule]" :append-icon="!show_password?'mdi-eye':'mdi-eye-off'" @click:append="show_password=!show_password;"></v-text-field>
+              </v-col>
+            </v-row>
+            <!-- 관리자구분 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">관리자구분<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-if="transaction=='view'" :value="level_name" dense outlined readonly></v-text-field>
+                <v-select v-else v-model="level" :readonly="transaction=='view'" dense outlined :items="$session.get('Level')=='A'?[{text:'관리자', value:'A'},{text:'일반사용자', value:'N'}]:[{text:'일반사용자', value:'N'}]" item-text="text" item-value="value"></v-select>
+              </v-col>
+            </v-row>
+            <!-- 메일주소 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">메일주소</div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-model="email" :readonly="transaction=='view'" type="email" dense outlined :placeholder="transaction=='view'?'':'abc@def.com'" :rules="[email_rule]"></v-text-field>
+              </v-col>
+            </v-row>
+            <!-- 조직 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">조직<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-if="transaction=='view'" :value="org_name" dense outlined readonly></v-text-field>
+                <v-select v-else v-model="org_code" dense outlined :items="org_list" item-text="value" item-value="code" :rules="[required]"></v-select>
+              </v-col>
+            </v-row>
+            <!-- 소속기관/회사 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">소속기관/회사<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-if="transaction=='view'" :value="company_name" dense outlined readonly></v-text-field>
+                <v-select v-else v-model="company_code" dense outlined :items="company_list" item-text="company_name" item-value="seq" :rules="[required]"></v-select>
+              </v-col>
+            </v-row>
+            <!-- 사용언어 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:135px;">
+                <div class="pt-1">사용언어<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+              </v-col>
+              <v-col cols="12" lg="4" xl="3">
+                <v-text-field v-if="transaction=='view'" :value="lang_name" dense outlined readonly></v-text-field>
+                <v-select v-else v-model="lang_code" dense outlined :items="lang_list" item-text="value" item-value="code" :rules="[required]"></v-select>
+              </v-col>
+            </v-row>
+            <!-- 접근권한 -->
+            <div v-if="$session.get('Level')=='A'" class="pt-5" style="border-top:1px solid rgba(0,0,0,0.12)">
+              <!-- 메뉴 접근 권한 -->
+              <v-row align="start" no-gutters class="pb-5">
+                <v-col cols="12" lg="1" style="min-width:135px;">
+                  <div class="pt-1">메뉴접근권한<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+                </v-col>
+                <v-col v-for="menu_item in menu_list" :key="menu_item.code" cols="12" lg="auto" class="pr-5">
+                  <v-checkbox v-model="checked_menu" class="pa-0 pt-1 ma-0" :disabled="transaction=='view'" dense hide-details :label="menu_item.value" :value="menu_item.code"></v-checkbox>
+                </v-col>
+              </v-row>
+              <!-- 메뉴별 권한(관리자, 일반사용자) -->
+              <v-row v-for="(menu_item, index) in checked_menu_in_menu_order" :key="index" class="pb-5" align="start" no-gutters>
+                <v-col cols="12" lg="1" style="min-width:135px;">
+                  {{ get_menu_value(menu_item) }} 권한 <span v-if="transaction!='view'" style="color:red">(*)</span>
+                </v-col>
+                <v-col cols="12" lg="4" xl="3">
+                  <v-radio-group v-model="authority[menu_item]" class="radio-class pa-0 ma-0" :column="false" :disabled="transaction=='view'" hide-details>
+                    <v-radio value="N" label="읽기" dense small hide-details class="pa-0 ma-0 pr-5"></v-radio>
+                    <v-radio value="A" label="읽기/쓰기" dense small hide-details class="pa-0 ma-0"></v-radio>
+                  </v-radio-group>
+                </v-col>
+              </v-row>
+            </div>
+          </v-form>
+        </v-card-text>
+      </v-card>
+      <div v-if="transaction=='update'" class="pt-1" style="font-size:10pt; color:red;">[변경할비밀번호], [변경할비밀번호확인]은 비밀번호를 변경할 경우에만 입력하세요.</div>
+    </div>
+    <div id="tail">
+      <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
+        <v-row v-if="transaction=='insert'" align="center" justify="end">
+          <v-col cols="auto">
+            <v-btn @click="set_member" small dark :elevation="0">저장</v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-else-if="transaction=='view'" align="center" justify="end">
+          <v-col cols="auto">
+            <v-btn v-if="get_menu_authority('M001')=='A' || $session.get('Userid')==lims_id" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-else-if="transaction=='update'" align="center" justify="end">
+          <v-col cols="auto" class="pr-0">
+            <v-btn @click="show_password=false;password=null;password2=null;get_member().then(()=>{transaction='view'})" color="grey" small dark :elevation="0">취소</v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn v-if="get_menu_authority('M001')=='A' || $session.get('Userid')==lims_id" @click="set_member" small dark :elevation="0">저장</v-btn>
+          </v-col>
+        </v-row>
+      </v-app-bar>
+    </div>
   </v-container>
 </template>
 
-<script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { useHttp } from '@/composables/useHttp'
-import { useValidation } from '@/composables/useValidation'
+<script>
+import http from '@/mixin/http'
+import authority from '@/mixin/authority'
+import validation from '@/mixin/validation'
+import { setI18nLocale } from '@/i18n'
+export default {
+  name: 'detail-member-vue',
+  mixins: [http, authority, validation],
+  data: () => ({
+    is_open: false,
+    show_password: false,
 
-const router = useRouter()
-const route = useRoute()
-const authStore = useAuthStore()
-const { get, post } = useHttp()
-const rules = useValidation()
+    transaction: null,  //view, insert, update
+    check: false,
+    lims_id: null,
+    name: null,
+    password: null,
+    password2: null,
+    email: null,
+    level: 'N',
+    level_name: null,
+    org_code: 'D001',
+    org_name: null,
+    org_list:[],
+    lang_code: 'kor',
+    lang_name: '한국어',
+    lang_list:[],
+    menu_list:[],
+    company_code: null,
+    company_name: null,
+    company_list:[],
 
-const formRef = ref(null)
-const transaction = ref(route.query.transaction || 'view') // 'view', 'insert', 'update'
-const targetUserId = ref(route.query.lims_id || '')
-
-const saving = ref(false)
-const showPassword = ref(false)
-const idChecked = ref(false)
-
-// 권한 확인
-const canManage = computed(() => {
-  const auth = authStore.hasAuth('M001')
-  return auth === 'A' || auth === 'Y' || authStore.level === 'A'
-})
-
-const isSelf = computed(() => {
-  return authStore.userId === targetUserId.value
-})
-
-const levelItems = computed(() => {
-  if (authStore.level === 'A') {
-    return [
-      { text: '관리자', value: 'A' },
-      { text: '일반사용자', value: 'N' },
-    ]
-  }
-  return [{ text: '일반사용자', value: 'N' }]
-})
-
-// 입력 폼 데이터
-const form = reactive({
-  userId: '',
-  name: '',
-  password: '',
-  passwordConfirm: '',
-  email: '',
-  level: 'N',
-  orgCode: '',
-  companyNo: '',
-  langCd: 'kor',
-})
-
-// 공통 코드 데이터
-const orgList = ref([])
-const menuList = ref([])
-const langList = ref([])
-const companyList = ref([])
-
-// 메뉴 권한 데이터
-const checkedMenus = ref([])
-const menuAuth = reactive({})
-
-// 비밀번호 일치 규칙
-const passwordMatchRule = (v) => {
-  if (transaction.value === 'update' && !form.password) return true
-  return v === form.password || '비밀번호가 일치하지 않습니다.'
-}
-
-const getMenuName = (code) => {
-  const menu = menuList.value.find((m) => m.code === code)
-  return menu ? menu.value : code
-}
-
-// 기초 코드 목록 조회
-const loadCodes = async () => {
-  try {
-    const res = await get('/server/common/get_code_list.php')
-    if (res && res.data && res.data.info) {
-      orgList.value = res.data.info.filter((item) => item.group_code === 'G0001')
-      menuList.value = res.data.info.filter((item) => item.group_code === 'G0002')
-      langList.value = res.data.info.filter((item) => item.group_code === 'G0004')
-
-      menuList.value.forEach((m) => {
-        if (!menuAuth[m.code]) menuAuth[m.code] = 'N'
+    checked_menu: [],
+    authority:{}
+  }),
+  beforeCreate:function(){
+    if ( !this.$session.has("jwt") ){
+      this.$router.replace({name:"Login"});
+    }
+  },
+  created:async function(){
+    if ( !this.get_menu_authority('M001') && (this.$route.query.lims_id != this.$session.get('Userid')) ){
+      alert("해당 메뉴 접근 권한이 없습니다.")
+      this.$router.go(-1);
+    }
+    else{
+      this.transaction = this.$route.query.transaction;
+      
+      if ( this.transaction == 'view' ){
+        this.lims_id = this.$route.query.lims_id;
+        this.is_open = await this.get_code_list() && await this.get_company_list() && await this.get_member();
+      }
+      else{
+        this.is_open = await this.get_code_list() && await this.get_company_list();
+        this.company_code = this.company_list[0]?.seq ?? null;
+        this.company_name = this.company_list[0]?.company_name ?? null;
+      }
+    }
+  },
+  methods:{
+    password2_rule:function(v){
+      if ( v != this.password ){
+        return '비밀번호가 일치하지 않습니다.';
+      }
+      return true;
+    },
+    update_cancel: function(){
+      this.get_member().then(()=>{
+        this.transaction='view';
+      });
+    },
+    id_check: async function(){
+      if ( this.check ) return;
+      if ( !this.lims_id || this.lims_id.length == 0 ){
+        alert("아이디를 입력하세요.");
+        return;
+      }
+      if ( !this.$refs.limsid.valid ){
+        return;
+      }
+      let data = {
+        user_id: this.lims_id
+      };
+      this.$store.commit('load', true);
+      let res = await this.get(this.$rootUrl+'/server/member/id_check.php', data);
+      if ( res ){
+        this.check = true;
+        alert("사용가능한 아이디입니다.");
+        this.$store.commit('load', false);
+      }
+      else{
+        this.check = false;
+        alert("이미 사용중인 아이디입니다.");
+        this.$store.commit('load', false);
+      }
+    },
+    get_menu_value:function(code){
+      let value = "";
+      this.menu_list.forEach(element=>{
+        if ( element.code == code ){
+          value = element.value;
+        }
       })
-    }
-  } catch (err) {
-    console.error('공통 코드 로드 실패:', err)
-  }
-
-  try {
-    const res = await get('/server/company/get_company_popup.php')
-    if (res && res.data && res.data.info) {
-      companyList.value = res.data.info
-    }
-  } catch (err) {
-    console.error('업체 목록 로드 실패:', err)
-  }
-}
-
-// 회원 상세 정보 조회
-const loadMember = async (userId) => {
-  if (!userId) return
-  try {
-    const res = await get('/server/member/get_member.php', { user_id: userId })
-    if (res && res.data && res.data.info) {
-      const info = res.data.info
-      form.userId = info.lims_id || userId
-      form.name = info.name || ''
-      form.email = info.email || ''
-      form.level = info.level || 'N'
-      form.orgCode = info.org_code || ''
-      form.companyNo = info.company_no !== '0' ? Number(info.company_no) || info.company_no : ''
-      form.langCd = info.lang_cd || 'kor'
-
-      // 권한 매핑
-      checkedMenus.value = []
-      if (Array.isArray(info.auth)) {
-        info.auth.forEach((a) => {
-          checkedMenus.value.push(a.menu_code)
-          menuAuth[a.menu_code] = a.auth || 'N'
+      return value;
+    },
+    set_member: async function(){
+      if ( !this.$refs.form.validate() ){
+        return;
+      }
+      if ( this.transaction=='insert' && !this.check ){
+        alert("아이디 중복체크가 필요합니다.");
+        return;
+      }
+      if ( !this.checked_menu || this.checked_menu.length == 0 ){
+        alert("최소 한 개 이상의 메뉴에 대한 접근권한이 필요합니다.");
+        return;
+      }
+      let auth = [];
+      for ( let key in this.authority ){
+        if ( this.checked_menu.indexOf(key) >= 0 ){
+          let item = {
+            menu_code: key,
+            auth: this.authority[key]
+          }
+          auth.push(item);
+        }
+      }
+      let con = confirm("입력한 내용으로 사용자를 추가/수정하시겠습니까?");
+      if ( !con ) return;
+      
+      let data = {
+        transaction: this.transaction,
+        user_id: this.lims_id,
+        name: this.name,
+        password: this.password,
+        password2: this.password2,
+        email: this.email,
+        level: this.level,
+        org_code: this.org_code,
+        company_no: this.company_code,
+        lang_cd: this.lang_code,
+        auth: JSON.stringify(auth)
+      }
+      this.$store.commit('load', true);
+      let res = await this.post(this.$rootUrl+'/server/member/set_member.php', data);
+      this.$store.commit('load', false);
+      if ( res ){
+        if ( this.$session.get("Userid") == this.lims_id ){ // update 대상이 자기 자신일 경우 session 갱신
+          this.$session.set("Auth", auth);
+          this.$session.set("Username", this.name);
+          this.$session.set("Email", this.email);
+          this.$session.set("Level", this.level);
+          this.$session.set("Lang", this.lang_code);
+          setI18nLocale(this.lang_code);
+        }
+        alert("저장되었습니다.");
+        if ( this.get_menu_authority('M001')=='A' ){
+          this.$router.replace({name:'Member'});
+        }
+        else{
+          this.$router.go(-1);
+        }
+      }
+    },
+    get_member: async function(){
+      let data = {
+        user_id: this.lims_id
+      };
+      this.$store.commit('load', true);
+      let res = await this.get(this.$rootUrl+'/server/member/get_member.php', data);
+      this.$store.commit('load', false);
+      if ( res ){
+        this.name = res.data.info.name;
+        this.email = res.data.info.email;
+        this.level = res.data.info.level;
+        this.level_name = res.data.info.level_name;
+        this.org_code = res.data.info.org_code;
+        this.org_name = res.data.info.org_name;
+        this.company_code = res.data.info.company_no != "0" ? res.data.info.company_no : null;
+        this.company_name = this.company_list.find(element=>element.seq == this.company_code)?.company_name ?? null;
+        this.lang_code = res.data.info.lang_cd;
+        this.lang_name = this.lang_list.find(element=>element.code == this.lang_code)?.value ?? null;
+        if ( res.data.info.auth && (res.data.info.auth.length > 0) ){
+          this.checked_menu = [];
+          res.data.info.auth.forEach(element=>{
+            this.checked_menu.push(element.menu_code);
+            this.authority[element.menu_code] = element.auth;
+          })
+        }
+        // level_name 다국어 변환
+        if ( this.$i18n.locale === 'en' ){
+          if ( this.level_name == '관리자' ) this.level_name = 'Admin';
+          else if ( this.level_name == '일반사용자' ) this.level_name = 'Standard User';
+        }
+        if ( this.$i18n.locale === 'en' ){
+          this.lang_list.forEach(element => {
+            element['value'] == '한국어' ? element['value'] = 'Korean' : element['value'] = 'English';
+          });
+          if ( this.lang_name == '한국어' ) this.lang_name = 'Korean';
+          else if ( this.lang_name == '영어' ) this.lang_name = 'English';
+        }
+        return true;
+      }
+      return false;
+    },
+    get_code_list:async function(){
+      this.$store.commit('load', true);
+      let res = await this.get(this.$rootUrl+'/server/common/get_code_list.php');
+      this.$store.commit('load', false);
+      if ( res ){
+        this.org_list = [];
+        this.menu_list = [];
+        res.data.info.forEach(element=>{
+          if ( element.group_code == 'G0001'){
+            this.org_list.push(element);
+          }
+          else if ( element.group_code == 'G0002' ){
+            this.menu_list.push(element);
+            this.authority[element.code] = 'N';
+          }
+          else if ( element.group_code == 'G0004' ){
+            this.lang_list.push(element);
+          }
         })
+        return true;
       }
-    }
-  } catch (err) {
-    console.error('사용자 정보 로드 실패:', err)
-  }
-}
-
-// 아이디 중복 확인
-const checkIdDuplicate = async () => {
-  const id = form.userId?.trim()
-  if (!id) {
-    alert('아이디를 먼저 입력해주세요.')
-    return
-  }
-  const checkRule = rules.idRule(id)
-  if (checkRule !== true) {
-    alert(typeof checkRule === 'string' ? checkRule : '올바른 아이디 형식이 아닙니다.')
-    return
-  }
-
-  try {
-    const res = await get('/server/member/id_check.php', { user_id: id })
-    if (res && res.data && res.data.ret === '0000') {
-      idChecked.value = true
-      alert('사용 가능한 아이디입니다.')
-    } else {
-      idChecked.value = false
-      alert(res?.data?.msg || '이미 사용 중인 아이디입니다.')
-    }
-  } catch {
-    idChecked.value = false
-    alert('중복 확인 중 오류가 발생했습니다.')
-  }
-}
-
-// 사용자 저장/수정
-const saveMember = async () => {
-  if (formRef.value) {
-    const { valid } = await formRef.value.validate()
-    if (!valid) return
-  }
-
-  if (transaction.value === 'insert' && !idChecked.value) {
-    alert('아이디 중복확인을 완료해주세요.')
-    return
-  }
-
-  if (checkedMenus.value.length === 0) {
-    alert('최소 하나 이상의 메뉴 접근 권한을 선택해야 합니다.')
-    return
-  }
-
-  const ok = confirm(
-    transaction.value === 'insert'
-      ? '사용자를 등록하시겠습니까?'
-      : '사용자 정보를 수정하시겠습니까?'
-  )
-  if (!ok) return
-
-  // 권한 배열 빌드
-  const authPayload = checkedMenus.value.map((code) => ({
-    menu_code: code,
-    auth: menuAuth[code] || 'N',
-  }))
-
-  const payload = {
-    transaction: transaction.value,
-    user_id: form.userId,
-    name: form.name,
-    password: form.password || '',
-    password2: form.passwordConfirm || '',
-    email: form.email,
-    level: form.level,
-    org_code: form.orgCode,
-    company_no: form.companyNo,
-    lang_cd: form.langCd,
-    auth: JSON.stringify(authPayload),
-  }
-
-  saving.value = true
-  try {
-    const res = await post('/server/member/set_member.php', payload)
-    saving.value = false
-
-    if (res && res.data && res.data.ret === '0000') {
-      alert('성공적으로 저장되었습니다.')
-      if (transaction.value === 'insert') {
-        router.replace({ name: 'Member' })
-      } else {
-        transaction.value = 'view'
-        loadMember(form.userId)
+      return false;
+    },
+    get_company_list:async function(){
+      this.$store.commit('load', true);
+      let res = await this.get(this.$rootUrl+'/server/company/get_company_popup.php');
+      this.$store.commit('load', false);
+      if ( res ){
+        this.company_list = res.data.info;
+        return true;
       }
-    } else {
-      alert(res?.data?.msg || '저장에 실패했습니다.')
+      return false;
     }
-  } catch (err) {
-    saving.value = false
-    alert(err.message || '저장 중 오류가 발생했습니다.')
-  }
-}
-
-// 삭제
-const onDelete = async () => {
-  const ok = confirm(`'${form.name || form.userId}' 사용자를 정말 삭제하시겠습니까?`)
-  if (!ok) return
-
-  saving.value = true
-  try {
-    const res = await post('/server/member/set_member.php', {
-      transaction: 'delete',
-      user_id: form.userId,
-    })
-    saving.value = false
-    if (res && res.data && res.data.ret === '0000') {
-      alert('삭제되었습니다.')
-      router.replace({ name: 'Member' })
-    } else {
-      alert(res?.data?.msg || '삭제에 실패했습니다.')
+  },
+  computed:{
+    checked_menu_in_menu_order:function(){
+      if ( !this.menu_list || this.menu_list.length === 0 ) return [];
+      if ( !this.checked_menu || this.checked_menu.length === 0 ) return [];
+      const checked = new Set(this.checked_menu);
+      return this.menu_list
+        .filter(m => checked.has(m.code))
+        .map(m => m.code);
     }
-  } catch (err) {
-    saving.value = false
-    alert(err.message || '삭제 중 오류가 발생했습니다.')
-  }
+  },
 }
-
-// 수정 취소
-const cancelUpdate = () => {
-  form.password = ''
-  form.passwordConfirm = ''
-  transaction.value = 'view'
-  loadMember(targetUserId.value)
-}
-
-// 뒤로가기
-const goBack = () => {
-  router.push({ name: 'Member' })
-}
-
-onMounted(async () => {
-  await loadCodes()
-  if (transaction.value === 'insert') {
-    form.level = 'N'
-    form.langCd = 'kor'
-  } else if (targetUserId.value) {
-    await loadMember(targetUserId.value)
-  }
-})
 </script>

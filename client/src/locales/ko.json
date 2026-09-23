@@ -1,0 +1,47 @@
+{
+  "common": {
+    "networkError": "네트워크 에러가 발생했습니다. 잠시 후 다시 시도하세요."
+  },
+  "app": {
+    "language": "언어",
+    "profileEdit": "개인정보수정",
+    "logout": "로그아웃",
+    "confirmLogout": "로그아웃 하시겠습니까?",
+    "autoLogout": "일정시간 서비스 미사용으로 자동 로그아웃 되었습니다.",
+    "menu": {
+      "member": "사용자관리",
+      "company": "기관/회사관리",
+      "gene": "유전자관리",
+      "type": "검사종류",
+      "manage": "검사자관리",
+      "result": "검사결과",
+      "banner": "배너관리"
+    }
+  },
+  "login": {
+    "idPlaceholder": "아이디",
+    "passwordPlaceholder": "비밀번호",
+    "submit": "로그인",
+    "rememberId": "아이디저장"
+  },
+  "validation": {
+    "required": "필수입력입니다.",
+    "idRule": "4~20자 영문 대/소문자, 숫자를 사용해주세요.",
+    "emailRule": "메일 형식이 올바르지 않습니다.",
+    "birthdayRule": "날짜 형식이 올바르지 않습니다.",
+    "phoneRule": "전화번호 형식이 올바르지 않습니다.",
+    "passwordComplexity": "8~16자의 영문, 숫자, 특수문자를 모두 사용해 주세요.",
+    "passwordSequential": "연속된 문자열은 사용할 수 없습니다. (1234, qwer, fdsa 등)",
+    "passwordRepeated": "동일한 문자를 반복하여 사용할 수 없습니다. (111, aaa 등)"
+  },
+  "phrases": {
+    "목록": "목록",
+    "남자": "남자",
+    "여자": "여자",
+    "8~16자 영문, 숫자, 특수문자": "8~16자 영문, 숫자, 특수문자",
+    "적합": "적합",
+    "부적합": "부적합",
+    "동의함": "동의함",
+    "동의하지 않음": "동의하지 않음"
+  }
+}
