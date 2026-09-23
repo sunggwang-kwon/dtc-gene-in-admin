@@ -1,263 +1,326 @@
 <template>
-  <v-container fluid class="pa-6">
-    <!-- 헤더 -->
-    <div class="d-flex align-center justify-space-between mb-6">
-      <div>
-        <h1 class="text-h5 font-weight-bold">사용자 관리</h1>
-        <p class="text-body-2 text-medium-emphasis mt-1 mb-0">시스템 사용자를 조회하고 관리합니다.</p>
-      </div>
-      <div v-if="canManage" class="d-flex ga-2">
-        <v-btn color="primary" prepend-icon="mdi-plus" @click="goInsert">추가</v-btn>
-        <v-btn
-          color="error"
-          variant="tonal"
-          prepend-icon="mdi-delete-outline"
-          :disabled="selected.length === 0"
-          @click="deleteSelected"
-        >
-          삭제 {{ selected.length > 0 ? `(${selected.length})` : '' }}
-        </v-btn>
-      </div>
-    </div>
-
-    <!-- 검색 카드 -->
-    <v-card flat border rounded="lg" class="mb-4">
-      <v-card-text class="py-3">
-        <v-row align="center" no-gutters>
-          <v-col cols="12" sm="auto">
-            <v-text-field
-              v-model="searchValue"
-              label="ID / 사용자명"
-              placeholder="검색어 입력"
-              prepend-inner-icon="mdi-magnify"
-              hide-details
-              clearable
-              style="min-width: 280px;"
-              @keydown.enter="onSearch"
-              @click:clear="onClearSearch"
-            />
+  <!-- desktop -->
+  <v-container v-if="!$vuetify.breakpoint.mobile" class="pa-0 content-background" style="border-left:1px solid rgba(0,0,0,0.12);border-right:1px solid rgba(0,0,0,0.12);min-height:100%;" fluid>
+    <div id="header" :style="{
+      position: 'sticky',
+      top: $vuetify.application.top+'px',
+      zIndex:1
+    }">
+      <div class="px-3 py-5" style="background-color:white;">
+        <v-row class="mx-1" align="center">
+          <v-col cols="auto">
+            <h3>사용자관리</h3>
           </v-col>
-          <v-col cols="auto" class="ml-sm-3 mt-3 mt-sm-0">
-            <v-btn color="primary" variant="tonal" @click="onSearch">조회</v-btn>
+          <v-col cols="auto" class="pl-0">
+            <v-tooltip bottom color="rgba(0,0,0,0.7)">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+              </template>
+              <span>새창에서 열기</span>
+            </v-tooltip>
           </v-col>
         </v-row>
-      </v-card-text>
-    </v-card>
+        <div v-if="is_show_search">
+          <v-row class="mx-1" align="end">
+            <v-col cols="3">
+              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">ID/사용자명</div>
+              <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col v-if="get_menu_authority('M001')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="$router.push({name:'DetailMember', query:{transaction:'insert'}})" small dark :elevation="0">추가</v-btn>
+            </v-col>
+            <v-col v-if="get_menu_authority('M001')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="set_member" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item.length>0" dark small :elevation="0">삭제</v-btn>
+            </v-col>
+            <v-col cols="auto">
+              <v-btn @click="page=1;get_member_list();" dark color="search_btn" small :elevation="0">조회</v-btn>
+            </v-col>
+          </v-row>
+        </div>
+      </div>
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+        <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
+        <v-icon v-else>mdi-menu-down</v-icon>
+      </v-btn>
+      <v-divider style="border-color: rgb(223, 223, 223)"></v-divider>
+      <div class="content-background" style="height:25px;"></div>
+    </div>
+    <div v-if="is_open" id="content">
+      <v-row class="mx-1" align="center">
+        <v-col cols="auto" class="pb-1">
+          &nbsp;&nbsp;{{ $t('phrases.목록') }} ({{ item_cnt }})
+        </v-col>
+      </v-row>
+      <v-row class="mx-1" align="center">
+        <v-col class="pt-0">
+          <data-table @click="click_item" @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order"></data-table>
+        </v-col>
+      </v-row>
+    </div>
+    <div id="tail">
+      <v-app-bar color="#f5f9fa" style="border-left:1px solid rgba(0,0,0,0.12);border-right:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
+        <v-row align="center" justify="center">
+          <v-col cols="auto">
+            <pagination @input="set_page" :page="page" :pagePerRecord="rows" :recordLength="item_cnt"></pagination>
+          </v-col>
+        </v-row>
+      </v-app-bar>
+    </div>
+  </v-container>
 
-    <!-- 데이터 카드 -->
-    <v-card flat border rounded="lg">
-      <!-- 건수 -->
-      <v-card-text class="py-2 text-caption text-medium-emphasis font-weight-medium border-b">
-        총 {{ totalItems }}건
-      </v-card-text>
-
-      <!-- 모바일 -->
-      <template v-if="isMobile">
-        <v-progress-linear v-if="loading" indeterminate color="primary" />
-        <v-list v-if="items.length > 0" lines="three" class="pa-0">
-          <template v-for="(item, i) in items" :key="item.lims_id">
-            <v-list-item class="px-4 py-3" @click="handleCardClick(item)">
-              <template #title>
-                <div class="d-flex align-center ga-2">
-                  <span class="font-weight-bold text-primary">{{ item.lims_id }}</span>
-                  <v-chip size="x-small" :color="item.level === 'A' ? 'purple' : 'grey'" variant="tonal" label>
-                    {{ item.level_name || (item.level === 'A' ? '관리자' : '일반') }}
-                  </v-chip>
-                </div>
+  <!-- mobile -->
+  <v-container v-else class="pa-0 content-background" style="min-height:100%;" fluid>
+    <div id="header" :style="{
+      position: 'sticky',
+      top: $vuetify.application.top+'px',
+      zIndex:1
+    }">
+      <div class="py-5" style="background-color:white;">
+        <v-row class="mx-1" align="center">
+          <v-col cols="auto">
+            <h3>사용자관리</h3>
+          </v-col>
+          <v-col cols="auto" class="pl-0">
+            <v-tooltip bottom color="rgba(0,0,0,0.7)">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
-              <template #subtitle>
-                <div class="mt-1">{{ item.user_name }} · {{ item.email || '-' }}</div>
-                <div class="text-caption">{{ item.company_name || '-' }} · {{ item.last_access_time || '-' }}</div>
-              </template>
-              <template v-if="canManage" #append>
-                <v-checkbox-btn
-                  :model-value="selected.includes(item.lims_id)"
-                  color="primary"
-                  @click.stop
-                  @update:model-value="(v) => toggleSelect(item.lims_id, v)"
-                />
-              </template>
-            </v-list-item>
-            <v-divider v-if="i < items.length - 1" />
-          </template>
+              <span>새창에서 열기</span>
+            </v-tooltip>
+          </v-col>
+        </v-row>
+        <v-row v-if="is_show_search" class="mx-1" align="center">
+          <v-col cols="12">
+            <div style="font-size:11pt; color:rgba(0,0,0,0.5)">ID/사용자명</div>
+            <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
+          </v-col>
+          <v-col cols="12">
+            <v-btn @click="page=1;get_member_list()" dark color="search_btn" small block :elevation="0">조회</v-btn>
+          </v-col>
+        </v-row>
+      </div>
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+        <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
+        <v-icon v-else>mdi-menu-down</v-icon>
+      </v-btn>
+      <v-divider style="border-color: rgb(223, 223, 223)"></v-divider>
+      <div class="content-background" style="height:25px;"></div>
+    </div>
+    <div v-if="is_open" id="content">
+      <v-row class="mx-1" align="center">
+        <v-col cols="auto" class="pb-1">
+          &nbsp;&nbsp;{{ $t('phrases.목록') }} ({{ item_cnt }})
+        </v-col>
+      </v-row>
+      <v-row class="mx-1" align="center">
+        <v-col class="pt-0">
+          <data-table @click="click_item" @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top"></data-table>
+        </v-col>
+      </v-row>
+    </div>
+    <div :style="'position:fixed; bottom:' + ($vuetify.application.bottom) + 'px;right:10%;'">
+      <v-menu v-if="get_menu_authority('M001')=='A'" offset-y top :close-on-content-click="false">
+        <template v-slot:activator="{on, attrs}">
+          <v-btn v-bind="attrs" v-on="on" icon :elevation="0">
+            <v-icon size="50">mdi-plus-circle</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="$router.push({name:'DetailMember', query:{transaction:'insert'}})" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle>추가</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item @click="set_member" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle>삭제</v-list-item-subtitle>
+          </v-list-item>
         </v-list>
-        <v-card-text v-else-if="!loading" class="text-center text-medium-emphasis py-10">
-          조회된 데이터가 없습니다.
-        </v-card-text>
-      </template>
-
-      <!-- 데스크탑 -->
-      <v-data-table-server
-        v-if="!isMobile"
-        v-model="selected"
-        :headers="headers"
-        :items="items"
-        :items-length="totalItems"
-        :loading="loading"
-        :items-per-page="itemsPerPage"
-        :page="page"
-        :show-select="canManage"
-        item-value="lims_id"
-        hover
-        density="comfortable"
-        hide-default-footer
-        @update:options="loadItems"
-        @click:row="handleRowClick"
-      >
-        <template #item.lims_id="{ item }">
-          <span class="text-primary font-weight-medium" style="cursor:pointer">{{ item.lims_id }}</span>
-        </template>
-
-        <template #item.level_name="{ item }">
-          <v-chip size="x-small" :color="item.level === 'A' ? 'purple' : 'grey'" variant="tonal" label>
-            {{ item.level_name || (item.level === 'A' ? '관리자' : '일반') }}
-          </v-chip>
-        </template>
-
-        <template #item.last_access_time="{ item }">
-          <span class="text-medium-emphasis">{{ item.last_access_time || '-' }}</span>
-        </template>
-        <template #item.create_time="{ item }">
-          <span class="text-medium-emphasis">{{ item.create_time || '-' }}</span>
-        </template>
-
-        <template #no-data>
-          <div class="pa-10 text-center text-medium-emphasis">데이터가 없습니다.</div>
-        </template>
-      </v-data-table-server>
-
-      <v-divider />
-
-      <!-- 페이지네이션 -->
-      <v-card-text class="py-2">
-        <Pagination
-          :page="page"
-          :items-per-page="itemsPerPage"
-          :total-items="totalItems"
-          :max-visible="isMobile ? 5 : 10"
-          @change="onPageChange"
-        />
-      </v-card-text>
-    </v-card>
+      </v-menu>
+    </div>
+    <div id="tail">
+      <v-app-bar color="#f5f9fa" bottom app :elevation="0">
+        <v-row align="center" justify="center">
+          <v-col cols="auto">
+            <m-pagination @input="set_page" :page="page" :pagePerRecord="rows" :recordLength="item_cnt"></m-pagination>
+          </v-col>
+        </v-row>
+      </v-app-bar>
+    </div>
   </v-container>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useDisplay } from 'vuetify'
-import { useAuthStore } from '@/stores/auth'
-import { useHttp } from '@/composables/useHttp'
-import Pagination from '@/components/common/Pagination.vue'
+<script>
+import http from '@/mixin/http'
+import authority from '@/mixin/authority'
+import datatable from '@/components/Common/DataTable'
+import pagination from '@/components/Common/Pagination'
+import mpagination from '@/components/Common/MPagination'
+export default {
+  name: 'member-vue',
+  mixins: [http, authority],
+  components:{
+    'data-table': datatable,
+    'pagination': pagination,
+    'm-pagination': mpagination,
+  },
+  data: () => ({
+    is_open: false,
 
-const router = useRouter()
-const authStore = useAuthStore()
-const { get, post } = useHttp()
-const { mobile } = useDisplay()
+    is_show_search: true,
+    changed: false,
 
-const isMobile = computed(() => mobile.value)
+    page: 1,
+    rows: 30,
+    sort: null,
+    order: null,
+    search_value: null,
 
-const canManage = computed(() => {
-  const auth = authStore.hasAuth('M001')
-  return auth === 'A' || auth === 'Y'
-})
+    table_top: null,
+    item_cnt: 0,
+    headers: [
+      {key:'lims_id', text:'아이디', align:'center'},
+      {key:'user_name', text:'사용자명', align:'center'},
+      {key:'email', text:'이메일', align:'center'},
+      {key:'company_name', text:'소속기관/회사', align:'center'},
+      {key:'level_name', text:'관리자구분', align:'center', width:'10%'},
+      {key:'last_access_time', text:'마지막접속시간', align:'center', width: '14%'},
+      {key:'create_time', text:'등록일자', align:'center', width:'9%'},
+      {key:'modify_time', text:'수정일자', align:'center', width:'9%'},
+      {key:'modify_id', text:'수정자', align:'center'}
+    ],
+    items: [
+      /*
+      {
 
-const loading = ref(false)
-const items = ref([])
-const totalItems = ref(0)
-const selected = ref([])
-const page = ref(1)
-const itemsPerPage = ref(30)
-const sortBy = ref([])
-const searchValue = ref('')
-
-const headers = [
-  { title: '아이디', key: 'lims_id', sortable: true },
-  { title: '사용자명', key: 'user_name', sortable: true },
-  { title: '이메일', key: 'email', sortable: false },
-  { title: '소속', key: 'company_name', sortable: false },
-  { title: '구분', key: 'level_name', align: 'center', width: '100px', sortable: false },
-  { title: '최종접속', key: 'last_access_time', align: 'center', width: '150px', sortable: true },
-  { title: '등록일', key: 'create_time', align: 'center', width: '130px', sortable: true },
-]
-
-let isFetching = false
-
-const loadItems = async ({ page: p, itemsPerPage: ipp, sortBy: sb } = {}) => {
-  if (isFetching) return
-  isFetching = true
-  loading.value = true
-
-  if (p) page.value = p
-  if (ipp) itemsPerPage.value = ipp
-  if (sb !== undefined) sortBy.value = sb
-
-  const params = {
-    page: page.value,
-    rows: itemsPerPage.value,
-    sort: sortBy.value?.[0]?.key || null,
-    order: sortBy.value?.[0]?.order || null,
-    search_value: searchValue.value ? `%${searchValue.value.trim()}%` : null,
-  }
-
-  try {
-    const res = await get('/server/member/get_member_list.php', params)
-    if (res?.data) {
-      totalItems.value = Number(res.data.total) || 0
-      items.value = res.data.info || []
-    } else {
-      items.value = []
-      totalItems.value = 0
+      }
+      */
+    ],
+    selected_item: [],
+  }),
+  beforeCreate:function(){
+    if ( !this.$session.has("jwt") ){
+      this.$router.replace({name:"Login"});
     }
-  } catch (err) {
-    console.error('사용자 목록 조회 실패:', err)
-  } finally {
-    loading.value = false
-    isFetching = false
-  }
-}
-
-onMounted(() => {
-  if (isMobile.value) loadItems()
-})
-
-const onSearch = () => { page.value = 1; loadItems() }
-const onClearSearch = () => { searchValue.value = ''; onSearch() }
-const onPageChange = (p) => { page.value = p; loadItems() }
-
-const handleRowClick = (e, { item }) => {
-  if (item?.lims_id) router.push({ name: 'DetailMember', query: { transaction: 'view', lims_id: item.lims_id } })
-}
-
-const handleCardClick = (item) => {
-  if (item?.lims_id) router.push({ name: 'DetailMember', query: { transaction: 'view', lims_id: item.lims_id } })
-}
-
-const toggleSelect = (id, v) => {
-  selected.value = v
-    ? [...selected.value.filter(x => x !== id), id]
-    : selected.value.filter(x => x !== id)
-}
-
-const goInsert = () => router.push({ name: 'DetailMember', query: { transaction: 'insert' } })
-
-const deleteSelected = async () => {
-  if (!selected.value.length) return
-  if (!confirm(`선택한 사용자 ${selected.value.length}명을 삭제하시겠습니까?`)) return
-
-  loading.value = true
-  let errors = 0
-
-  for (const id of selected.value) {
-    try {
-      const res = await post('/server/member/set_member.php', { transaction: 'delete', user_id: id })
-      if (res?.data?.ret !== '0000') errors++
-    } catch { errors++ }
-  }
-
-  loading.value = false
-  alert(errors ? `삭제 중 ${errors}건의 오류가 발생했습니다.` : '성공적으로 삭제되었습니다.')
-  selected.value = []
-  loadItems()
+  },
+  created:function(){
+    if ( !this.get_menu_authority('M001') ){
+      alert("해당 메뉴 접근 권한이 없습니다.")
+      this.$router.go(-1);
+    }
+    else{
+      let bef_member = this.$store.getters.member;
+      if( bef_member != null ){
+        this.page = bef_member.page;
+        this.rows = bef_member.rows;
+        this.sort = bef_member.sort;
+        this.order = bef_member.order;
+        this.search_value = bef_member.search_value;
+      }
+      this.get_member_list().then(res=>{
+        this.is_open = res;
+      });
+    }
+  },
+  mounted:function(){
+    if ( !this.$vuetify.breakpoint.mobile ){
+      this.$nextTick(function(){
+        setTimeout(() => {
+          this.cal_table_top();
+        }, 1000);
+      });
+    }
+  },
+  updated: function(){
+    if ( this.changed && !this.$vuetify.breakpoint.mobile ){
+      this.$nextTick(function(){
+        this.cal_table_top();
+        this.changed = false;
+      });
+    }
+  },
+  methods:{
+    cal_table_top: function(){
+      if ( !document.getElementById('header') ) return;
+      this.table_top = document.getElementById('header').clientTop + document.getElementById('header').clientHeight + 47 + 'px';
+    },
+    new_window:function(){
+      const data = this.$router.resolve({name:'Member'});
+      window.open(data.href, '_blank');
+    },
+    click_item:function(item/*, event*/){
+      this.$router.push({name:'DetailMember', query:{transaction:'view', lims_id:item.lims_id}});
+    },
+    select_item:function(item){
+      this.selected_item = item;
+    },
+    sort_item:function(sort, order){
+      if ( this.item_cnt == 0 ) return; //테이블 내용이 없을 경우 무시(조회하기 전)
+      this.sort = sort;
+      this.order = order;
+      this.get_member_list();
+    },
+    set_page:function(page){
+      this.page = page;
+      this.get_member_list();
+      window.scrollTo({top:0, behavior: 'smooth'});
+    },
+    set_member: async function(){
+      if ( this.selected_item.length == 0 ) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+      }
+      let con = confirm("선택한 사용자 " + this.selected_item.length + "건을 삭제하시겠습니까?");
+      if ( !con ) return;
+      
+      let error_cnt = 0;
+      this.$store.commit('load', true);
+      for ( let i = 0 ; i < this.selected_item.length ; i++ ){
+        let data = {
+          transaction: 'delete',
+          user_id: this.items[this.selected_item[i]].lims_id
+        };
+        let res = await this.post(this.$rootUrl+'/server/member/set_member.php', data);
+        if ( !res ){
+          error_cnt++;
+        }
+      }
+      this.$store.commit('load', false);
+      if ( error_cnt == 0 ){
+        alert("삭제되었습니다.");
+      }
+      else{
+        alert("에러가 " + error_cnt + "건 발생했습니다.");
+      }
+      this.get_member_list();
+    },
+    get_member_list:async function(){
+      let data = {
+        page: this.page,
+        rows: this.rows,
+        sort: this.sort,
+        order: this.order,
+        search_value: this.search_value?'%'+this.search_value+'%':null
+      };
+      this.$store.commit('load', true);
+      let res = await this.get(this.$rootUrl+'/server/member/get_member_list.php', data);
+      if ( res ){
+        this.item_cnt = res.data.total*1;
+        this.items = res.data.info;
+        for ( let i = 0 ; i < this.items.length ; i++ ){
+          this.items[i].no = (this.page-1)*this.rows+i+1;
+        }
+        this.$store.commit('member', {
+          page: this.page,
+          rows: this.rows,
+          sort: this.sort,
+          order: this.order,
+          search_value: this.search_value
+        });
+        this.$store.commit('load', false);
+        return true;
+      }
+      this.$store.commit('load', false);
+      return false;
+    }
+  },
 }
 </script>
