@@ -14,8 +14,19 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     isLoggedIn: (state) => !!state.jwt,
     hasAuth: (state) => (menuCode) => {
+      if (state.level === 'A') return 'A'
       const item = state.auth.find((a) => a.menu_code === menuCode)
       return item ? item.auth : null
+    },
+    canRead: (state) => (menuCode) => {
+      if (state.level === 'A') return true
+      const item = state.auth.find((a) => a.menu_code === menuCode)
+      return !!(item && item.auth)
+    },
+    canManage: (state) => (menuCode) => {
+      if (state.level === 'A') return true
+      const item = state.auth.find((a) => a.menu_code === menuCode)
+      return !!(item && (item.auth === 'A' || item.auth === 'Y'))
     },
     // 권한 있는 첫 번째 메뉴 라우트 이름 반환
     firstAuthorizedRoute: (state) => {
@@ -29,8 +40,9 @@ export const useAuthStore = defineStore('auth', {
         { code: 'M006', route: 'Banner' },
       ]
       for (const menu of menuMap) {
+        if (state.level === 'A') return menu.route
         const item = state.auth.find((a) => a.menu_code === menu.code)
-        if (item && item.auth === 'Y') return menu.route
+        if (item && item.auth) return menu.route
       }
       return null
     },
