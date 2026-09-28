@@ -14,8 +14,7 @@
       "gene": "Gene Management",
       "type": "Test Types",
       "manage": "Subject Management",
-      "result": "Analysis Results",
-      "banner": "Banner Management"
+      "result": "Analysis Results"
     }
   },
   "login": {

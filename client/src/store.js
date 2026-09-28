@@ -55,7 +55,6 @@ export const store = new Vuex.Store({
    */
     gene:null,
     company:null,
-    banner:null,
   },
   getters:{
     load: function(state){
@@ -78,9 +77,6 @@ export const store = new Vuex.Store({
     },
     company: function(state){
       return state.company;
-    },
-    banner: function(state){
-      return state.banner;
     }
   },
   mutations:{
@@ -92,7 +88,6 @@ export const store = new Vuex.Store({
       state.result = null;
       state.gene = null;
       state.company = null;
-      state.banner = null;
     },
     load: function(state, payload){
       state.load = payload;
@@ -114,9 +109,6 @@ export const store = new Vuex.Store({
     },
     company: function(state, payload){
       state.company = payload;
-    },
-    banner: function(state, payload){
-      state.banner = payload;
     }
   }
 });

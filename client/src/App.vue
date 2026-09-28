@@ -2,10 +2,10 @@
   <v-app v-if="$session.has('jwt')">
     <v-app-bar v-if="!$vuetify.breakpoint.mobile" app dense dark :elevation="0" clipped-left>
       <v-row align="center">
-        <v-col cols="auto">
+        <v-col cols="auto" class="pr-0">
           <v-app-bar-nav-icon @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
         </v-col>
-        <v-col cols="auto" class="d-flex align-center">
+        <v-col cols="auto" class="d-flex align-center pl-1">
           <v-img src="@/assets/images/geni-in-logo-white.svg" max-height="32" max-width="110" contain alt="지니인사이트 로고"></v-img>
         </v-col>
       </v-row>
@@ -88,14 +88,6 @@
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.result') }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="get_menu_authority('M006')" to="/banner" @click="click_menu('banner')" link>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-checkerboard</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.menu.banner') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

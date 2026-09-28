@@ -14,8 +14,7 @@
       "gene": "유전자관리",
       "type": "검사종류",
       "manage": "검사자관리",
-      "result": "검사결과",
-      "banner": "배너관리"
+      "result": "검사결과"
     }
   },
   "login": {

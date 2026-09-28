@@ -28,7 +28,7 @@
                 <div class="pt-1">아이디<span v-if="transaction!='view'" style="color:red">(*)</span></div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field v-model="patient_id" @input="check_request_path" :readonly="transaction=='view'" :disabled="transaction=='update'" dense outlined :rules="[required]"></v-text-field>
+                <v-text-field v-model="patient_id" :readonly="transaction=='view'" :disabled="transaction=='update'" dense outlined :rules="[required]"></v-text-field>
               </v-col>
             </v-row>
             <!-- 이름 -->
@@ -352,28 +352,6 @@ export default {
         }
       }
       return null;
-    },
-    check_request_path: function(){
-      if ( this.patient_id.length > 0 ){
-        if ( this.patient_id[0] == 'S' ){
-          this.request_path = 'S';
-        }
-        else if ( this.patient_id[0] == 'C' ){
-          this.request_path = 'C';
-        }
-        else if ( this.patient_id[0] == 'G' ){
-          this.request_path = 'G';
-        }
-        else if ( this.patient_id[0] == 'L' ){
-          this.request_path = 'L';
-        }
-        else if ( this.patient_id[0] == 'A' ){
-          this.request_path = 'A';
-        }
-      }
-      else{
-        this.request_path = null;
-      }
     },
     set_patient: async function(){
       if ( !this.$refs.form.validate() ){
