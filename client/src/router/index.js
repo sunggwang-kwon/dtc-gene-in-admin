@@ -13,8 +13,6 @@ import Result from '@/components/Result/Result'
 import DetailResult from '@/components/Result/DetailResult'
 import Gene from '@/components/Gene/Gene'
 import DetailGene from '@/components/Gene/DetailGene'
-import Banner from '@/components/Banner/Banner'
-import DetailBanner from '@/components/Banner/DetailBanner'
 import Company from '@/components/Company/Company'
 import DetailCompany from '@/components/Company/DetailCompany'
 Vue.use(VueRouter)
@@ -76,16 +74,6 @@ const routes = [
     component: DetailGene
   },
   {
-    path: '/banner',
-    name: 'Banner',
-    component: Banner
-  },
-  {
-    path: '/banner/detail',
-    name: 'DetailBanner',
-    component: DetailBanner
-  },
-  {
     path: '/company',
     name: 'Company',
     component: Company
@@ -116,7 +104,6 @@ const DETAIL_MAP = {
   Type: 'DetailType',
   Manage: 'DetailManage',
   Result: 'DetailResult',
-  Banner: 'DetailBanner',
 };
 
 router.beforeEach((to, from, next) => {
