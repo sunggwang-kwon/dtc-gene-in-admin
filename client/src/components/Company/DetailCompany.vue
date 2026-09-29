@@ -58,16 +58,6 @@
                 <v-text-field v-model="phone" :readonly="transaction=='view'" dense outlined :rules="[required]"></v-text-field>
               </v-col>
             </v-row>
-            <!-- 언어 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" lg="1" style="min-width:135px;">
-                <div class="pt-1">언어<span v-if="transaction!='view'" style="color:red">(*)</span></div>
-              </v-col>
-              <v-col cols="12" lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="lang_name" dense outlined readonly></v-text-field>
-                <v-select v-else v-model="lang_cd" dense outlined :items="lang_list" item-text="value" item-value="code" :rules="[required]"></v-select>
-              </v-col>
-            </v-row>
             <!-- 주소 -->
             <v-row align="start" no-gutters>
               <v-col cols="12" lg="1" style="min-width:135px;">
@@ -131,8 +121,6 @@ export default {
     email: null,
     phone: null,
     lang_cd: 'kor',
-    lang_name: null,
-    lang_list: [],
     addr: null,
     memo: null,
   }),
@@ -155,13 +143,10 @@ export default {
         this.$router.replace({name:'Company'});
         return;
       }
-      this.is_open = await this.get_code_list() && await this.get_company();
+      this.is_open = await this.get_company();
     }
     else if ( this.transaction == 'insert' ){
-      this.is_open = await this.get_code_list();
-      if ( this.is_open && this.lang_list.length > 0 ){
-        this.lang_cd = this.lang_list[0].code;
-      }
+      this.is_open = true;
     }
     else{
       alert("잘못된 접근입니다.");
@@ -181,12 +166,7 @@ export default {
         this.contact = info.contact;
         this.email = info.email;
         this.phone = info.phone;
-        this.lang_cd = info.lang_cd || 'kor';
-        this.lang_name = this.lang_list.find(el => el.code === this.lang_cd)?.value ?? this.lang_cd;
-        if ( this.$i18n.locale === 'en' ){
-          if ( this.lang_name == '한국어' ) this.lang_name = 'Korean';
-          else if ( this.lang_name == '영어' ) this.lang_name = 'English';
-        }
+        this.lang_cd = 'kor';
         this.addr = info.addr || null;
         this.memo = info.memo || null;
         return true;
@@ -226,21 +206,6 @@ export default {
           this.get_company();
         }
       }
-    },
-    get_code_list: async function(){
-      this.$store.commit('load', true);
-      let res = await this.get(this.$rootUrl+'/server/common/get_code_list.php');
-      this.$store.commit('load', false);
-      if ( res ){
-        this.lang_list = [];
-        res.data.info.forEach(element=>{
-          if ( element.group_code == 'G0004' ){
-            this.lang_list.push(element);
-          }
-        });
-        return true;
-      }
-      return false;
     },
   },
 }

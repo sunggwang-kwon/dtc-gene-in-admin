@@ -182,7 +182,6 @@ export default {
       {key:'contact', text:'담당자', align:'center'},
       {key:'email', text:'이메일', align:'center'},
       {key:'phone', text:'연락처', align:'center'},
-      {key:'lang_cd', text:'언어', align:'center', width:'80px'},
       {key:'create_time', text:'등록일', align:'center', width:'10%'}
     ],
     items: [],
