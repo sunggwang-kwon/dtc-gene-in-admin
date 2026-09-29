@@ -8,27 +8,8 @@ Vue.use(VueI18n)
 const LOCALE_STORAGE_KEY = 'app.locale'
 const DEFAULT_LOCALE = 'ko'
 
-const normalizeLocale = (locale) => {
-  if (!locale) return DEFAULT_LOCALE
-  const value = String(locale).toLowerCase()
-
-  if (value === 'ko' || value.startsWith('ko') || value === 'kor') {
-    return 'ko'
-  }
-
-  if (value === 'en' || value.startsWith('en') || value === 'eng') {
-    return 'en'
-  }
-
+const normalizeLocale = () => {
   return DEFAULT_LOCALE
-}
-
-const getSavedLocale = () => {
-  try {
-    return localStorage.getItem(LOCALE_STORAGE_KEY)
-  } catch (error) {
-    return null
-  }
 }
 
 const saveLocale = (locale) => {
@@ -40,15 +21,6 @@ const saveLocale = (locale) => {
 }
 
 const resolveInitialLocale = () => {
-  const saved = getSavedLocale()
-  if (saved) {
-    return normalizeLocale(saved)
-  }
-
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    return normalizeLocale(navigator.language)
-  }
-
   return DEFAULT_LOCALE
 }
 

@@ -100,16 +100,6 @@
                 <v-select v-else v-model="company_code" dense outlined :items="company_list" item-text="company_name" item-value="seq" :rules="[required]"></v-select>
               </v-col>
             </v-row>
-            <!-- 사용언어 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" lg="1" style="min-width:135px;">
-                <div class="pt-1">사용언어<span v-if="transaction!='view'" style="color:red">(*)</span></div>
-              </v-col>
-              <v-col cols="12" lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="lang_name" dense outlined readonly></v-text-field>
-                <v-select v-else v-model="lang_code" dense outlined :items="lang_list" item-text="value" item-value="code" :rules="[required]"></v-select>
-              </v-col>
-            </v-row>
             <!-- 접근권한 -->
             <div v-if="$session.get('Level')=='A'" class="pt-5" style="border-top:1px solid rgba(0,0,0,0.12)">
               <!-- 메뉴 접근 권한 -->
@@ -168,7 +158,6 @@
 import http from '@/mixin/http'
 import authority from '@/mixin/authority'
 import validation from '@/mixin/validation'
-import { setI18nLocale } from '@/i18n'
 export default {
   name: 'detail-member-vue',
   mixins: [http, authority, validation],
@@ -189,8 +178,6 @@ export default {
     org_name: null,
     org_list:[],
     lang_code: 'kor',
-    lang_name: '한국어',
-    lang_list:[],
     menu_list:[],
     company_code: null,
     company_name: null,
@@ -316,8 +303,6 @@ export default {
           this.$session.set("Username", this.name);
           this.$session.set("Email", this.email);
           this.$session.set("Level", this.level);
-          this.$session.set("Lang", this.lang_code);
-          setI18nLocale(this.lang_code);
         }
         alert("저장되었습니다.");
         if ( this.get_menu_authority('M001')=='A' ){
@@ -344,8 +329,6 @@ export default {
         this.org_name = res.data.info.org_name;
         this.company_code = res.data.info.company_no != "0" ? res.data.info.company_no : null;
         this.company_name = this.company_list.find(element=>element.seq == this.company_code)?.company_name ?? null;
-        this.lang_code = res.data.info.lang_cd;
-        this.lang_name = this.lang_list.find(element=>element.code == this.lang_code)?.value ?? null;
         if ( res.data.info.auth && (res.data.info.auth.length > 0) ){
           this.checked_menu = [];
           res.data.info.auth.forEach(element=>{
@@ -357,13 +340,6 @@ export default {
         if ( this.$i18n.locale === 'en' ){
           if ( this.level_name == '관리자' ) this.level_name = 'Admin';
           else if ( this.level_name == '일반사용자' ) this.level_name = 'Standard User';
-        }
-        if ( this.$i18n.locale === 'en' ){
-          this.lang_list.forEach(element => {
-            element['value'] == '한국어' ? element['value'] = 'Korean' : element['value'] = 'English';
-          });
-          if ( this.lang_name == '한국어' ) this.lang_name = 'Korean';
-          else if ( this.lang_name == '영어' ) this.lang_name = 'English';
         }
         return true;
       }
@@ -383,9 +359,6 @@ export default {
           else if ( element.group_code == 'G0002' ){
             this.menu_list.push(element);
             this.authority[element.code] = 'N';
-          }
-          else if ( element.group_code == 'G0004' ){
-            this.lang_list.push(element);
           }
         })
         return true;
