@@ -332,8 +332,10 @@ export default {
         if ( res.data.info.auth && (res.data.info.auth.length > 0) ){
           this.checked_menu = [];
           res.data.info.auth.forEach(element=>{
-            this.checked_menu.push(element.menu_code);
-            this.authority[element.menu_code] = element.auth;
+            if ( element.menu_code !== 'M006' ){
+              this.checked_menu.push(element.menu_code);
+              this.authority[element.menu_code] = element.auth;
+            }
           })
         }
         // level_name 다국어 변환
@@ -356,7 +358,7 @@ export default {
           if ( element.group_code == 'G0001'){
             this.org_list.push(element);
           }
-          else if ( element.group_code == 'G0002' ){
+          else if ( element.group_code == 'G0002' && element.code !== 'M006' ){
             this.menu_list.push(element);
             this.authority[element.code] = 'N';
           }
