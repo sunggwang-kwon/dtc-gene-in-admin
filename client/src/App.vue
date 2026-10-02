@@ -1,35 +1,17 @@
 <template>
   <v-app v-if="$session.has('jwt')">
-    <v-app-bar v-if="!$vuetify.breakpoint.mobile" app dense dark :elevation="0" clipped-left>
-      <v-row align="center">
-        <v-col cols="auto" class="pr-0">
-          <v-app-bar-nav-icon @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
-        </v-col>
-        <v-col cols="auto" class="d-flex align-center pl-1">
-          <v-img src="@/assets/images/geni-in-logo-white.svg" max-height="32" max-width="110" contain alt="지니인사이트 로고"></v-img>
-        </v-col>
-      </v-row>
+    <v-app-bar v-if="!$vuetify.breakpoint.mobile" app dense dark color="primary" :elevation="0" clipped-left>
+      <v-app-bar-nav-icon @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
     </v-app-bar>
-    <v-app-bar v-else app dense dark :elevation="0">
-      <v-row class="mx-5" align="center">
-        <v-col cols="1"></v-col>
-        <v-spacer></v-spacer>
-        <v-col cols="auto" class="d-flex align-center">
-          <v-img src="@/assets/images/geni-in-logo-white.svg" max-height="32" max-width="110" contain alt="지니인사이트 로고"></v-img>
-        </v-col>
-        <v-spacer></v-spacer>
-        <v-col cols="1">
-          <v-app-bar-nav-icon @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
-        </v-col>
-      </v-row>
+    <v-app-bar v-else app dense dark color="primary" :elevation="0">
+      <v-spacer></v-spacer>
+      <v-app-bar-nav-icon @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
     </v-app-bar>
     <v-navigation-drawer v-model="navi_drawer" app clipped :right="$vuetify.breakpoint.mobile" :width="$vuetify.breakpoint.smAndDown?226:256" floating>
       <v-list>
         <v-list-item>
-          <v-list-item-avatar>
-            <v-avatar color="deep-purple" size="40">
-              <span style="color:white">{{ $session.get("Username").substring(0,1) }}</span>
-            </v-avatar>
+          <v-list-item-avatar size="44">
+            <v-img src="@/assets/symbol-logo.svg" max-height="40" max-width="40" contain alt="지니인사이트 심볼 로고"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>{{ $session.get("Username") }}</v-list-item-title>
