@@ -47,13 +47,13 @@
               <v-col cols="auto" class="pr-0">
                 <v-btn @click="$refs.result_term_list.open();" small dark :elevation="0">기간별 결과지 출력</v-btn>
               </v-col>
-              <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
+              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
                 <v-btn  @click="excel_upload" small dark :elevation="0">검사결과 업로드</v-btn>
               </v-col>
-              <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
+              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
                 <v-btn @click="$router.push({name:'DetailResult'})" small dark :elevation="0">추가</v-btn>
               </v-col>
-              <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
+              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
                 <v-btn @click="set_result" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item.length>0" dark small :elevation="0">삭제</v-btn>
               </v-col>
               <v-col cols="auto">
@@ -209,13 +209,13 @@
           <v-list-item @click="$refs.result_term_list.open();" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>기간별 결과지 출력</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="excel_upload" style="border-top:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M006')=='A'" @click="excel_upload" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>검사결과 업로드</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="$router.push({name:'DetailResult'})" style="border-top:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M006')=='A'" @click="$router.push({name:'DetailResult'})" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>추가</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="set_result" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M006')=='A'" @click="set_result" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>삭제</v-list-item-subtitle>
           </v-list-item>
         </v-list>
@@ -320,7 +320,7 @@ export default {
     }
   },
   created:function(){
-    if ( !this.get_menu_authority('M004') ){
+    if ( !this.get_menu_authority('M006') ){
       alert("해당 메뉴 접근 권한이 없습니다.")
       this.$router.go(-1);
     }

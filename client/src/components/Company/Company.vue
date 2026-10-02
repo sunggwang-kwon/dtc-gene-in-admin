@@ -9,7 +9,7 @@
       <div class="px-3 py-5" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto">
-            <h3>기관/회사관리</h3>
+            <h3>거래처관리</h3>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
@@ -27,10 +27,10 @@
               <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
               <v-btn @click="$router.push({name:'DetailCompany', query:{transaction:'insert'}})" small dark :elevation="0">추가</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
               <v-btn @click="set_company" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item.length>0" dark small :elevation="0">삭제</v-btn>
             </v-col>
             <v-col cols="auto">
@@ -79,7 +79,7 @@
       <div class="py-5" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto">
-            <h3>기관/회사관리</h3>
+            <h3>거래처관리</h3>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
@@ -120,7 +120,7 @@
       </v-row>
     </div>
     <div :style="'position:fixed; bottom:' + ($vuetify.application.bottom) + 'px;right:10%;'">
-      <v-menu v-if="get_menu_authority('M007')=='A'" offset-y top :close-on-content-click="false">
+      <v-menu v-if="get_menu_authority('M002')=='A'" offset-y top :close-on-content-click="false">
         <template v-slot:activator="{on, attrs}">
           <v-btn v-bind="attrs" v-on="on" icon :elevation="0">
             <v-icon size="50">mdi-plus-circle</v-icon>
@@ -193,7 +193,7 @@ export default {
     }
   },
   created:function(){
-    if ( !this.get_menu_authority('M007') ){
+    if ( !this.get_menu_authority('M002') ){
       alert("해당 메뉴 접근 권한이 없습니다.")
       this.$router.go(-1);
     }
@@ -259,7 +259,7 @@ export default {
         alert("삭제할 대상을 선택하세요.");
         return;
       }
-      let con = confirm("선택한 기관/회사 " + this.selected_item.length + "건을 삭제하시겠습니까?");
+      let con = confirm("선택한 거래처 " + this.selected_item.length + "건을 삭제하시겠습니까?");
       if ( !con ) return;
 
       let error_cnt = 0;

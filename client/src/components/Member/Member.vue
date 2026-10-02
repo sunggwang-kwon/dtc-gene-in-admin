@@ -180,7 +180,7 @@ export default {
       {key:'lims_id', text:'아이디', align:'center'},
       {key:'user_name', text:'사용자명', align:'center'},
       {key:'email', text:'이메일', align:'center'},
-      {key:'company_name', text:'소속기관/회사', align:'center'},
+      {key:'company_name', text:'거래처', align:'center'},
       {key:'level_name', text:'관리자구분', align:'center', width:'10%'},
       {key:'last_access_time', text:'마지막접속시간', align:'center', width: '14%'},
       {key:'create_time', text:'등록일자', align:'center', width:'9%'},

@@ -80,20 +80,10 @@
                 <v-text-field v-model="email" :readonly="transaction=='view'" type="email" dense outlined :placeholder="transaction=='view'?'':'abc@def.com'" :rules="[email_rule]"></v-text-field>
               </v-col>
             </v-row>
-            <!-- 조직 -->
+            <!-- 거래처 -->
             <v-row align="start" no-gutters>
               <v-col cols="12" lg="1" style="min-width:135px;">
-                <div class="pt-1">조직<span v-if="transaction!='view'" style="color:red">(*)</span></div>
-              </v-col>
-              <v-col cols="12" lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="org_name" dense outlined readonly></v-text-field>
-                <v-select v-else v-model="org_code" dense outlined :items="org_list" item-text="value" item-value="code" :rules="[required]"></v-select>
-              </v-col>
-            </v-row>
-            <!-- 소속기관/회사 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" lg="1" style="min-width:135px;">
-                <div class="pt-1">소속기관/회사<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+                <div class="pt-1">거래처<span v-if="transaction!='view'" style="color:red">(*)</span></div>
               </v-col>
               <v-col cols="12" lg="4" xl="3">
                 <v-text-field v-if="transaction=='view'" :value="company_name" dense outlined readonly></v-text-field>
@@ -108,7 +98,7 @@
                   <div class="pt-1">메뉴접근권한<span v-if="transaction!='view'" style="color:red">(*)</span></div>
                 </v-col>
                 <v-col v-for="menu_item in menu_list" :key="menu_item.code" cols="12" lg="auto" class="pr-5">
-                  <v-checkbox v-model="checked_menu" class="pa-0 pt-1 ma-0" :disabled="transaction=='view'" dense hide-details :label="menu_item.value" :value="menu_item.code"></v-checkbox>
+                  <v-checkbox v-model="checked_menu" class="compact-checkbox pa-0 pt-1 ma-0" :disabled="transaction=='view'" dense hide-details :label="menu_item.value" :value="menu_item.code"></v-checkbox>
                 </v-col>
               </v-row>
               <!-- 메뉴별 권한(관리자, 일반사용자) -->
@@ -117,9 +107,9 @@
                   {{ get_menu_value(menu_item) }} 권한 <span v-if="transaction!='view'" style="color:red">(*)</span>
                 </v-col>
                 <v-col cols="12" lg="4" xl="3">
-                  <v-radio-group v-model="authority[menu_item]" class="radio-class pa-0 ma-0" :column="false" :disabled="transaction=='view'" hide-details>
-                    <v-radio value="N" label="읽기" dense small hide-details class="pa-0 ma-0 pr-5"></v-radio>
-                    <v-radio value="A" label="읽기/쓰기" dense small hide-details class="pa-0 ma-0"></v-radio>
+                  <v-radio-group v-model="authority[menu_item]" class="radio-class compact-radio pa-0 ma-0" :column="false" :disabled="transaction=='view'" hide-details>
+                    <v-radio value="N" label="읽기" dense small hide-details class="compact-radio pa-0 ma-0 pr-5"></v-radio>
+                    <v-radio value="A" label="읽기/쓰기" dense small hide-details class="compact-radio pa-0 ma-0"></v-radio>
                   </v-radio-group>
                 </v-col>
               </v-row>
@@ -174,9 +164,6 @@ export default {
     email: null,
     level: 'N',
     level_name: null,
-    org_code: 'D001',
-    org_name: null,
-    org_list:[],
     lang_code: 'kor',
     menu_list:[],
     company_code: null,
@@ -289,7 +276,6 @@ export default {
         password2: this.password2,
         email: this.email,
         level: this.level,
-        org_code: this.org_code,
         company_no: this.company_code,
         lang_cd: this.lang_code,
         auth: JSON.stringify(auth)
@@ -325,17 +311,13 @@ export default {
         this.email = res.data.info.email;
         this.level = res.data.info.level;
         this.level_name = res.data.info.level_name;
-        this.org_code = res.data.info.org_code;
-        this.org_name = res.data.info.org_name;
         this.company_code = res.data.info.company_no != "0" ? res.data.info.company_no : null;
         this.company_name = this.company_list.find(element=>element.seq == this.company_code)?.company_name ?? null;
         if ( res.data.info.auth && (res.data.info.auth.length > 0) ){
           this.checked_menu = [];
           res.data.info.auth.forEach(element=>{
-            if ( element.menu_code !== 'M006' ){
-              this.checked_menu.push(element.menu_code);
-              this.authority[element.menu_code] = element.auth;
-            }
+            this.checked_menu.push(element.menu_code);
+            this.authority[element.menu_code] = element.auth;
           })
         }
         // level_name 다국어 변환
@@ -352,13 +334,9 @@ export default {
       let res = await this.get(this.$rootUrl+'/server/common/get_code_list.php');
       this.$store.commit('load', false);
       if ( res ){
-        this.org_list = [];
         this.menu_list = [];
         res.data.info.forEach(element=>{
-          if ( element.group_code == 'G0001'){
-            this.org_list.push(element);
-          }
-          else if ( element.group_code == 'G0002' && element.code !== 'M006' ){
+          if ( element.group_code == 'G0001' || element.code.startsWith('M') ){
             this.menu_list.push(element);
             this.authority[element.code] = 'N';
           }

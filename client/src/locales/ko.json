@@ -10,11 +10,13 @@
     "autoLogout": "일정시간 서비스 미사용으로 자동 로그아웃 되었습니다.",
     "menu": {
       "member": "사용자관리",
-      "company": "기관/회사관리",
+      "company": "거래처관리",
       "gene": "유전자관리",
       "type": "검사종류",
       "manage": "검사자관리",
-      "result": "검사결과"
+      "result": "검사결과",
+      "ultraseek": "UltraSEEK 검사",
+      "pgx": "PGx 검사"
     }
   },
   "login": {

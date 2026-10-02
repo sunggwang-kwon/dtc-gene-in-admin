@@ -32,12 +32,28 @@
             <v-list-item-title>{{ $t('app.menu.member') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M007')" to="/company" @click="click_menu('company')" link>
+        <v-list-item v-if="get_menu_authority('M002')" to="/company" @click="click_menu('company')" link>
           <v-list-item-icon>
             <v-icon color="primary">mdi-domain</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.company') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="get_menu_authority('M003')" to="/type" @click="click_menu('type')" link>
+          <v-list-item-icon>
+            <v-icon color="primary">mdi-flask</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('app.menu.type') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="get_menu_authority('M004')" to="/manage" @click="click_menu('manage')" link>
+          <v-list-item-icon>
+            <v-icon color="primary">mdi-human-male-height</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('app.menu.manage') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="get_menu_authority('M005')" prepend-icon="mdi-dna" to="/gene" @click="click_menu('gene')" link>
@@ -48,28 +64,28 @@
             <v-list-item-title>{{ $t('app.menu.gene') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M002')" to="/type" @click="click_menu('type')" link>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-flask</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.menu.type') }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="get_menu_authority('M003')" to="/manage" @click="click_menu('manage')" link>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-human-male-height</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.menu.manage') }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="get_menu_authority('M004')" to="/result" @click="click_menu('result')" link>
+        <v-list-item v-if="get_menu_authority('M006')" to="/result" @click="click_menu('result')" link>
           <v-list-item-icon>
             <v-icon color="primary">mdi-text-box</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.result') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="get_menu_authority('M007')" to="/ultraseek" @click="click_menu('ultraseek')" link>
+          <v-list-item-icon>
+            <v-icon color="primary">mdi-test-tube</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('app.menu.ultraseek') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="get_menu_authority('M008')" to="/pgx" @click="click_menu('pgx')" link>
+          <v-list-item-icon>
+            <v-icon color="primary">mdi-pill</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('app.menu.pgx') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

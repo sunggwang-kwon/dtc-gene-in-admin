@@ -60,16 +60,25 @@ export default {
         this.$router.replace({name:'Member'});
       }
       else if ( this.get_menu_authority('M002') ){
-        this.$router.replace({name:'Type'});
+        this.$router.replace({name:'Company'});
       }
       else if ( this.get_menu_authority('M003') ){
-        this.$router.replace({name:'Manage'});
+        this.$router.replace({name:'Type'});
       }
       else if ( this.get_menu_authority('M004') ){
-        this.$router.replace({name:'Result'});
+        this.$router.replace({name:'Manage'});
       }
       else if ( this.get_menu_authority('M005') ){
         this.$router.replace({name:'Gene'});
+      }
+      else if ( this.get_menu_authority('M006') ){
+        this.$router.replace({name:'Result'});
+      }
+      else if ( this.get_menu_authority('M007') ){
+        this.$router.replace({name:'UltraSeek'});
+      }
+      else if ( this.get_menu_authority('M008') ){
+        this.$router.replace({name:'Pgx'});
       }
     }
   },
@@ -111,16 +120,25 @@ export default {
           this.$router.replace({name:'Member'});
         }
         else if ( this.get_menu_authority('M002') ){
-          this.$router.replace({name:'Type'});
+          this.$router.replace({name:'Company'});
         }
         else if ( this.get_menu_authority('M003') ){
-          this.$router.replace({name:'Manage'});
+          this.$router.replace({name:'Type'});
         }
         else if ( this.get_menu_authority('M004') ){
-          this.$router.replace({name:'Result'});
+          this.$router.replace({name:'Manage'});
         }
         else if ( this.get_menu_authority('M005') ){
           this.$router.replace({name:'Gene'});
+        }
+        else if ( this.get_menu_authority('M006') ){
+          this.$router.replace({name:'Result'});
+        }
+        else if ( this.get_menu_authority('M007') ){
+          this.$router.replace({name:'UltraSeek'});
+        }
+        else if ( this.get_menu_authority('M008') ){
+          this.$router.replace({name:'Pgx'});
         }
       }
     }

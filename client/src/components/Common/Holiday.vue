@@ -26,7 +26,7 @@
           <v-row align="center">
             <v-spacer></v-spacer>
             <v-col cols="auto" class="pr-0">
-              소속기관/회사
+              거래처
             </v-col>
             <v-col cols="7">
               <v-select v-model="company_seq" @input="get_holiday_list()" :items="company_list" item-text="company_name" item-value="seq" hide-details dense outlined></v-select>
@@ -38,7 +38,7 @@
                 <thead>
                   <tr>
                     <th style="width:5px"></th>
-                    <th style="text-align:center;">기관/회사</th>
+                    <th style="text-align:center;">거래처</th>
                     <th style="text-align:center;">일자</th>
                     <th style="text-align:center;">휴일명</th>
                     <th style="text-align:center;">등록일</th>

@@ -76,10 +76,10 @@
                 <div style="font-size:10pt;">SNP값을 추가/수정합니다. <span style="font-size:10pt;color:red;"> (SNP값은 중복 불가)</span></div>
               </v-col>
               <v-spacer></v-spacer>
-              <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pb-4 pr-0">
+              <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pb-4 pr-0">
                 <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행추가</v-btn>
               </v-col>
-              <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pb-4">
+              <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pb-4">
                 <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행삭제</v-btn>
               </v-col>
             </v-row>
@@ -95,7 +95,7 @@
                 <div style="font-size:10pt;color:red;"> (SNP값은 중복 불가)</div>
               </v-col>
             </v-row>
-            <v-row v-if="get_menu_authority('M002')=='A'" align="center" justify="end">
+            <v-row v-if="get_menu_authority('M003')=='A'" align="center" justify="end">
               <v-col cols="auto" class="pt-1 pr-0 pb-4">
                 <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행추가</v-btn>
               </v-col>
@@ -189,12 +189,12 @@
       <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
         <v-row v-if="transaction=='insert'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M002')=='A'" @click="set_check" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M003')=='A'" @click="set_check" small dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='view'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M002')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+            <v-btn v-if="get_menu_authority('M003')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
@@ -202,7 +202,7 @@
             <v-btn @click="update_cancel" color="grey" small dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M002')=='A'" @click="set_check" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M003')=='A'" @click="set_check" small dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>
@@ -288,7 +288,7 @@ export default {
     }
   },
   created:function(){
-    if ( !this.get_menu_authority('M002') ){
+    if ( !this.get_menu_authority('M003') ){
       alert("해당 메뉴 접근 권한이 없습니다.")
       this.$router.go(-1);
     }

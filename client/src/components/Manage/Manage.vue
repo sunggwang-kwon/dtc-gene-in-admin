@@ -38,22 +38,22 @@
             </v-col>
           </v-row>
           <v-row class="mx-1" align="center" justify="end">
-            <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
               <v-btn @click="open_holiday" small dark :elevation="0">영업일관리</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
               <v-btn @click="excel_upload" small dark :elevation="0">검사자업로드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
               <v-btn @click="excel_download" small dark :elevation="0">다운로드</v-btn>
             </v-col>
             <v-col cols="auto" class="pr-0">
               <v-btn @click="get_barcode" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item>0" small dark :elevation="0">바코드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
               <v-btn @click="$router.push({name:'DetailManage', query:{transaction:'insert'}})" small dark :elevation="0">추가</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
               <v-btn @click="set_patient" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item>0" dark small :elevation="0">삭제</v-btn>
             </v-col>
             <v-col cols="auto">
@@ -160,22 +160,22 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-if="get_menu_authority('M003')=='A'" @click="open_holiday" style="border-top:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="open_holiday" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>영업일관리</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M003')=='A'" @click="excel_upload" style="border-top:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="excel_upload" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>검사자업로드</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M003')=='A'" @click="excel_download" style="border-top:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="excel_download" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>다운로드</v-list-item-subtitle>
           </v-list-item>
           <v-list-item @click="get_barcode" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>바코드</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M003')=='A'" @click="$router.push({name:'DetailManage', query:{transaction:'insert'}})" style="border-top:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="$router.push({name:'DetailManage', query:{transaction:'insert'}})" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>추가</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M003')=='A'" @click="set_patient" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="set_patient" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>삭제</v-list-item-subtitle>
           </v-list-item>
         </v-list>
@@ -270,7 +270,7 @@ export default {
     }
   },
   created:function(){
-    if ( !this.get_menu_authority('M003') ){
+    if ( !this.get_menu_authority('M004') ){
       alert("해당 메뉴 접근 권한이 없습니다.")
       this.$router.go(-1);
     }

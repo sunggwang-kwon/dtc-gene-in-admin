@@ -11,8 +11,8 @@
             <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
-            <h3 v-if="transaction=='insert'">기관/회사 추가</h3>
-            <h3 v-else>기관/회사 정보</h3>
+            <h3 v-if="transaction=='insert'">거래처 추가</h3>
+            <h3 v-else>거래처 정보</h3>
           </v-col>
         </v-row>
       </div>
@@ -89,7 +89,7 @@
         </v-row>
         <v-row v-else-if="transaction=='view'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M007')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+            <v-btn v-if="get_menu_authority('M002')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
@@ -97,7 +97,7 @@
             <v-btn @click="get_company().then(()=>{transaction='view'})" color="grey" small dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M007')=='A'" @click="set_company" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M002')=='A'" @click="set_company" small dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>
@@ -130,7 +130,7 @@ export default {
     }
   },
   created:async function(){
-    if ( !this.get_menu_authority('M007') ){
+    if ( !this.get_menu_authority('M002') ){
       alert("해당 메뉴 접근 권한이 없습니다.");
       this.$router.go(-1);
       return;
