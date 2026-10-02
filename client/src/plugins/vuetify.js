@@ -10,23 +10,24 @@ export default new Vuetify({
     },
     themes: {
       light: {
-        // --- Primary ---
-        primary:   '#336BD6',  // --color-primary
-        secondary: '#555555',  // --color-text-secondary
-        accent:    '#336BD6',
+        // --- Primary (지니인사이트 브랜드 컬러) ---
+        primary:    '#1554a2',  // 지니인사이트 심볼 로열 블루
+        secondary:  '#555555',  // --color-text-secondary
+        accent:     '#21b4e9',  // 지니인사이트 심볼 포인트 시안
+        search_btn: '#1554a2',  // 조회 버튼
 
         // --- Semantic ---
         error:   '#ef4444',
         success: '#22c55e',
         warning: '#f59e0b',
-        info:    '#336BD6',
+        info:    '#1554a2',
 
         // --- Surface ---
         background: '#ffffff',
         surface:    '#ffffff',
 
-        // --- Custom (Vuetify 2 treats unknown keys as CSS variables) ---
-        anchor: '#336BD6',  // <a> 태그 기본 색상
+        // --- Custom ---
+        anchor: '#1554a2',  // <a> 태그 기본 색상
       },
     },
   },

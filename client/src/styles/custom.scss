@@ -16,12 +16,13 @@
 // ========================================
 // Use these in your own components alongside Vuetify
 :root {
-  // Colors
-  --color-primary: #336BD6;
-  --color-primary-hover: #2B5DB8;
-  --color-primary-dark: #254EA0;
-  --color-primary-light: #D6E4F9;
-  --color-primary-lighter: #EDF3FC;
+  // Colors (지니인사이트 브랜드 팔레트)
+  --color-primary: #1554a2;
+  --color-primary-hover: #104484;
+  --color-primary-dark: #0d376c;
+  --color-primary-light: #dbe8f8;
+  --color-primary-lighter: #eef4fc;
+  --color-accent: #21b4e9;
 
   --color-text-primary: #222222;
   --color-text-secondary: #555555;
@@ -82,8 +83,16 @@ a {
 // APP BAR (Header)
 // ========================================
 .v-app-bar {
-  border-bottom: 1px solid var(--color-border) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
   box-shadow: none !important;
+
+  // Primary colored dark app bar (지니인사이트 브랜드 블루)
+  &.theme--dark,
+  &.primary {
+    background-color: var(--color-primary) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+  }
 }
 
 
@@ -95,6 +104,28 @@ a {
   font-weight: 500 !important;
   letter-spacing: normal !important;
   border-radius: var(--radius-md, 6px) !important;
+
+  // Solid dark buttons (기존 검정 #272727 대신 지니인사이트 브랜드 Primary 컬러로 통일)
+  &.theme--dark:not(.v-btn--outlined):not(.v-btn--text):not(.v-btn--icon) {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #ffffff !important;
+
+    &:hover {
+      background-color: var(--color-primary-hover) !important;
+      border-color: var(--color-primary-hover) !important;
+    }
+  }
+
+  // 회색 취소/보조 버튼 등 특수 색상은 고유 색상 유지
+  &.theme--dark.grey {
+    background-color: #9e9e9e !important;
+    border-color: #9e9e9e !important;
+  }
+  &.theme--dark.error {
+    background-color: #ef4444 !important;
+    border-color: #ef4444 !important;
+  }
 
   &.v-btn--outlined {
     border-color: var(--color-border-dark);
@@ -143,9 +174,15 @@ a {
   }
 
   .v-card__text {
+    padding: 24px;
     font-size: 0.8125rem;
     color: var(--color-text-secondary);
     line-height: 1.65;
+  }
+
+  // When card has header/title, prevent excessive top padding
+  .v-card__title + .v-card__text {
+    padding-top: 12px;
   }
 
   .v-card__actions {
@@ -153,6 +190,18 @@ a {
     padding: 12px 20px;
   }
 }
+
+// Detail view form cards in #content (DetailMember, DetailCompany, etc.)
+#content > .v-card {
+  > .v-card__text {
+    padding: 32px 28px !important;
+
+    @media (max-width: 600px) {
+      padding: 20px 16px !important;
+    }
+  }
+}
+
 
 
 // ========================================
@@ -265,7 +314,7 @@ a {
   &.v-input--is-focused fieldset {
     border-color: var(--color-primary) !important;
     border-width: 1px !important;
-    box-shadow: 0 0 0 3px rgba(51, 107, 214, 0.12);
+    box-shadow: 0 0 0 3px rgba(21, 84, 162, 0.12);
   }
 
   .v-label {
