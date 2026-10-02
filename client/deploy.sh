@@ -92,9 +92,9 @@ fi
 echo -e "\n${BLUE}⏳ 원격 서버에 연결하여 파일 변경 사항을 비교 중...${RESET}"
 
 # 4. Run lftp mirror upload (Smart Sync: skip identical files, upload new/changed only)
-MIRROR_FLAGS="-R --verbose --ignore-time"
+MIRROR_FLAGS="-R --verbose --ignore-time --exclude=tinymce/"
 if [ "$DRY_RUN" = true ]; then
-  MIRROR_FLAGS="-R --verbose --dry-run --ignore-time"
+  MIRROR_FLAGS="-R --verbose --dry-run --ignore-time --exclude=tinymce/"
 fi
 
 LFTP_COMMANDS="

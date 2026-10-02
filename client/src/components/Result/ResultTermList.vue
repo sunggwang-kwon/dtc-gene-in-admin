@@ -211,31 +211,26 @@ export default {
       let path = '/v5';
       let template_version = null;
 
-      if ( this.$i18n.locale === 'en' ) {
-        path = '/eng/v1';
-        template_version = 7;
-      } else {
-        const res = await this.get(this.$rootUrl + '/server/result/get_template_list.php');
-        if ( res && res.data && res.data.info ) {
-          // KST(한국 표준시) 기준 오늘 날짜 (YYYY-MM-DD)
-          const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
-          const latest = res.data.info
-            .filter(t => t.start_date <= today)
-            .sort((a, b) => b.start_date.localeCompare(a.start_date))[0];
+      const res = await this.get(this.$rootUrl + '/server/result/get_template_list.php');
+      if ( res && res.data && res.data.info ) {
+        // KST(한국 표준시) 기준 오늘 날짜 (YYYY-MM-DD)
+        const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
+        const latest = res.data.info
+          .filter(t => t.start_date <= today)
+          .sort((a, b) => b.start_date.localeCompare(a.start_date))[0];
 
-          if ( latest ) {
-            template_version = latest.seq;
+        if ( latest ) {
+          template_version = latest.seq;
 
-            // 향후 v7, v8 추가 시 여기에 else if 추가
-            if ( latest.seq * 1 == 9 ) {        // version 6
-              path = '/v6';
-            }
-            // else if ( latest.seq * 1 == 10 ) { // version 7
-            //   path = '/v7';
-            // }
-            else {                              // version 5 및 기타
-              path = '/v5';
-            }
+          // 향후 v7, v8 추가 시 여기에 else if 추가
+          if ( latest.seq * 1 == 9 ) {        // version 6
+            path = '/v6';
+          }
+          // else if ( latest.seq * 1 == 10 ) { // version 7
+          //   path = '/v7';
+          // }
+          else {                              // version 5 및 기타
+            path = '/v5';
           }
         }
       }
@@ -249,7 +244,7 @@ export default {
         expire: new Date().getTime() + 1800000  //expire time : now() + 30min
       };
       let query_string = "?data=" + btoa(JSON.stringify(data));
-      const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:8081' : 'https://hlgenecheck.com';
+      const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:8081' : 'http://218.153.133.118';
       window.open(baseUrl + path + query_string, '', '');
     }
   },

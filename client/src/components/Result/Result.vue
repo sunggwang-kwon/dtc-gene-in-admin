@@ -432,19 +432,19 @@ export default {
       };
       let query_string = "?data=" + btoa(JSON.stringify(data));
       if ( this.selected_template*1 < 4 ){
-        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/viewer"+query_string:"https://hlgenecheck.com/viewer"+query_string, "", "");
+        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/viewer"+query_string:"http://218.153.133.118/viewer"+query_string, "", "");
       }
       else if ( this.selected_template*1 == 4 ){  //version 4
-        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/v4"+query_string:"https://hlgenecheck.com/v4"+query_string, "", "");
+        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/v4"+query_string:"http://218.153.133.118/v4"+query_string, "", "");
       }
       else if ( this.selected_template*1 == 6 || this.selected_template*1 == 8 ){  //version 5 or 4-1
-        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/v5"+query_string:"https://hlgenecheck.com/v5"+query_string, "", "");
+        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/v5"+query_string:"http://218.153.133.118/v5"+query_string, "", "");
       }
       else if ( this.selected_template*1 == 9 ){  //version 6
-        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081"+query_string:"https://hlgenecheck.com/v6"+query_string, "", "");
+        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081"+query_string:"http://218.153.133.118/v6"+query_string, "", "");
       }
       else if ( this.selected_template*1 == 7 ){  //영문 version 1
-        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/eng/v1"+query_string:"https://hlgenecheck.com/eng/v1"+query_string, "", "");
+        window.open(process.env.NODE_ENV==='development'?"http://localhost:8081/eng/v1"+query_string:"http://218.153.133.118/eng/v1"+query_string, "", "");
       }
     },
     get_request_date_combo:async function(){
