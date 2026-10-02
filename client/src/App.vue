@@ -207,7 +207,6 @@ export default {
 </script>
 
 <style>
-@import '@/assets/layout.css';
 @import '@/assets/content.css';
 </style>
 
