@@ -99,7 +99,7 @@
             </v-row>
             <!-- 소속기관/회사 -->
             <v-row align="start" no-gutters>
-              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
+              <v-col cols="12" lg="1" style="min-width:135px;">
                 <div class="pt-1">소속기관/회사<span v-if="transaction!='view'" style="color:red">(*)</span></div>
               </v-col>
               <v-col cols="12" lg="4" xl="3">
@@ -109,7 +109,7 @@
             </v-row>
             <!-- 개인정보 수집 이용 동의 여부 -->
             <v-row align="start" no-gutters>
-              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:350px;'">
+              <v-col cols="12" lg="1" style="min-width:350px;">
                 <div class="pt-1">개인정보 수집·이용 동의 여부</div>
               </v-col>
               <v-col lg="4" xl="3">
@@ -118,8 +118,8 @@
               </v-col>
             </v-row>
             <!-- 2차 서비스 안내를 위한 개인정보 수집 이용 동의 여부 동의 여부 -->
-            <v-row align="start" v-show="$i18n.locale !== 'en'" no-gutters>
-              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" style="min-width:350px;">
+            <v-row align="start" no-gutters>
+              <v-col cols="12" lg="1" style="min-width:350px;">
                 <div class="pt-1">2차 서비스 안내를 위한 개인정보 수집·이용 동의 여부</div>
               </v-col>
               <v-col lg="4" xl="3">
@@ -129,7 +129,7 @@
             </v-row>
             <!-- 변경사유 -->
             <v-row v-if="transaction=='update'" align="start" no-gutters>
-              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
+              <v-col cols="12" lg="1" style="min-width:135px;">
                 <div class="pt-1">변경사유<span style="color:red">(*)</span></div>
               </v-col>
               <v-col>
@@ -343,12 +343,10 @@ export default {
       }
     },
     parsing_request_path: function(){
-      if ( this.request_path.length > 0 
-      && this.request_path_list.length > 0 ){
-        for ( let i = 0 ; i < this.request_path_list.length ; i++ ){
-          if ( this.request_path_list[i].code == this.request_path ){
-            return this.request_path_list[i].value;
-          }
+      if ( !this.request_path || !this.request_path_list || this.request_path_list.length === 0 ) return null;
+      for ( let i = 0 ; i < this.request_path_list.length ; i++ ){
+        if ( this.request_path_list[i].code == this.request_path ){
+          return this.request_path_list[i].value;
         }
       }
       return null;

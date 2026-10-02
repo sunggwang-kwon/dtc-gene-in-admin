@@ -21,7 +21,7 @@ export default {
             const script = document.createElement("script");
             //public쪽으로 바로 접근하려면
             ///tinymce/tinymce.min.js로 하면 되는데..
-            script.src = (process.env.NODE_ENV==='development') ? "https://hlgenecheck.com/tinymce/tinymce.min.js" : "/lookup/tinymce/tinymce.min.js"; // CDN이 아닌 로컬 파일 로드
+            script.src = (process.env.NODE_ENV==='development') ? "http://lims.geneinsight.com/tinymce/tinymce.min.js" : "/lookup/tinymce/tinymce.min.js"; // CDN이 아닌 로컬 파일 로드
             script.onload = this.initTinyMCE;
             document.head.appendChild(script);
         } else {
@@ -126,7 +126,7 @@ export default {
                 options.language = 'en';
             } else {
                 options.language = 'ko';
-                options.language_url = (process.env.NODE_ENV==='development') ? 'https://hlgenecheck.com/tinymce/langs/custom-ko.js' : '/lookup/tinymce/langs/custom-ko.js';
+                options.language_url = (process.env.NODE_ENV==='development') ? 'http://lims.geneinsight.com/tinymce/langs/custom-ko.js' : '/lookup/tinymce/langs/custom-ko.js';
             }
 
             window.tinymce.init(options);

@@ -95,7 +95,7 @@
                       <v-row>
                         <v-col class="pt-0">
                           <div>휴일명 <span style="color:red;">(*)</span></div>
-                          <v-text-field v-model="set_holiday_name" dense outlined aceholder="휴일명" :rules="[required]"></v-text-field>
+                          <v-text-field v-model="set_holiday_name" dense outlined placeholder="휴일명" :rules="[required]"></v-text-field>
                         </v-col>
                       </v-row>
                     </v-form>
