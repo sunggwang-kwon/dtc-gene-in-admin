@@ -129,7 +129,7 @@ export default {
     }
   },
   created:function(){
-    if ( !this.get_menu_authority('M004') || this.get_menu_authority('M004')!='A' ){
+    if ( !this.get_menu_authority('M006') || this.get_menu_authority('M006')!='A' ){
       alert("해당 메뉴 접근 권한이 없습니다.")
       this.$router.go(-1);
     }

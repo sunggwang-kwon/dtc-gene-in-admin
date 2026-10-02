@@ -15,6 +15,8 @@ import Gene from '@/components/Gene/Gene'
 import DetailGene from '@/components/Gene/DetailGene'
 import Company from '@/components/Company/Company'
 import DetailCompany from '@/components/Company/DetailCompany'
+import UltraSeek from '@/components/UltraSeek/UltraSeek'
+import Pgx from '@/components/Pgx/Pgx'
 Vue.use(VueRouter)
 
 const routes = [
@@ -82,6 +84,16 @@ const routes = [
     path: '/company/detail',
     name: 'DetailCompany',
     component: DetailCompany
+  },
+  {
+    path: '/ultraseek',
+    name: 'UltraSeek',
+    component: UltraSeek
+  },
+  {
+    path: '/pgx',
+    name: 'Pgx',
+    component: Pgx
   },
   {
     path: '*',

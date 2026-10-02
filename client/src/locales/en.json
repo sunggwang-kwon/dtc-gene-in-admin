@@ -14,7 +14,9 @@
       "gene": "Gene Management",
       "type": "Test Types",
       "manage": "Subject Management",
-      "result": "Analysis Results"
+      "result": "Analysis Results",
+      "ultraseek": "UltraSEEK Test",
+      "pgx": "PGx Test"
     }
   },
   "login": {
@@ -70,6 +72,10 @@
     "유전자관리": "Gene Management",
     "유전자 추가": "Add Gene",
     "유전자 정보": "Gene Details",
+    "거래처관리": "Client Management",
+    "거래처": "Client",
+    "거래처 추가": "Add Client",
+    "거래처 정보": "Client Details",
     "기관/회사관리": "Company",
     "기관/회사": "Institution",
     "기관/회사 추가": "Add Company",
@@ -125,6 +131,7 @@
     "이메일": "Email",
     "조직": "Team",
     "소속기관/회사": "Company",
+    "거래처": "Client",
     "사용언어": "Language",
     "메뉴접근권한": "Menu Access Permission",
     "권한": "Permission",

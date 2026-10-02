@@ -22,10 +22,10 @@
         </v-row>
         <v-row v-if="is_show_search" class="mx-1" align="end">
           <v-spacer></v-spacer>
-          <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
+          <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
             <v-btn @click="$router.push({name:'DetailType', query:{transaction:'insert'}})" small dark :elevation="0">추가</v-btn>
           </v-col>
-          <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
+          <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
             <v-btn @click="set_check" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item.length>0" dark small :elevation="0">삭제</v-btn>
           </v-col>
           <v-col cols="auto">
@@ -101,7 +101,7 @@
       </v-row>
     </div>
     <div :style="'position:fixed; bottom:' + ($vuetify.application.bottom) + 'px;right:10%;'">
-      <v-menu v-if="get_menu_authority('M002')=='A'" offset-y :close-on-content-click="false">
+      <v-menu v-if="get_menu_authority('M003')=='A'" offset-y :close-on-content-click="false">
         <template v-slot:activator="{on, attrs}">
           <v-btn v-bind="attrs" v-on="on" icon :elevation="0">
             <v-icon size="50">mdi-plus-circle</v-icon>
@@ -172,7 +172,7 @@ export default {
     }
   },
   created:function(){
-    if ( !this.get_menu_authority('M002') ){
+    if ( !this.get_menu_authority('M003') ){
       alert("해당 메뉴 접근 권한이 없습니다.")
       this.$router.go(-1);
     }
