@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
+import '@/styles/custom.scss'
 import i18n, { translateDynamicText } from './i18n'
 import { initDomTranslator } from './i18n/domTranslator'
 
