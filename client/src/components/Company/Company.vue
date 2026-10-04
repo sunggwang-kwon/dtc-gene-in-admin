@@ -14,7 +14,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -23,23 +23,23 @@
         <div v-if="is_show_search">
           <v-row class="mx-1" align="end">
             <v-col cols="3">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">회사명/담당자</div>
+              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">거래처명/담당자</div>
               <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
             </v-col>
             <v-spacer></v-spacer>
             <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
-              <v-btn @click="$router.push({name:'DetailCompany', query:{transaction:'insert'}})" small dark :elevation="0">추가</v-btn>
+              <v-btn @click="$router.push({name:'DetailCompany', query:{transaction:'insert'}})" dark :elevation="0">추가</v-btn>
             </v-col>
             <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
-              <v-btn @click="set_company" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item.length>0" dark small :elevation="0">삭제</v-btn>
+              <v-btn @click="selected_item.length > 0 ? set_company() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
             </v-col>
             <v-col cols="auto">
-              <v-btn @click="page=1;get_company_list();" dark color="search_btn" small :elevation="0">조회</v-btn>
+              <v-btn @click="page=1;get_company_list();" dark color="search_btn" :elevation="0">조회</v-btn>
             </v-col>
           </v-row>
         </div>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -50,6 +50,10 @@
       <v-row class="mx-1" align="center">
         <v-col cols="auto" class="pb-1">
           &nbsp;&nbsp;{{ $t('phrases.목록') }} ({{ item_cnt }})
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col cols="auto" class="pb-1">
+          <rows-select v-model="rows" @change="change_rows"></rows-select>
         </v-col>
       </v-row>
       <v-row class="mx-1" align="center">
@@ -84,7 +88,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -92,15 +96,15 @@
         </v-row>
         <v-row v-if="is_show_search" class="mx-1" align="center">
           <v-col cols="12">
-            <div style="font-size:11pt; color:rgba(0,0,0,0.5)">회사명/담당자</div>
+            <div style="font-size:11pt; color:rgba(0,0,0,0.5)">거래처명/담당자</div>
             <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
           </v-col>
           <v-col cols="12">
-            <v-btn @click="page=1;get_company_list()" dark color="search_btn" small block :elevation="0">조회</v-btn>
+            <v-btn @click="page=1;get_company_list()" dark color="search_btn" block :elevation="0">조회</v-btn>
           </v-col>
         </v-row>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -130,8 +134,8 @@
           <v-list-item @click="$router.push({name:'DetailCompany', query:{transaction:'insert'}})" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>추가</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item @click="set_company" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>삭제</v-list-item-subtitle>
+          <v-list-item @click="selected_item.length > 0 ? set_company() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -154,6 +158,7 @@ import authority from '@/mixin/authority'
 import datatable from '@/components/Common/DataTable'
 import pagination from '@/components/Common/Pagination'
 import mpagination from '@/components/Common/MPagination'
+import rowsselect from '@/components/Common/RowsSelect'
 export default {
   name: 'company-vue',
   mixins: [http, authority],
@@ -161,6 +166,7 @@ export default {
     'data-table': datatable,
     'pagination': pagination,
     'm-pagination': mpagination,
+    'rows-select': rowsselect,
   },
   data: () => ({
     is_open: false,
@@ -169,7 +175,7 @@ export default {
     changed: false,
 
     page: 1,
-    rows: 30,
+    rows: 20,
     sort: null,
     order: null,
     search_value: null,
@@ -178,7 +184,7 @@ export default {
     item_cnt: 0,
     headers: [
       {key:'no', text:'번호', align:'center', width:'80px'},
-      {key:'company_name', text:'회사명', align:'center'},
+      {key:'company_name', text:'거래처명', align:'center'},
       {key:'contact', text:'담당자', align:'center'},
       {key:'email', text:'이메일', align:'center'},
       {key:'phone', text:'연락처', align:'center'},
@@ -201,11 +207,12 @@ export default {
       let bef_company = this.$store.getters.company;
       if( bef_company != null ){
         this.page = bef_company.page;
-        this.rows = bef_company.rows;
         this.sort = bef_company.sort;
         this.order = bef_company.order;
         this.search_value = bef_company.search_value;
       }
+      this.$store.commit('load_rows', this.$session.get('Userid'));
+      this.rows = this.$store.getters.rows;
       this.get_company_list().then(res=>{
         this.is_open = res;
       });
@@ -253,6 +260,10 @@ export default {
       this.page = page;
       this.get_company_list();
       window.scrollTo({top:0, behavior: 'smooth'});
+    },
+    change_rows:function(){
+      this.page = 1;
+      this.get_company_list();
     },
     set_company: async function(){
       if ( this.selected_item.length == 0 ) {

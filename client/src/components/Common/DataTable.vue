@@ -19,10 +19,10 @@
               zIndex: top? '1' : '',
             }"
           >
-            <v-btn @click="set_sort(header.key)" :class="sort==header.key?'pa-0 ma-0':'py-0 px-2 ma-0'" small text :ripple="false" plain>
+            <v-btn @click="set_sort(header.key)" :class="sort==header.key?'pa-0 ma-0':'py-0 px-2 ma-0'" text :ripple="false" plain>
               <span style="font-weight:bold;">{{ header.text }}</span>
-              <v-icon v-if="sort==header.key&&order=='asc'" small>mdi-menu-up</v-icon>
-              <v-icon v-else-if="sort==header.key&&order=='desc'" small>mdi-menu-down</v-icon>
+              <v-icon v-if="sort==header.key&&order=='asc'">mdi-menu-up</v-icon>
+              <v-icon v-else-if="sort==header.key&&order=='desc'">mdi-menu-down</v-icon>
             </v-btn>
           </th>
           <th v-if="detail!==false" :style="{
@@ -49,7 +49,7 @@
             <div v-else>{{ item[item_header.key] }}</div>
           </td>
           <td v-if="detail!==false">
-            <v-btn @click="$emit('click', item, $event)" class="pa-0 ma-0" icon small><v-icon color="rgba(0,0,0,0.3)">mdi-chevron-right</v-icon></v-btn>
+            <v-btn @click="$emit('click', item, $event)" class="pa-0 ma-0" icon><v-icon color="rgba(0,0,0,0.3)">mdi-chevron-right</v-icon></v-btn>
           </td>
         </tr>
       </tbody>

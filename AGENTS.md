@@ -65,9 +65,9 @@
 
 | 색상 토큰 | Hex 코드 | 설명 / 용도 |
 | :--- | :--- | :--- |
-| `--color-primary` | `#1554a2` | **지니인사이트 심볼 메인 딥 로열 블루** (타이틀바, 주요 액션 버튼, 액티브 탭 등) |
-| `--color-primary-hover` | `#104484` | 버튼 및 링크 호버 색상 |
-| `--color-primary-dark` | `#0d376c` | 다크 강조 색상 |
+| `--color-primary` | `#0C67DF` | **지니인사이트 메인 블루** (타이틀바, 주요 액션 버튼, 액티브 탭 등) |
+| `--color-primary-hover` | `#0a56bc` | 버튼 및 링크 호버 색상 |
+| `--color-primary-dark` | `#08479b` | 다크 강조 색상 |
 | `--color-accent` | `#21b4e9` | 로고 심볼 상단 포인트 시안 블루 |
 | `--color-primary-light` | `#dbe8f8` | 연한 배지 및 칩 배경 |
 | `--color-primary-lighter`| `#eef4fc` | 테이블 행 호버 및 활성 배경 |
@@ -91,19 +91,24 @@
    - 향후 다른 프로젝트로 컴포넌트를 이식하거나 기준 CSS 토큰을 참조할 때 사용하는 레퍼런스 원본.
 4. **`client/src/plugins/vuetify.js`**:
    - Vuetify 테마 팔레트 설정 (`customProperties: true`).
-   - `primary: '#1554a2'`, `accent: '#21b4e9'`, `search_btn: '#1554a2'`, `anchor: '#1554a2'`.
+   - `primary: '#0C67DF'`, `accent: '#21b4e9'`, `search_btn: '#0C67DF'`, `anchor: '#0C67DF'`.
 
 ---
 
 ## 4. UI/UX 레이아웃 핵심 주의사항
 
 ### 4.1. 상단 타이틀바 (`v-app-bar`)
-- **로고 제거 상태**: 데스크톱 및 모바일 상단 바(`v-app-bar`)에는 로고가 들어가지 않고, 햄버거 메뉴 토글 버튼(`v-app-bar-nav-icon`)만 깔끔하게 존재합니다.
-- 배경색: `color="primary"` (`#1554a2`) 적용.
+- **레이아웃**:
+  - **좌측**: 햄버거 메뉴 토글 버튼(`v-app-bar-nav-icon`, `color="#222222"`) 및 영문 브랜드 정적 타이틀 **`GeneInsight`** (딥 블랙 `#222222`, 클릭 링크/커서 없음).
+  - **우측**: 사용자 명(`$session.get('Username')`, 다크 `#333333`) 및 단정한 소프트 블랙 아웃라인 로그아웃 버튼(`.header-logout-btn`).
+- **배경색 및 테두리**: **`#F0F5FE` 소프트 파스텔 블루** 라이트 테마 적용 (`dark` 속성 제거, 하단 실선 테두리 제거 `border-bottom: none`, 글씨 및 아이콘을 차분한 블랙 톤으로 통일).
 
 ### 4.2. 사이드바 (`v-navigation-drawer`)
-- **사용자 아바타 영역**: 기존의 무의미했던 사용자명 첫 글자 보라색 원형 뱃지(`<v-avatar>`)는 제거되었습니다.
-- 대신 그 자리에 **지니인사이트 공식 심볼 로고**([`client/src/assets/symbol-logo.svg`](file:///home/sgkwon/git/dtc-gene-in-admin/client/src/assets/symbol-logo.svg))가 `44px` 크기로 배치되어 브랜드 정체성을 전달합니다.
+- **배경색 및 테두리**: 타이틀바와 동일한 **`#F0F5FE` 소프트 파스텔 블루**가 적용되어 상단 헤더와 좌측 네비바가 일체감 있는 라이트 룩을 형성하며, 우측 경계 실선(`border-right: none`)이 제거되어 콘텐츠 영역과 매끄럽게 연결됩니다.
+- **글씨 및 아이콘**: 비활성 메뉴 아이콘(`color="#444444"`)과 메뉴 텍스트(`#333333`)를 차분한 블랙 톤으로 정돈하여 가독성을 높였습니다.
+- **상단 사용자 정보 블록 제거**: 기존의 중복 사용자명, 이메일, 최근 접속시간, 개인정보수정, 투박한 로그아웃 버튼이 차지하던 상단 카드 영역은 모두 제거되었으며, 네비게이션 메뉴 리스트(`<v-list nav dense>`)가 최상단부터 깔끔하게 노출됩니다.
+- **선택된(활성) 메뉴 스타일**: 산뜻한 강조 배경색(**`#DBEDFC`**)과 **또렷한 딥 블랙 볼드 텍스트/아이콘 (`#111111`)**이 적용되어 현재 페이지 위치를 직관적으로 파악할 수 있습니다.
+- **화면 최하단 푸터 로고**: 사이드바 최하단 절대 고정(`position: absolute; bottom: 0; left: 0; right: 0;`) 설정을 통해 `<template v-slot:append>` 슬롯이 화면(뷰포트) 맨 마지막 가장 아랫부분 바닥에 완벽히 밀착 배치(`style="padding: 8px 16px 12px 16px;"`)되며, 순수 투명 배경 위에 공식 오리지널 컬러 로고([`client/src/assets/images/geni-in-logo.svg`](file:///home/sgkwon/git/dtc-gene-in-admin/client/src/assets/images/geni-in-logo.svg))가 자연스럽게 노출됩니다. 콘텐츠 영역(`.v-navigation-drawer__content`)에는 하단 60px 안전 패딩을 두어 스크롤 시에도 로고와 메뉴가 겹치지 않습니다.
 
 ### 4.3. 상세(Detail) 페이지 카드 상단 패딩 이슈 및 해결책
 - **현상**: `DetailMember`, `DetailCompany`, `DetailType`, `DetailGene`, `DetailManage`, `DetailResult` 등 모든 상세 페이지는 `<v-card flat>` 내부에 `<v-card-title>` 영역이 없고 곧바로 폼(`<v-form>`)과 첫 번째 입력 필드가 시작됩니다.
@@ -124,8 +129,12 @@
 
 ### 4.4. 버튼 다크 테마 오버라이드
 - 레거시 코드베이스의 수많은 버튼들이 `color` 속성 없이 `<v-btn dark :elevation="0">저장</v-btn>` 형태로 선언되어 있습니다.
-- Vuetify 2 기본 동작으로는 이것이 `#272727`(블랙)으로 렌더링되므로, `custom.scss`에서 `.v-btn.theme--dark:not(.v-btn--outlined):not(.v-btn--text):not(.v-btn--icon)`를 `var(--color-primary)`(`#1554a2`)로 강제 매핑해 두었습니다.
+- Vuetify 2 기본 동작으로는 이것이 `#272727`(블랙)으로 렌더링되므로, `custom.scss`에서 `.v-btn.theme--dark:not(.v-btn--outlined):not(.v-btn--text):not(.v-btn--icon)`를 `var(--color-primary)`(`#0C67DF`)로 강제 매핑해 두었습니다.
 - 단, 취소용 `.grey` 버튼이나 위험용 `.error` 버튼은 고유 색상을 유지합니다.
+
+### 4.5. 버튼 규격 표준화 (Vuetify 기본 36px 복원 및 small 속성 전역 제거)
+- 레거시 화면 전반에 산재해 있던 `<v-btn small>`(높이 28px) 및 아이콘/컨트롤의 `small` 속성을 전면 제거하여 Vuetify 2 순수 기본 규격(높이 `36px`, 폰트 `14px`)으로 일원화하였습니다.
+- 이를 통해 검색창의 `v-text-field`(dense 기준 40px) 및 기타 입력 폼 요소들과의 시각적 크기 불균형이 해결되었습니다.
 
 ---
 
@@ -228,14 +237,15 @@ dtc-gene-in-admin/
 | 메뉴 코드 | DB 명칭 | 라우트 경로 | 컴포넌트 | 설명 |
 | :---: | :--- | :--- | :--- | :--- |
 | **`M001`** | 사용자관리 | `/member` | `Member.vue` / `DetailMember.vue` | 시스템 관리자 및 회원 계정 관리 |
-| **`M002`** | 거래처관리 | `/company` | `Company.vue` / `DetailCompany.vue` | 분석 의뢰 거래처 및 담당자 관리 |
 | **`M003`** | 검사종류 | `/type` | `Type.vue` / `DetailType.vue` | 유전자 검사 종류 및 SNP 기준치 관리 |
-| **`M004`** | 검사자관리 | `/manage` | `Manage.vue` / `DetailManage.vue` | 검사 대상자(환자) 접수 및 검체 관리 |
 | **`M005`** | 유전자관리 | `/gene` | `Gene.vue` / `DetailGene.vue` | 유전자 코드 및 카테고리 정보 관리 |
+| **`M002`** | 거래처관리 | `/company` | `Company.vue` / `DetailCompany.vue` | 분석 의뢰 거래처 및 담당자 관리 |
+| **`M004`** | 검사자관리 | `/manage` | `Manage.vue` / `DetailManage.vue` | 검사 대상자(환자) 접수 및 검체 관리 |
 | **`M006`** | 검사결과 | `/result` | `Result.vue` / `DetailResult.vue` | 분석 결과 등록, 엑셀 업로드, 결과지 출력 |
 | **`M007`** | UltraSEEK 검사 | `/ultraseek` | `UltraSeek.vue` | UltraSEEK 분석 관리 (준비 중 안내 화면) |
 | **`M008`** | PGx 검사 | `/pgx` | `Pgx.vue` | PGx 약물유전체 검사 관리 (준비 중 안내 화면) |
 
-### 8.1. UI 콤팩트 스타일링 규칙
-- **체크박스 & 라디오버튼**: `.compact-checkbox`, `.compact-radio`, `.radio-class` 스타일을 통해 아이콘 크기를 `16px`로 축소하고 라벨 폰트(`13px`)와의 정렬을 최적화하여 폼 가독성을 유지합니다.
+### 8.1. Vuetify 2 Default 규격 복원 규칙
+- **체크박스 & 라디오버튼 & 폼 컨트롤**: 과거 레거시의 인위적 축소 스타일(`.compact-checkbox`, `.compact-radio`, `.radio-class`, 강제 `16px`/`13px` 등)을 전면 제거하고 Vuetify 2 표준 규격(체크박스/라디오 아이콘 24px, 텍스트 필드 폰트 16px/1rem, 기본 레이블 및 간격)을 준수합니다.
+- **타이포그래피 및 루트 폰트**: `$font-size-root: 16px` 및 Vuetify 기본 폰트 스케일(Body-1: 16px, Body-2: 14px, Input: 16px)을 표준으로 적용합니다.
 

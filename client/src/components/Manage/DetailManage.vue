@@ -8,7 +8,7 @@
       <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
+            <v-btn @click="$router.go(-1)" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <h3 v-if="transaction=='insert'">검사자 추가</h3>
@@ -50,81 +50,50 @@
                 <v-select v-else v-model="gender" dense outlined :items="genderSelectItems" item-text="text" item-value="value"></v-select>
               </v-col>
             </v-row>
+            <!-- 나이 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
+                <div class="pt-1">나이</div>
+              </v-col>
+              <v-col lg="4" xl="3">
+                <v-text-field v-model="age" :readonly="transaction=='view'" type="number" inputmode="numeric" dense outlined placeholder="나이"></v-text-field>
+              </v-col>
+            </v-row>
+            <!-- 전화번호 -->
+            <v-row align="start" no-gutters>
+              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
+                <div class="pt-1">전화번호</div>
+              </v-col>
+              <v-col lg="4" xl="3">
+                <v-text-field v-model="mobile" :readonly="transaction=='view'" inputmode="numeric" dense outlined :placeholder="transaction!='view'?'010-1234-5678':null" :rules="[phone_rule]"></v-text-field>
+              </v-col>
+            </v-row>
             <!-- 생년월일 -->
             <v-row align="start" no-gutters>
               <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
                 <div class="pt-1">생년월일<span v-if="transaction!='view'" style="color:red">(*)</span></div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field v-model="birth_date" :readonly="transaction=='view'" inputmode="numeric" dense outlined placeholder="YYYY-MM-DD" :rules="[required, birthday_rule]"></v-text-field>
+                <v-text-field v-model="birth_date" @input="calc_age" :readonly="transaction=='view'" inputmode="numeric" dense outlined placeholder="YYYY-MM-DD" :rules="[required, birthday_rule]"></v-text-field>
               </v-col>
             </v-row>
-            <!-- 검사신청경로 -->
+            <!-- 암발생 (백엔드 수정 전 임의 필드: cancer_yn) -->
             <v-row align="start" no-gutters>
               <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1">검사신청경로</div>
+                <div class="pt-1">암발생</div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="parsing_request_path()" readonly dense outlined></v-text-field>
-                <v-select v-else v-model="request_path" :readonly="transaction=='view'" dense outlined :items="request_path_list" item-text="value" item-value="code"></v-select>
+                <v-text-field v-if="transaction=='view'" :value="cancer_yn=='Y' ? '발생' : (cancer_yn=='N' ? '미발생' : '-')" readonly dense outlined></v-text-field>
+                <v-select v-else v-model="cancer_yn" dense outlined :items="[{text:'미발생', value:'N'},{text:'발생', value:'Y'}]" item-text="text" item-value="value"></v-select>
               </v-col>
             </v-row>
-            <!-- 연락처 -->
+            <!-- 암종류 (백엔드 수정 전 임의 필드: cancer_type) -->
             <v-row align="start" no-gutters>
               <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1">연락처</div>
+                <div class="pt-1">암종류</div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field v-model="mobile" :readonly="transaction=='view'" inputmode="numeric" dense outlined :placeholder="transaction!='view'?'010-1234-5678':null" :rules="[phone_rule]"></v-text-field>
-              </v-col>
-            </v-row>
-            <!-- 주소 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1">주소</div>
-              </v-col>
-              <v-col lg="4" xl="3">
-                <v-text-field v-model="addr" :readonly="transaction=='view'" inputmode="numeric" dense outlined></v-text-field>
-              </v-col>
-            </v-row>
-            <!-- 검체적합성 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1">검체적합성</div>
-              </v-col>
-              <v-col lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="fit_yn=='Y' ? $t('phrases.적합') : $t('phrases.부적합')" readonly dense outlined></v-text-field>
-                <v-select v-else v-model="fit_yn" :readonly="transaction=='view'" dense outlined :items="fitSelectItems" item-text="text" item-value="value"></v-select>
-              </v-col>
-            </v-row>
-            <!-- 거래처 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" lg="1" style="min-width:135px;">
-                <div class="pt-1">거래처<span v-if="transaction!='view'" style="color:red">(*)</span></div>
-              </v-col>
-              <v-col cols="12" lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="company_name" dense outlined readonly></v-text-field>
-                <v-select v-else v-model="company_code" dense outlined :items="company_list" item-text="company_name" item-value="seq" :rules="[required]"></v-select>
-              </v-col>
-            </v-row>
-            <!-- 개인정보 수집 이용 동의 여부 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" lg="1" style="min-width:350px;">
-                <div class="pt-1">개인정보 수집·이용 동의 여부</div>
-              </v-col>
-              <v-col lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="agree1_yn=='Y' ? $t('phrases.동의함') : $t('phrases.동의하지 않음')" readonly dense outlined></v-text-field>
-                <v-select v-else v-model="agree1_yn" :readonly="transaction=='view'" dense outlined :items="[{text: $t('phrases.동의함'), value:'Y'},{text: $t('phrases.동의하지 않음'), value:'N'}]" item-text="text" item-value="value"></v-select>
-              </v-col>
-            </v-row>
-            <!-- 2차 서비스 안내를 위한 개인정보 수집 이용 동의 여부 동의 여부 -->
-            <v-row align="start" no-gutters>
-              <v-col cols="12" lg="1" style="min-width:350px;">
-                <div class="pt-1">2차 서비스 안내를 위한 개인정보 수집·이용 동의 여부</div>
-              </v-col>
-              <v-col lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="agree2_yn=='Y' ? $t('phrases.동의함') : $t('phrases.동의하지 않음')" readonly dense outlined></v-text-field>
-                <v-select v-else v-model="agree2_yn" :readonly="transaction=='view'" dense outlined :items="[{text: $t('phrases.동의함'), value:'Y'},{text: $t('phrases.동의하지 않음'), value:'N'}]" item-text="text" item-value="value"></v-select>
+                <v-text-field v-model="cancer_type" :readonly="transaction=='view'" dense outlined placeholder="암종류 입력 (예: 위암, 대장암 등)"></v-text-field>
               </v-col>
             </v-row>
             <!-- 변경사유 -->
@@ -140,21 +109,22 @@
             <div class="pt-2">
               <v-row align="center" justify="end">
                 <v-col cols="auto" class="pb-4 pr-0">
-                  <v-btn v-if="get_menu_authority('M004')=='A'" @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행추가</v-btn>
+                  <v-btn v-if="get_menu_authority('M004')=='A'" @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행추가</v-btn>
                 </v-col>
                 <v-col cols="auto" class="pb-4">
-                  <v-btn v-if="get_menu_authority('M004')=='A'" @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행삭제</v-btn>
+                  <v-btn v-if="get_menu_authority('M004')=='A'" @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행삭제</v-btn>
                 </v-col>
               </v-row>
             </div>           
             <v-row align="center">
               <v-col class="pt-0">
                 <div class="tinycss" style="overflow-x:auto;">
-                  <table style="position:relactive; min-width:350px; table-layout:fixed;" border="1">
+                  <table style="position:relative; min-width:450px; table-layout:fixed;" border="1">
                     <thead>
                       <tr>
                         <th width="40px"></th>
-                        <th width="130px" style="text-align:center; font-size:10pt; font-weight:bold;">접수일자</th>
+                        <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">의뢰일자</th>
+                        <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">입고일자</th>
                         <th style="text-align:center; font-size:10pt; font-weight:bold;">검사항목</th>
                       </tr>
                     </thead>
@@ -163,16 +133,22 @@
                         <td v-if="detail_item.flag!='D'">
                           <v-checkbox v-if="transaction!='view'" v-model="detail_item.check" class="pa-0 ma-0" dense hide-details></v-checkbox>
                         </td>
+                        <!-- 의뢰일자 (기존 request_date) -->
                         <td v-if="detail_item.flag!='D'">
                           <v-text-field v-model="detail_item.request_date" @change="detail_item.flag!='I'?detail_item.flag='U':null" :readonly="transaction=='view'" dense outlined hide-details placeholder="YYYY-MM-DD" :rules="[birthday_rule]"></v-text-field>
                         </td>
+                        <!-- 입고일자 (백엔드 수정 전 임의 필드: warehousing_date) -->
+                        <td v-if="detail_item.flag!='D'">
+                          <v-text-field v-model="detail_item.warehousing_date" @change="detail_item.flag!='I'?detail_item.flag='U':null" :readonly="transaction=='view'" dense outlined hide-details placeholder="YYYY-MM-DD"></v-text-field>
+                        </td>
+                        <!-- 검사항목 -->
                         <td v-if="detail_item.flag!='D'">
                           <v-row align="center" no-gutters>
                             <v-col cols="12">
-                              <v-checkbox :input-value="type_id_checkbox_list.length===detail_item.test_items.length" @change="all_test_items($event, detail_item)" :readonly="transaction=='view'" dense hide-details label="전체선택"></v-checkbox>
+                              <v-checkbox :input-value="type_id_checkbox_list.length===detail_item.test_items.length" @change="all_test_items($event, detail_item)" :readonly="transaction=='view'" hide-details label="전체선택"></v-checkbox>
                             </v-col>
                             <v-col v-for="(type_id_checkbox_item, index2) in type_id_checkbox_list" :key="index2" cols="12" md="6" lg="4" xl="2">
-                              <v-checkbox v-model="detail_item.test_items" @change="detail_item.flag!='I'?detail_item.flag='U':null" :value="type_id_checkbox_item.type_id" class="pa-0 ma-0" :readonly="transaction=='view'" dense hide-details :label="type_id_checkbox_item.type_name"></v-checkbox>
+                              <v-checkbox v-model="detail_item.test_items" @change="detail_item.flag!='I'?detail_item.flag='U':null" :value="type_id_checkbox_item.type_id" class="pa-0 ma-0" :readonly="transaction=='view'" hide-details :label="type_id_checkbox_item.type_name"></v-checkbox>
                             </v-col>
                           </v-row>
                         </td>
@@ -180,7 +156,7 @@
                     </tbody>
                     <tbody v-else>
                       <tr>
-                        <td :colspan="3" style="text-align:center;">데이터가 없습니다.</td>
+                        <td :colspan="4" style="text-align:center;">데이터가 없습니다.</td>
                       </tr>
                     </tbody>
                   </table>
@@ -195,20 +171,20 @@
       <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
         <v-row v-if="transaction=='insert'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn @click="set_patient" small dark :elevation="0">저장</v-btn>
+            <v-btn @click="set_patient" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='view'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M004')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+            <v-btn v-if="get_menu_authority('M004')=='A'" @click="transaction='update'" dark :elevation="0">수정</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="get_patient().then(()=>{transaction='view'})" color="grey" small dark :elevation="0">취소</v-btn>
+            <v-btn @click="get_patient().then(()=>{transaction='view'})" color="grey" dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M004')=='A'" @click="set_patient" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M004')=='A'" @click="set_patient" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>
@@ -233,7 +209,10 @@ export default {
     gender: 'M',
     age: null,
     birth_date: null,
-    request_path: null,
+    // 백엔드 수정 전 임의 필드 (향후 DB 및 API 컬럼 추가 시 연동)
+    cancer_yn: 'N',
+    cancer_type: null,
+    request_path: 'S',
     request_path_list:[],
     mobile: null,
     addr: null,
@@ -241,7 +220,7 @@ export default {
     reason: null,
     agree1_yn: 'Y',
     agree2_yn: 'Y',
-    company_code: null,
+    company_code: 1,
     company_name: null,
     company_list:[],
     detail:[
@@ -250,6 +229,7 @@ export default {
         flag:'',//I, D, U
         org_request_date:'',
         request_date:'',
+        warehousing_date:'', // 백엔드 수정 전 임의 필드: 입고일자
         all_check_test_items: '',
         test_items:[]
       }
@@ -325,10 +305,20 @@ export default {
         flag: 'I',
         check: false,
         request_date: null,
+        // 백엔드 수정 전 임의 필드: 입고일자
+        warehousing_date: null,
         all_check_test_items: false,
         test_items: [],
       };
       this.detail.unshift(row);
+    },
+    calc_age: function(){
+      if ( this.birth_date && this.birth_date.length >= 4 ){
+        let birth_year = parseInt(this.birth_date.split('-')[0]);
+        if ( !isNaN(birth_year) && birth_year > 1900 ){
+          this.age = new Date().getFullYear() - birth_year + 1;
+        }
+      }
     },
     delete_row:function(){
       for ( let i = this.detail.length-1 ; i >= 0 ; i-- ){
@@ -375,8 +365,8 @@ export default {
         delete element['check'];
       });
       
-      let calculated_age = null;
-      if ( this.birth_date ){
+      let calculated_age = this.age;
+      if ( (calculated_age === null || calculated_age === undefined || calculated_age === '') && this.birth_date ){
         let birth_year = parseInt(this.birth_date.split('-')[0]);
         if ( !isNaN(birth_year) ){
           calculated_age = new Date().getFullYear() - birth_year + 1;
@@ -388,16 +378,19 @@ export default {
         patient_id: this.patient_id,
         patient_name: this.patient_name,
         gender: this.gender,
-        request_path: this.request_path,
+        request_path: this.request_path || 'S',
         mobile: this.mobile,
-        addr: this.addr,
-        fit_yn: this.fit_yn,
-        agree1_yn: this.agree1_yn,
-        agree2_yn: this.agree2_yn,
-        age: calculated_age,
+        addr: this.addr || '',
+        fit_yn: this.fit_yn || 'Y',
+        agree1_yn: this.agree1_yn || 'N',
+        agree2_yn: this.agree2_yn || 'N',
+        age: calculated_age || 0,
         birth_date: this.birth_date,
         reason: this.reason,
-        company_no: this.company_code,
+        company_no: this.company_code || 1,
+        // 백엔드 수정 전 임의 필드: 암발생, 암종류
+        cancer_yn: this.cancer_yn,
+        cancer_type: this.cancer_type,
         detail: JSON.stringify(detail)
       };
       this.$store.commit('load', true);
@@ -429,15 +422,20 @@ export default {
         this.reason = res.data.info.reason;
         this.company_code = res.data.info.company_no != "0" ? res.data.info.company_no : null;
         this.company_name = this.company_list.find(element=>element.seq == this.company_code)?.company_name ?? null;
+        // 백엔드 수정 전 임의 필드: 암발생, 암종류
+        this.cancer_yn = res.data.info.cancer_yn || 'N';
+        this.cancer_type = res.data.info.cancer_type || null;
         this.detail = [];
         for ( let i = 0 ; i < res.data.info.detail.length ; i++ ){
           let item = new Object;
           item.org_request_date = res.data.info.detail[i].org_request_date;
           item.request_date = res.data.info.detail[i].request_date;
+          // 백엔드 수정 전 임의 필드: 입고일자
+          item.warehousing_date = res.data.info.detail[i].warehousing_date || null;
           item.test_items = [];
-          let test_items = res.data.info.detail[i].test_items.split(',');
+          let test_items = (res.data.info.detail[i].test_items || '').split(',');
           test_items.forEach(element=>{
-            item.test_items.push(element);
+            if ( element ) item.test_items.push(element);
           });
           this.detail.push(item);
         }

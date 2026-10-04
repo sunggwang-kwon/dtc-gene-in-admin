@@ -8,7 +8,7 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-btn @click="close" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+            <v-btn @click="close" icon><v-icon>mdi-window-close</v-icon></v-btn>
           </v-col>
         </v-row>
       </v-card-title>
@@ -30,7 +30,7 @@
         <v-row style="margin:1px" align="center">
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-btn @click="excel_upload_result" small dark :elevation="0">저장</v-btn>
+            <v-btn @click="excel_upload_result" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-card-actions>

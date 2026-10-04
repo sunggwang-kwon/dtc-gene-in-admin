@@ -8,7 +8,7 @@
       <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
+            <v-btn @click="$router.go(-1)" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <h3 v-if="transaction=='insert'">사용자 추가</h3>
@@ -31,7 +31,7 @@
                 <v-text-field v-model="lims_id" ref="limsid" @input="check=false;" :readonly="transaction=='view'" :disabled="transaction=='update'" dense outlined placeholder="4~20자 영문, 숫자" :rules="[required, id_rule]"></v-text-field>
               </v-col>
               <v-col v-if="transaction=='insert'" cols="auto" lg="1" class="pl-1">
-                <v-btn @click="id_check" :color="check?'grey':'primary'" dark small :elevation="0">중복확인</v-btn>
+                <v-btn @click="id_check" :color="check?'grey':'primary'" dark :elevation="0">중복확인</v-btn>
               </v-col>
             </v-row>
             <!-- 사용자명 -->
@@ -94,22 +94,22 @@
             <div v-if="$session.get('Level')=='A'" class="pt-5" style="border-top:1px solid rgba(0,0,0,0.12)">
               <!-- 메뉴 접근 권한 -->
               <v-row align="start" no-gutters class="pb-5">
-                <v-col cols="12" lg="1" style="min-width:135px;">
+                <v-col cols="12" lg="auto" style="min-width:200px;" class="pr-3">
                   <div class="pt-1">메뉴접근권한<span v-if="transaction!='view'" style="color:red">(*)</span></div>
                 </v-col>
                 <v-col v-for="menu_item in menu_list" :key="menu_item.code" cols="12" lg="auto" class="pr-5">
-                  <v-checkbox v-model="checked_menu" class="compact-checkbox pa-0 pt-1 ma-0" :disabled="transaction=='view'" dense hide-details :label="menu_item.value" :value="menu_item.code"></v-checkbox>
+                  <v-checkbox v-model="checked_menu" class="pa-0 pt-1 ma-0" :disabled="transaction=='view'" hide-details :label="menu_item.value" :value="menu_item.code"></v-checkbox>
                 </v-col>
               </v-row>
               <!-- 메뉴별 권한(관리자, 일반사용자) -->
               <v-row v-for="(menu_item, index) in checked_menu_in_menu_order" :key="index" class="pb-5" align="start" no-gutters>
-                <v-col cols="12" lg="1" style="min-width:135px;">
-                  {{ get_menu_value(menu_item) }} 권한 <span v-if="transaction!='view'" style="color:red">(*)</span>
+                <v-col cols="12" lg="auto" style="min-width:200px; white-space: nowrap;" class="pr-3">
+                  <div class="pt-1">{{ get_menu_value(menu_item) }} 권한<span v-if="transaction!='view'" style="color:red">(*)</span></div>
                 </v-col>
                 <v-col cols="12" lg="4" xl="3">
-                  <v-radio-group v-model="authority[menu_item]" class="radio-class compact-radio pa-0 ma-0" :column="false" :disabled="transaction=='view'" hide-details>
-                    <v-radio value="N" label="읽기" dense small hide-details class="compact-radio pa-0 ma-0 pr-5"></v-radio>
-                    <v-radio value="A" label="읽기/쓰기" dense small hide-details class="compact-radio pa-0 ma-0"></v-radio>
+                  <v-radio-group v-model="authority[menu_item]" class="pa-0 ma-0" :column="false" :disabled="transaction=='view'" hide-details>
+                    <v-radio value="N" label="읽기" hide-details class="pa-0 ma-0 pr-5"></v-radio>
+                    <v-radio value="A" label="읽기/쓰기" hide-details class="pa-0 ma-0"></v-radio>
                   </v-radio-group>
                 </v-col>
               </v-row>
@@ -123,20 +123,20 @@
       <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
         <v-row v-if="transaction=='insert'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn @click="set_member" small dark :elevation="0">저장</v-btn>
+            <v-btn @click="set_member" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='view'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M001')=='A' || $session.get('Userid')==lims_id" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+            <v-btn v-if="get_menu_authority('M001')=='A' || $session.get('Userid')==lims_id" @click="transaction='update'" dark :elevation="0">수정</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="show_password=false;password=null;password2=null;get_member().then(()=>{transaction='view'})" color="grey" small dark :elevation="0">취소</v-btn>
+            <v-btn @click="show_password=false;password=null;password2=null;get_member().then(()=>{transaction='view'})" color="grey" dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M001')=='A' || $session.get('Userid')==lims_id" @click="set_member" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M001')=='A' || $session.get('Userid')==lims_id" @click="set_member" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>
@@ -341,6 +341,14 @@ export default {
             this.authority[element.code] = 'N';
           }
         })
+        const menuOrder = ['M001', 'M003', 'M005', 'M002', 'M004', 'M006', 'M007', 'M008'];
+        this.menu_list.sort((a, b) => {
+          let idxA = menuOrder.indexOf(a.code);
+          let idxB = menuOrder.indexOf(b.code);
+          if (idxA === -1) idxA = 999;
+          if (idxB === -1) idxB = 999;
+          return idxA - idxB;
+        });
         return true;
       }
       return false;

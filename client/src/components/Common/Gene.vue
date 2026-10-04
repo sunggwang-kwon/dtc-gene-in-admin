@@ -8,7 +8,7 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-btn @click="close" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+            <v-btn @click="close" icon><v-icon>mdi-window-close</v-icon></v-btn>
           </v-col>
         </v-row>
       </v-card-title>
@@ -18,7 +18,7 @@
           <v-card-title style="background-color:rgb(249,250,251)">
             <v-row align="center" justify="end">
               <v-col cols="auto" class="py-0">
-                <v-btn @click="commit(gene_item)" small dark :elevation="0">선택</v-btn>
+                <v-btn @click="commit(gene_item)" dark :elevation="0">선택</v-btn>
               </v-col>
             </v-row>
           </v-card-title>
@@ -65,7 +65,7 @@
             <v-text-field v-model="test_type_id" @keydown.enter="get_gene_list" dense outlined hide-details placeholder="검사코드" clearable></v-text-field>
           </v-col>
           <v-col cols="auto">
-            <v-btn @click="get_gene_list" small dark :elevation="0">검색</v-btn>
+            <v-btn @click="get_gene_list" dark :elevation="0">검색</v-btn>
           </v-col>
         </v-row>
       </v-card-actions>

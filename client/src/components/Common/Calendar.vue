@@ -23,11 +23,11 @@
       <v-divider></v-divider>
       <v-card-actions>
         <div v-if="showSelect" style="width:140px">
-          <v-select v-model="type" outlined dense :items="[{text:'접수일자', value:'R'}, {text:'결과등록일자', value:'C'}]" item-text="text" item-value="value" hide-details></v-select>
+          <v-select v-model="type" outlined dense :items="[{text:'의뢰일자', value:'R'}, {text:'결과등록일자', value:'C'}]" item-text="text" item-value="value" hide-details></v-select>
         </div>
         <v-spacer></v-spacer>
-        <v-btn @click="close" color="red" dark small :elevation="0">취소</v-btn>
-        <v-btn @click="commit" dark small :elevation="0">확인</v-btn>
+        <v-btn @click="close" color="red" dark :elevation="0">취소</v-btn>
+        <v-btn @click="commit" dark :elevation="0">확인</v-btn>
       </v-card-actions>
     </v-card>
   </v-menu>

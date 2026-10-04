@@ -1,95 +1,89 @@
 <template>
   <v-app v-if="$session.has('jwt')">
-    <v-app-bar v-if="!$vuetify.breakpoint.mobile" app dense dark color="primary" :elevation="0" clipped-left>
-      <v-app-bar-nav-icon @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
-    </v-app-bar>
-    <v-app-bar v-else app dense dark color="primary" :elevation="0">
+    <v-app-bar app dense color="#F0F5FE" :elevation="0" :clipped-left="!$vuetify.breakpoint.mobile">
+      <v-app-bar-nav-icon color="#222222" @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
+      <span class="ml-2 font-weight-bold text-subtitle-1" style="letter-spacing: 0.5px; color: #222222; user-select: none;">GeneInsight</span>
       <v-spacer></v-spacer>
-      <v-app-bar-nav-icon @click="navi_drawer=!navi_drawer"></v-app-bar-nav-icon>
+      <div class="d-flex align-center mr-3" style="color: #333333;">
+        <v-icon v-if="!$vuetify.breakpoint.mobile" color="#444444" class="mr-1">mdi-account</v-icon>
+        <span :class="$vuetify.breakpoint.mobile ? 'text-caption' : 'text-body-2'" class="font-weight-medium" style="color: #333333;">{{ $session.get("Username") }}</span>
+      </div>
+      <v-btn @click="logout" outlined class="header-logout-btn" :elevation="0">
+        {{ $t('app.logout') }}
+      </v-btn>
     </v-app-bar>
-    <v-navigation-drawer v-model="navi_drawer" app clipped :right="$vuetify.breakpoint.mobile" :width="$vuetify.breakpoint.smAndDown?226:256" floating>
-      <v-list>
-        <v-list-item>
-          <v-list-item-avatar size="44">
-            <v-img src="@/assets/symbol-logo.svg" max-height="40" max-width="40" contain alt="지니인사이트 심볼 로고"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ $session.get("Username") }}</v-list-item-title>
-            <v-list-item-subtitle>{{ $session.get("Email") }}</v-list-item-subtitle>
-            <v-list-item-subtitle>{{ $session.get("Lastaccesstime") }}</v-list-item-subtitle>
-            <v-list-item-subtitle><v-btn @click="$router.push({name:'DetailMember', query:{transaction:'view', lims_id:$session.get('Userid')}})" color="rgb(240,241,242)" block small :elevation="0">{{ $t('app.profileEdit') }}</v-btn></v-list-item-subtitle>
-            <v-list-item-subtitle><v-btn @click="logout" color="rgb(240,241,242)" block small :elevation="0">{{ $t('app.logout') }}</v-btn></v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-      <v-divider></v-divider>
-      <v-list nav dense>
-        <v-list-item v-if="get_menu_authority('M001')" prepend-icon="mdi-account" to="/member" @click="click_menu('member')" link>
+    <v-navigation-drawer v-model="navi_drawer" app clipped color="#F0F5FE" :width="$vuetify.breakpoint.smAndDown?226:256" floating>
+      <v-list nav>
+        <v-list-item v-if="get_menu_authority('M001')" prepend-icon="mdi-account" to="/member" @click="click_menu('member')" link dense>
           <v-list-item-icon>
-            <v-icon color="primary">mdi-human-male</v-icon>
+            <v-icon color="#444444">mdi-human-male</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.member') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M002')" to="/company" @click="click_menu('company')" link>
+        <v-list-item v-if="get_menu_authority('M003')" to="/type" @click="click_menu('type')" link dense>
           <v-list-item-icon>
-            <v-icon color="primary">mdi-domain</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.menu.company') }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="get_menu_authority('M003')" to="/type" @click="click_menu('type')" link>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-flask</v-icon>
+            <v-icon color="#444444">mdi-flask</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.type') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M004')" to="/manage" @click="click_menu('manage')" link>
+        <v-list-item v-if="get_menu_authority('M005')" prepend-icon="mdi-dna" to="/gene" @click="click_menu('gene')" link dense>
           <v-list-item-icon>
-            <v-icon color="primary">mdi-human-male-height</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.menu.manage') }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="get_menu_authority('M005')" prepend-icon="mdi-dna" to="/gene" @click="click_menu('gene')" link>
-          <v-list-item-icon>
-            <v-icon color="primary">mdi-dna</v-icon>
+            <v-icon color="#444444">mdi-dna</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.gene') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M006')" to="/result" @click="click_menu('result')" link>
+        <v-list-item v-if="get_menu_authority('M002')" to="/company" @click="click_menu('company')" link dense>
           <v-list-item-icon>
-            <v-icon color="primary">mdi-text-box</v-icon>
+            <v-icon color="#444444">mdi-domain</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('app.menu.company') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="get_menu_authority('M004')" to="/manage" @click="click_menu('manage')" link dense>
+          <v-list-item-icon>
+            <v-icon color="#444444">mdi-human-male-height</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('app.menu.manage') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="get_menu_authority('M006')" to="/result" @click="click_menu('result')" link dense>
+          <v-list-item-icon>
+            <v-icon color="#444444">mdi-text-box</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.result') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M007')" to="/ultraseek" @click="click_menu('ultraseek')" link>
+        <v-list-item v-if="get_menu_authority('M007')" to="/ultraseek" @click="click_menu('ultraseek')" link dense>
           <v-list-item-icon>
-            <v-icon color="primary">mdi-test-tube</v-icon>
+            <v-icon color="#444444">mdi-test-tube</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.ultraseek') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M008')" to="/pgx" @click="click_menu('pgx')" link>
+        <v-list-item v-if="get_menu_authority('M008')" to="/pgx" @click="click_menu('pgx')" link dense>
           <v-list-item-icon>
-            <v-icon color="primary">mdi-pill</v-icon>
+            <v-icon color="#444444">mdi-pill</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.menu.pgx') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-divider></v-divider>
+      <template v-slot:append>
+        <div class="text-center" style="padding: 8px 16px 12px 16px;">
+          <v-img src="@/assets/images/geni-in-logo.svg" max-height="34" contain class="mx-auto" alt="지니인사이트"></v-img>
+        </div>
+      </template>
     </v-navigation-drawer>
     <v-main>
       <router-view :key="$route.fullPath + '_' + view_id"></router-view>

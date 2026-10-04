@@ -8,7 +8,7 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-btn @click="close" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+            <v-btn @click="close" icon><v-icon>mdi-window-close</v-icon></v-btn>
           </v-col>
         </v-row>
       </v-card-title>
@@ -31,7 +31,7 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
-              <v-btn @click="page=1;get_term_result_list();" small dark :elevation="0">조회</v-btn>
+              <v-btn @click="page=1;get_term_result_list();" dark :elevation="0">조회</v-btn>
             </v-col>
           </v-row>
           <div class="mt-5" style="height:200px; overflow-y:auto;">
@@ -63,7 +63,7 @@
           </v-row>
           <v-row class="ma-0" align="end">
             <v-col cols="12">
-              <v-btn @click="page=1;get_term_result_list();" block small dark color="red" :elevation="0">조회</v-btn>
+              <v-btn @click="page=1;get_term_result_list();" block dark color="red" :elevation="0">조회</v-btn>
             </v-col>
           </v-row>
           <v-row class="ma-0" align="end">
@@ -78,10 +78,10 @@
       <v-card-actions>
         <v-row style="margin:1px" align="center" justify="end">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="print_result" small :elevation="0" style="color:rgba(0,0,0,0.7);">출력</v-btn>
+            <v-btn @click="print_result" :elevation="0" style="color:rgba(0,0,0,0.7);">출력</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn @click="close()" small dark :elevation="0">닫기</v-btn>
+            <v-btn @click="close()" dark :elevation="0">닫기</v-btn>
           </v-col>
         </v-row>
       </v-card-actions>

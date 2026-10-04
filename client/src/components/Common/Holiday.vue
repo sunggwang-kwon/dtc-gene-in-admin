@@ -8,7 +8,7 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
-              <v-btn @click="close" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+              <v-btn @click="close" icon><v-icon>mdi-window-close</v-icon></v-btn>
             </v-col>
           </v-row>
         </v-card-title>
@@ -51,7 +51,7 @@
                 </tbody>
                 <tbody v-else>
                   <tr v-for="(item, idx) in items" :key="idx">
-                    <td style="text-align:center;"><v-checkbox v-model="item.check" dense small class="pa-0 ma-0" hide-details></v-checkbox></td>
+                    <td style="text-align:center;"><v-checkbox v-model="item.check" dense class="pa-0 ma-0" hide-details></v-checkbox></td>
                     <td style="text-align:center;">{{ item.company_name || '-' }}</td>
                     <td style="text-align:center;">{{ item.date }}</td>
                     <td style="text-align:center;">{{ item.name }}</td>
@@ -67,10 +67,10 @@
           <v-row style="margin:5px;" align="center">
             <v-spacer></v-spacer>
             <v-col cols="auto" class="pr-0">
-              <v-btn @click="remove" :color="removeable?'primary':'grey'" small dark>삭제</v-btn>
+              <v-btn @click="remove" :color="removeable?'primary':'grey'" dark>삭제</v-btn>
             </v-col>
             <v-col cols="auto">
-              <v-btn @click="is_set=true;" small dark>등록</v-btn>
+              <v-btn @click="is_set=true;" dark>등록</v-btn>
               <v-dialog v-model="is_set" content-class="d-print-none" :width="!$vuetify.breakpoint.mobile?300:'50%'" persistent>
                 <v-card>
                   <v-card-title>
@@ -79,7 +79,7 @@
                         {{ selected_company_name ? selected_company_name + ' ' : '' }}휴일 등록
                       </v-col>
                       <v-col cols="auto">
-                        <v-btn @click="set_date=null;set_holiday_name=null;is_set=false;" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+                        <v-btn @click="set_date=null;set_holiday_name=null;is_set=false;" icon><v-icon>mdi-window-close</v-icon></v-btn>
                       </v-col>
                     </v-row>
                   </v-card-title>
@@ -104,7 +104,7 @@
                   <v-card-actions>
                     <v-row align="center" justify="end" class="ma-0 pa-0">
                       <v-col cols="auto">
-                        <v-btn @click="set_holiday" small dark>저장</v-btn>
+                        <v-btn @click="set_holiday" dark>저장</v-btn>
                       </v-col>
                     </v-row>
                   </v-card-actions>

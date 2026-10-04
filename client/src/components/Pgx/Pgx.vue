@@ -13,7 +13,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>

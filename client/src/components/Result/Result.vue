@@ -14,7 +14,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -32,7 +32,7 @@
                 <div><v-text-field v-model="search_value" @change="patient_id=null;request_date=null;" dense outlined hide-details :rules="[required]"></v-text-field></div>
               </v-col>
               <v-col cols="2" class="pl-0">
-                <div style="font-size:11pt; color:rgba(0,0,0,0.5)">접수일자</div>
+                <div style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
                 <div><v-text-field v-model="request_date" readonly dense outlined hide-details></v-text-field></div>
               </v-col>
               <v-col cols="auto" class="pl-0">
@@ -42,28 +42,28 @@
             </v-row>
             <v-row class="mx-1" align="center" justify="end">
               <v-col cols="auto" class="pr-0">
-                <v-btn @click="print_result" :color="item_cnt>0?'primary':'grey'" :ripple="item_cnt>0" small dark :elevation="0">결과지 출력</v-btn>
+                <v-btn @click="print_result" :color="item_cnt>0?'primary':'grey'" :ripple="item_cnt>0" dark :elevation="0">결과지 출력</v-btn>
               </v-col>
               <v-col cols="auto" class="pr-0">
-                <v-btn @click="$refs.result_term_list.open();" small dark :elevation="0">기간별 결과지 출력</v-btn>
+                <v-btn @click="$refs.result_term_list.open();" dark :elevation="0">기간별 결과지 출력</v-btn>
               </v-col>
               <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
-                <v-btn  @click="excel_upload" small dark :elevation="0">검사결과 업로드</v-btn>
+                <v-btn  @click="excel_upload" dark :elevation="0">검사결과 업로드</v-btn>
               </v-col>
               <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
-                <v-btn @click="$router.push({name:'DetailResult'})" small dark :elevation="0">추가</v-btn>
+                <v-btn @click="$router.push({name:'DetailResult'})" dark :elevation="0">추가</v-btn>
               </v-col>
               <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
-                <v-btn @click="set_result" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item.length>0" dark small :elevation="0">삭제</v-btn>
+                <v-btn @click="selected_item.length > 0 ? set_result() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
               </v-col>
               <v-col cols="auto">
-                <v-btn @click="page=1;get_result_list(true);" dark color="search_btn" small :elevation="0">조회</v-btn>
+                <v-btn @click="page=1;get_result_list(true);" dark color="search_btn" :elevation="0">조회</v-btn>
               </v-col>
             </v-row>
           </v-form>
         </div>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -74,6 +74,10 @@
       <v-row class="mx-1" align="center">
         <v-col cols="auto" class="pb-1">
           &nbsp;&nbsp;{{ $t('phrases.목록') }} ({{ item_cnt }})
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col cols="auto" class="pb-1">
+          <rows-select v-model="rows" @change="change_rows"></rows-select>
         </v-col>
       </v-row>
       <v-row class="mx-1" align="center">
@@ -99,7 +103,7 @@
         <v-card-title>
           <v-row align="center" justify="end">
             <v-col cols="auto">
-              <v-btn @click="close_template_dialog()" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+              <v-btn @click="close_template_dialog()" icon><v-icon>mdi-window-close</v-icon></v-btn>
             </v-col>
           </v-row>
         </v-card-title>
@@ -150,7 +154,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -167,16 +171,16 @@
               <div><v-text-field v-model="search_value" @change="patient_id=null;request_date=null;" dense outlined hide-details :rules="[required]"></v-text-field></div>
             </v-col>
             <v-col cols="12" class="pt-0">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">접수일자</div>
+              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
               <div><v-text-field v-model="request_date" readonly dense outlined hide-details></v-text-field></div>
             </v-col>
             <v-col cols="12" class="pt-0">
-              <v-btn @click="page=1;get_result_list(true);" dark color="search_btn" small block :elevation="0">조회</v-btn>
+              <v-btn @click="page=1;get_result_list(true);" dark color="search_btn" block :elevation="0">조회</v-btn>
             </v-col>
           </v-row>
         </v-form>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -215,8 +219,8 @@
           <v-list-item v-if="get_menu_authority('M006')=='A'" @click="$router.push({name:'DetailResult'})" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>추가</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M006')=='A'" @click="set_result" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>삭제</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M006')=='A'" @click="selected_item.length > 0 ? set_result() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -243,6 +247,7 @@ import validation from '@/mixin/validation'
 import datatable from '@/components/Common/DataTable'
 import pagination from '@/components/Common/Pagination'
 import mpagination from '@/components/Common/MPagination'
+import rowsselect from '@/components/Common/RowsSelect'
 import exceluploadresult from '@/components/Result/ExcelUploadResult'
 import resultexistpopup from '@/components/Result/ResultExistPopup'
 import resulttermlist from '@/components/Result/ResultTermList'
@@ -253,6 +258,7 @@ export default {
     'data-table': datatable,
     'pagination': pagination,
     'm-pagination': mpagination,
+    'rows-select': rowsselect,
     'excel-upload-result': exceluploadresult,
     'result-exist-popup': resultexistpopup,
     'result-term-list': resulttermlist
@@ -263,7 +269,7 @@ export default {
     changed: false,
 
     page: 1,
-    rows: 60,
+    rows: 20,
     sort: null,
     order: null,
     patient_id: null,
@@ -279,7 +285,7 @@ export default {
       {key:'seq', text:'번호', align:'center', width:'50px'},
       {key:'patient_id', text:'검사자 아이디', align:'center'},
       {key:'patient_name', text:'이름', align:'center'},
-      {key:'request_date', text:'접수일자', align:'center'},
+      {key:'request_date', text:'의뢰일자', align:'center'},
       {key:'create_time', text:'결과등록일자', align:'center'},
       {key:'gene_cd', text:'유전자명', align:'center'},
       {key:'snp_cd', text:'SNP', align:'center'},
@@ -325,10 +331,11 @@ export default {
       this.$router.go(-1);
     }
     else{
+      this.$store.commit('load_rows', this.$session.get('Userid'));
+      this.rows = this.$store.getters.rows;
       let bef_result = this.$store.getters.result;
       if( bef_result != null ){
         this.page = bef_result.page;
-        this.rows = bef_result.rows;
         this.sort = bef_result.sort;
         this.order = bef_result.order;
         this.patient_id = bef_result.patient_id;
@@ -394,6 +401,10 @@ export default {
       this.page = page;
       this.get_result_list();
       window.scrollTo({top:0, behavior: 'smooth'});
+    },
+    change_rows:function(){
+      this.page = 1;
+      this.get_result_list();
     },
     excel_upload:async function(){
       this.$refs.excel_upload_result.open();

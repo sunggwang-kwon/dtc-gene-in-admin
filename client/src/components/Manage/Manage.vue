@@ -14,7 +14,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -23,46 +23,39 @@
         <div v-if="is_show_search">
           <v-row class="mx-1" align="end">
             <v-col cols="3" style="min-width:260px;">
-              <div v-if="date_type=='R'" style="font-size:11pt; color:rgba(0,0,0,0.5)">접수일자</div>
+              <div v-if="date_type=='R'" style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
               <div v-else-if="date_type=='C'" style="font-size:11pt; color:rgba(0,0,0,0.5)">등록일자</div>
               <div><v-text-field :value="date_range" readonly dense outlined hide-details append-icon="mdi-calendar-month" @click:append="open_calendar"></v-text-field></div>
               <calendar ref="calendar" @commit="set_calendar" @date_type="set_date_type"></calendar>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="4">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">ID/검사자명/연락처</div>
               <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
-            </v-col>
-            <v-col cols="2">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">TAT</div>
-              <div><v-select v-model="tat" class="pa-0 ma-0" hide-details dense outlined :items="[{text:'전체',value:'A'},{text:'초과',value:'E'},{text:'정상',value:'N'}]" item-text="text" item-value="value"></v-select></div>
             </v-col>
           </v-row>
           <v-row class="mx-1" align="center" justify="end">
             <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
-              <v-btn @click="open_holiday" small dark :elevation="0">영업일관리</v-btn>
+              <v-btn @click="excel_upload" dark :elevation="0">검사자업로드</v-btn>
             </v-col>
             <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
-              <v-btn @click="excel_upload" small dark :elevation="0">검사자업로드</v-btn>
-            </v-col>
-            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
-              <v-btn @click="excel_download" small dark :elevation="0">다운로드</v-btn>
+              <v-btn @click="excel_download" dark :elevation="0">다운로드</v-btn>
             </v-col>
             <v-col cols="auto" class="pr-0">
-              <v-btn @click="get_barcode" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item>0" small dark :elevation="0">바코드</v-btn>
+              <v-btn @click="selected_item.length > 0 ? get_barcode() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">바코드</v-btn>
             </v-col>
             <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
-              <v-btn @click="$router.push({name:'DetailManage', query:{transaction:'insert'}})" small dark :elevation="0">추가</v-btn>
+              <v-btn @click="$router.push({name:'DetailManage', query:{transaction:'insert'}})" dark :elevation="0">추가</v-btn>
             </v-col>
             <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
-              <v-btn @click="set_patient" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item>0" dark small :elevation="0">삭제</v-btn>
+              <v-btn @click="selected_item.length > 0 ? set_patient() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
             </v-col>
             <v-col cols="auto">
-              <v-btn @click="page=1;get_patient_list();" dark color="search_btn" small :elevation="0">조회</v-btn>
+              <v-btn @click="page=1;get_patient_list();" dark color="search_btn" :elevation="0">조회</v-btn>
             </v-col>
           </v-row>
         </div>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -73,6 +66,10 @@
       <v-row class="mx-1" align="center">
         <v-col cols="auto" class="pb-1">
           &nbsp;&nbsp;{{ $t('phrases.목록') }} ({{ item_cnt }})
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col cols="auto" class="pb-1">
+          <rows-select v-model="rows" @change="change_rows"></rows-select>
         </v-col>
       </v-row>
       <v-row class="mx-1" align="center">
@@ -90,7 +87,6 @@
         </v-row>
       </v-app-bar>
     </div>
-    <holiday ref="holiday"></holiday>
     <manage-history ref="manage_history"></manage-history>
     <detail-barcode ref="detail_barcode"></detail-barcode>
     <excel-upload-patient ref="excel_upload_patient"></excel-upload-patient>
@@ -107,7 +103,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -115,7 +111,7 @@
         </v-row>
         <v-row v-if="is_show_search" class="mx-1" align="center">
           <v-col cols="12">
-            <div v-if="date_type=='R'" style="font-size:11pt; color:rgba(0,0,0,0.5)">접수일자</div>
+            <div v-if="date_type=='R'" style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
             <div v-else-if="date_type=='C'" style="font-size:11pt; color:rgba(0,0,0,0.5)">등록일자</div>
             <div><v-text-field :value="date_range" readonly dense outlined hide-details append-icon="mdi-calendar-month" @click:append="open_calendar"></v-text-field></div>
             <m-calendar ref="calendar" @commit="set_calendar" @date_type="set_date_type"></m-calendar>
@@ -124,16 +120,12 @@
             <div style="font-size:11pt; color:rgba(0,0,0,0.5)">ID/검사자명/연락처</div>
             <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
           </v-col>
-          <v-col cols="12" class="pt-0">
-            <div style="font-size:11pt; color:rgba(0,0,0,0.5)">TAT</div>
-            <v-select v-model="tat" class="pa-0 ma-0" hide-details dense outlined :items="[{text:'전체',value:'A'},{text:'초과',value:'E'},{text:'정상',value:'N'}]" item-text="text" item-value="value"></v-select>
-          </v-col>
           <v-col cols="12">
-            <v-btn @click="page=1;get_patient_list();" dark color="search_btn" small block :elevation="0">조회</v-btn>
+            <v-btn @click="page=1;get_patient_list();" dark color="search_btn" block :elevation="0">조회</v-btn>
           </v-col>
         </v-row>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -160,23 +152,20 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="open_holiday" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>영업일관리</v-list-item-subtitle>
-          </v-list-item>
           <v-list-item v-if="get_menu_authority('M004')=='A'" @click="excel_upload" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>검사자업로드</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="get_menu_authority('M004')=='A'" @click="excel_download" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>다운로드</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item @click="get_barcode" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>바코드</v-list-item-subtitle>
+          <v-list-item @click="selected_item.length > 0 ? get_barcode() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">바코드</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="get_menu_authority('M004')=='A'" @click="$router.push({name:'DetailManage', query:{transaction:'insert'}})" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>추가</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="set_patient" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>삭제</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="selected_item.length > 0 ? set_patient() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -190,7 +179,6 @@
         </v-row>
       </v-app-bar>
     </div>
-    <holiday ref="holiday"></holiday>
     <manage-history ref="manage_history"></manage-history>
     <detail-barcode ref="detail_barcode"></detail-barcode>
     <excel-upload-patient ref="excel_upload_patient"></excel-upload-patient>
@@ -203,11 +191,11 @@ import authority from '@/mixin/authority'
 import datatable from '@/components/Common/DataTable'
 import pagination from '@/components/Common/Pagination'
 import mpagination from '@/components/Common/MPagination'
+import rowsselect from '@/components/Common/RowsSelect'
 import calendar from '@/components/Common/Calendar'
 import mcalendar from '@/components/Common/MCalendar'
 import managehistory from '@/components/Common/ManageHistory'
 import detailbarcode from '@/components/Common/DetailBarcode'
-import holiday from '@/components/Common/Holiday'
 import exceluploadpatient from '@/components/Manage/ExcelUploadPatient'
 export default {
   name: 'manage-vue',
@@ -216,11 +204,11 @@ export default {
     'data-table': datatable,
     'pagination': pagination,
     'm-pagination': mpagination,
+    'rows-select': rowsselect,
     'calendar': calendar,
     'm-calendar': mcalendar,
     'manage-history':managehistory,
     'detail-barcode': detailbarcode,
-    'holiday': holiday,
     'excel-upload-patient': exceluploadpatient,
   },
   data: () => ({
@@ -228,7 +216,7 @@ export default {
     changed: false,
 
     page: 1,
-    rows: 30,
+    rows: 20,
     sort: null,
     order: null,
     search_value: null,
@@ -238,20 +226,17 @@ export default {
     table_top: null,
     item_cnt: 0,
     headers: [
-      //{key:'no', text:'번호', align:'center'},
       {key:'patient_id', text:'아이디', align:'center'},
       {key:'patient_name', text:'검사자명', align:'center'},
-      {key:'gender', text:'성별', align:'center', width:'7%'},
-      //{key:'requset_date', text:'접수일자', align:'center', width:'9%'},
-      {key:'check_status', text:'진행상황', align:'center', width:'9%'},
-      {key:'birth_date', text:'생년월일', align:'center', width:'10%'},
+      {key:'gender', text:'성별', align:'center', width:'6%'},
+      {key:'request_date', text:'의뢰일자', align:'center', width:'9%'},
+      {key:'receipt_date', text:'입고일자', align:'center', width:'9%'}, // 백엔드 수정 전: create_time 임시 매핑
+      {key:'result_date', text:'결과입력일', align:'center', width:'9%'},
+      {key:'age', text:'나이', align:'center', width:'6%'},
+      {key:'check_status', text:'진행상태', align:'center', width:'8%'},
       {key:'lims_id', text:'등록자', align:'center'},
-      {key:'tat_day', text:'TAT초과일', align:'center'},
-      {key:'fit_yn', text:'검체적합성', align:'center'},
-      {key:'create_time', text:'접수일자', align:'center', width:'9%'},
-      {key:'result_date', text:'결과등록일자', align:'center', width:'9%'},
-      {key:'modify_time', text:'수정일자', align:'center', width:'9%', link:true},
-      {key:'modify_id', text:'수정자', align:'center'}
+      {key:'create_time', text:'등록일', align:'center', width:'9%'},
+      {key:'modify_time', text:'수정일', align:'center', width:'9%', link:true}
     ],
     items: [
       /*
@@ -260,7 +245,6 @@ export default {
       }
       */
     ],
-    tat: 'A',
     date_type: 'R',
     selected_item: [],
   }),
@@ -275,16 +259,16 @@ export default {
       this.$router.go(-1);
     }
     else{
+      this.$store.commit('load_rows', this.$session.get('Userid'));
+      this.rows = this.$store.getters.rows;
       let bef_manage = this.$store.getters.manage;
       if( bef_manage != null ){
         this.page = bef_manage.page;
-        this.rows = bef_manage.rows;
         this.sort = bef_manage.sort;
         this.order = bef_manage.order;
         this.search_value = bef_manage.search_value;
         this.from_date = bef_manage.from_date;
         this.to_date = bef_manage.to_date;
-        this.tat = bef_manage.tat;
         this.date_type = bef_manage.date_type;
         this.get_patient_list().then(res=>{
           this.is_open = res;
@@ -376,10 +360,18 @@ export default {
       this.get_patient_list();
       window.scrollTo({top:0, behavior: 'smooth'});
     },
+    change_rows:function(){
+      this.page = 1;
+      this.get_patient_list();
+    },
     excel_upload:async function(){
       this.$refs.excel_upload_patient.open();
     },
     excel_download:async function(){
+      if ( this.item_cnt === 0 || !this.items || this.items.length === 0 ){
+        alert("다운로드할 검사자 데이터가 없습니다.");
+        return;
+      }
       let data = {
         date_type: this.date_type,
         from_date: this.from_date,
@@ -396,7 +388,11 @@ export default {
       this.$store.commit('load', true);
       let res = await this.postDownload(this.$rootUrl+'/server/patient/excel_download_patient.php', data);
       this.$store.commit('load', false);
-      if ( res ){
+      if ( res && res.data ){
+        if ( res.data.size !== undefined && res.data.size === 0 ){
+          alert("다운로드할 검사자 데이터가 없습니다.");
+          return false;
+        }
         let fileURL = window.URL.createObjectURL(new Blob([res.data], {type:'application/vnd.ms-excel'}));
         let fileLink = document.createElement('a');
         fileLink.href = fileURL;
@@ -427,9 +423,6 @@ export default {
         items.push({patient_id: this.items[element].patient_id, request_date: this.items[element].request_date});
       })
       this.$refs.detail_barcode.open(items);
-    },
-    open_holiday:function(){
-      this.$refs.holiday.open();
     },
     set_patient:async function(){
       if ( this.selected_item.length == 0 ) {
@@ -469,14 +462,17 @@ export default {
         search_value: this.search_value?'%'+this.search_value+'%':null,
         from_date: this.from_date,
         to_date: this.to_date,
-        tat: this.tat,
         date_type: this.date_type
       };
       this.$store.commit('load', true);
       let res = await this.get(this.$rootUrl+'/server/patient/get_patient_list.php', data);
       if ( res ){
         this.item_cnt = res.data.total*1;
-        this.items = res.data.info;
+        this.items = (res.data.info || []).map(item => ({
+          ...item,
+          // 백엔드 수정 전: 입고일자 키가 없으므로 create_time을 임시 매핑
+          receipt_date: item.create_time
+        }));
         this.$store.commit('manage', {
           page: this.page,
           rows: this.rows,
@@ -485,7 +481,6 @@ export default {
           search_value: this.search_value,
           from_date: this.from_date,
           to_date: this.to_date,
-          tat: this.tat,
           date_type: this.date_type
         });
         this.$store.commit('load', false);

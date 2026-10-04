@@ -8,7 +8,7 @@
       <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
+            <v-btn @click="$router.go(-1)" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <h3 v-if="transaction=='insert'">거래처 추가</h3>
@@ -22,10 +22,10 @@
       <v-card flat>
         <v-card-text>
           <v-form ref="form">
-            <!-- 회사명 -->
+            <!-- 거래처명 -->
             <v-row align="start" no-gutters>
               <v-col cols="12" lg="1" style="min-width:135px;">
-                <div class="pt-1">회사명<span v-if="transaction!='view'" style="color:red">(*)</span></div>
+                <div class="pt-1">거래처명<span v-if="transaction!='view'" style="color:red">(*)</span></div>
               </v-col>
               <v-col cols="12" lg="4" xl="3">
                 <v-text-field v-model="company_name" :readonly="transaction=='view'" dense outlined :rules="[required]"></v-text-field>
@@ -84,20 +84,20 @@
       <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
         <v-row v-if="transaction=='insert'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn @click="set_company" small dark :elevation="0">저장</v-btn>
+            <v-btn @click="set_company" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='view'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M002')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+            <v-btn v-if="get_menu_authority('M002')=='A'" @click="transaction='update'" dark :elevation="0">수정</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="get_company().then(()=>{transaction='view'})" color="grey" small dark :elevation="0">취소</v-btn>
+            <v-btn @click="get_company().then(()=>{transaction='view'})" color="grey" dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M002')=='A'" @click="set_company" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M002')=='A'" @click="set_company" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>

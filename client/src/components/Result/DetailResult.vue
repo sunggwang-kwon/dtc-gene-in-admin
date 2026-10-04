@@ -8,7 +8,7 @@
       <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
+            <v-btn @click="$router.go(-1)" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <h3>검사결과 추가</h3>
@@ -33,7 +33,7 @@
             <!-- 의뢰일자 -->
             <v-row align="start" no-gutters>
               <v-col cols="12" lg="1" style="min-width:135px;">
-                <div class="pt-1">접수일자<span style="color:red">(*)</span></div>
+                <div class="pt-1">의뢰일자<span style="color:red">(*)</span></div>
               </v-col>
               <v-col cols="12" lg="4" xl="3">
                 <v-select v-model="request_date" dense outlined item-text="request_date" item-value="request_date" :items="request_date_list" no-data-text="데이터가 없습니다." :rules="[required]"></v-select>
@@ -85,7 +85,7 @@
       <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
         <v-row align="center" justify="end">
           <v-col cols="auto">
-            <v-btn @click="set_result" small dark :elevation="0">저장</v-btn>
+            <v-btn @click="set_result" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>

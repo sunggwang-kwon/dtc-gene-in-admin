@@ -8,7 +8,7 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-btn @click="close" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+            <v-btn @click="close" icon><v-icon>mdi-window-close</v-icon></v-btn>
           </v-col>
         </v-row>
       </v-card-title>
@@ -23,7 +23,7 @@
                   <v-col class="pb-1">{{ item.patient_id }}</v-col>
                 </v-row>
                 <v-row align="center">
-                  <v-col cols="3" style="min-width:85px;" class="py-0">접수일자</v-col>
+                  <v-col cols="3" style="min-width:85px;" class="py-0">의뢰일자</v-col>
                   <v-col class="py-0">{{ item.request_date }}</v-col>
                 </v-row>
                 <v-row align="center">

@@ -14,7 +14,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -23,17 +23,17 @@
         <v-row v-if="is_show_search" class="mx-1" align="end">
           <v-spacer></v-spacer>
           <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
-            <v-btn @click="$router.push({name:'DetailType', query:{transaction:'insert'}})" small dark :elevation="0">추가</v-btn>
+            <v-btn @click="$router.push({name:'DetailType', query:{transaction:'insert'}})" dark :elevation="0">추가</v-btn>
           </v-col>
           <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
-            <v-btn @click="set_check" :color="selected_item.length>0?'primary':'grey'" :ripple="selected_item.length>0" dark small :elevation="0">삭제</v-btn>
+            <v-btn @click="selected_item.length > 0 ? set_check() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn @click="get_check_list();" dark color="search_btn" small :elevation="0">조회</v-btn>
+            <v-btn @click="get_check_list();" dark color="search_btn" :elevation="0">조회</v-btn>
           </v-col>
         </v-row>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -69,7 +69,7 @@
           <v-col cols="auto" class="pl-0">
             <v-tooltip bottom color="rgba(0,0,0,0.7)">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon small><v-icon>mdi-window-restore</v-icon></v-btn>
+                <v-btn @click="new_window" v-bind="attrs" v-on="on" icon><v-icon>mdi-window-restore</v-icon></v-btn>
               </template>
               <span>새창에서 열기</span>
             </v-tooltip>
@@ -77,11 +77,11 @@
         </v-row>
         <v-row v-if="is_show_search" class="mx-1" align="center">
           <v-col cols="12">
-            <v-btn @click="get_check_list();" dark color="search_btn" small block :elevation="0">조회</v-btn>
+            <v-btn @click="get_check_list();" dark color="search_btn" block :elevation="0">조회</v-btn>
           </v-col>
         </v-row>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
         <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
         <v-icon v-else>mdi-menu-down</v-icon>
       </v-btn>
@@ -111,8 +111,8 @@
           <v-list-item @click="$router.push({name:'DetailType', query:{transaction:'insert'}})" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>추가</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item @click="set_check" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>삭제</v-list-item-subtitle>
+          <v-list-item @click="selected_item.length > 0 ? set_check() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -149,7 +149,6 @@ export default {
       {key:'type_name', text:'분류명', align:'center'},
       {key:'type_id', text:'분류코드', align:'center'},
       {key:'type_eng_name', text:'영문명', align:'center'},
-      {key:'risk_avg', text:'평균값', align:'center', width:'10%'},
       {key:'disp_order', text:'출력순서', align:'center', width:'8%'},
       {key:'count', text:'검사등록수', align:'center', width:'10%'},
       {key:'use_yn', text:'사용여부', align:'center', width:'8%'},

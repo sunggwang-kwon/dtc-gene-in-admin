@@ -4,25 +4,18 @@
       <v-card-title>
         <v-row align="center">
           <v-col cols="auto">
-            <h6>검사자업로드</h6>
+            <span style="font-size: 16px; font-weight: 600;">검사자업로드</span>
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-btn @click="close" small icon><v-icon>mdi-window-close</v-icon></v-btn>
+            <v-btn @click="close" icon><v-icon>mdi-window-close</v-icon></v-btn>
           </v-col>
         </v-row>
       </v-card-title>
       <v-divider class="pb-5"></v-divider>
       <v-card-text :class="$vuetify.breakpoint.mobile?'px-1':null">
         <v-form ref="form">
-          <v-row align="start" no-gutters>
-            <v-col cols="12" lg="auto" class="pr-2">
-              <div class="pt-1">파일명</div>
-            </v-col>
-            <v-col>
-              <v-file-input v-model="file" show-size dense outlined append-icon="mdi-attachment" prepend-icon="" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :rules="[required]"></v-file-input>
-            </v-col>
-          </v-row>
+          <v-file-input v-model="file" placeholder="파일명" show-size dense outlined append-icon="mdi-attachment" prepend-icon="" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :rules="[required]"></v-file-input>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
@@ -33,7 +26,7 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-btn @click="excel_upload_result" small dark :elevation="0">저장</v-btn>
+            <v-btn @click="excel_upload_result" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-card-actions>

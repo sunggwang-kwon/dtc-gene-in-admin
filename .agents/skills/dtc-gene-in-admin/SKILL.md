@@ -50,14 +50,14 @@ client/src/
 | :---: | :--- | :--- | :--- |
 | **`M001`** | /member | Member | 회원(사용자) 목록 |
 | **`M001`** | /member/detail | DetailMember | 회원(사용자) 상세 |
-| **`M002`** | /company | Company | 거래처 목록 |
-| **`M002`** | /company/detail | DetailCompany | 거래처 상세 |
 | **`M003`** | /type | Type | 검사종류 목록 |
 | **`M003`** | /type/detail | DetailType | 검사종류 상세 |
-| **`M004`** | /manage | Manage | 검사자(환자) 목록 |
-| **`M004`** | /manage/detail | DetailManage | 검사자(환자) 상세 |
 | **`M005`** | /gene | Gene | 유전자 목록 |
 | **`M005`** | /gene/detail | DetailGene | 유전자 상세 |
+| **`M002`** | /company | Company | 거래처 목록 |
+| **`M002`** | /company/detail | DetailCompany | 거래처 상세 |
+| **`M004`** | /manage | Manage | 검사자(환자) 목록 |
+| **`M004`** | /manage/detail | DetailManage | 검사자(환자) 상세 |
 | **`M006`** | /result | Result | 검사결과 목록 |
 | **`M006`** | /result/detail | DetailResult | 검사결과 상세 |
 | **`M007`** | /ultraseek | UltraSeek | UltraSEEK 검사 관리 (준비 중) |

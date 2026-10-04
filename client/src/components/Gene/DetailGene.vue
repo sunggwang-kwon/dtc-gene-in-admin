@@ -8,7 +8,7 @@
       <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
+            <v-btn @click="$router.go(-1)" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <h3 v-if="transaction=='insert'">유전자 추가</h3>
@@ -59,10 +59,10 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col v-if="get_menu_authority('M005')=='A'" cols="auto" class="pb-4 pr-0">
-                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행추가</v-btn>
+                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행추가</v-btn>
               </v-col>
               <v-col v-if="get_menu_authority('M005')=='A'" cols="auto" class="pb-4">
-                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행삭제</v-btn>
+                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행삭제</v-btn>
               </v-col>
             </v-row>
           </div>
@@ -74,10 +74,10 @@
             </v-row>
             <v-row v-if="get_menu_authority('M005')=='A'" align="center" justify="end">
               <v-col cols="auto" class="pt-1 pr-0 pb-4">
-                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행추가</v-btn>
+                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행추가</v-btn>
               </v-col>
               <v-col cols="auto" class="pt-1 pb-4">
-                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행삭제</v-btn>
+                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행삭제</v-btn>
               </v-col>
             </v-row>
           </div>
@@ -92,7 +92,6 @@
                       <th style="text-align:center; font-size:10pt; font-weight:bold;">정상빈도율(%)</th>
                       <th style="text-align:center; font-size:10pt; font-weight:bold;">위험타입</th>
                       <th style="text-align:center; font-size:10pt; font-weight:bold;">위험빈도율(%)</th>
-                      <th width="8%" style="text-align:center; font-size:10pt; font-weight:bold;">인종</th>
                     </tr>
                   </thead>
                   <tbody v-if="detail.length>0">
@@ -112,14 +111,11 @@
                       <td v-if="detail_item.flag!='D'">
                         <v-text-field v-model="detail_item.risk_rate" :readonly="transaction=='view'" dense outlined hide-details></v-text-field>
                       </td>
-                      <td v-if="detail_item.flag!='D'">
-                        <v-text-field v-model="detail_item.breed" :readonly="transaction=='view'" dense outlined hide-details></v-text-field>
-                      </td>
                     </tr>
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td :colspan="6" style="text-align:center;">데이터가 없습니다.</td>
+                      <td :colspan="5" style="text-align:center;">데이터가 없습니다.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -133,20 +129,20 @@
       <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
         <v-row v-if="transaction=='insert'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M005')=='A'" @click="set_gene" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M005')=='A'" @click="set_gene" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='view'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M005')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+            <v-btn v-if="get_menu_authority('M005')=='A'" @click="transaction='update'" dark :elevation="0">수정</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="update_cancel" color="grey" small dark :elevation="0">취소</v-btn>
+            <v-btn @click="update_cancel" color="grey" dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M005')=='A'" @click="set_gene" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M005')=='A'" @click="set_gene" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>
@@ -181,7 +177,6 @@ export default {
         risk_rate: null,
         normal_type: null,
         normal_rate: null,
-        breed: null,
         flag: null,
       }
       */
@@ -237,7 +232,6 @@ export default {
         risk_rate: null,
         normal_type: null,
         normal_rate: null,
-        breed: null,
         flag: 'I',
       };
       this.detail.unshift(row);
@@ -302,6 +296,7 @@ export default {
       this.detail.forEach(element=>{
         if ( element.flag && element.flag.length > 0 ){
           let temp = this.lodash.cloneDeep(element);
+          delete temp['breed'];
           for ( let key in temp ){
             if ( !temp[key] ){
               delete temp[key];
@@ -339,11 +334,14 @@ export default {
         this.test_type_id = res.data.info.test_type_id;
         this.gene_cd = res.data.info.gene_cd;
         this.note = res.data.info.note;
-        this.bef_detail = this.lodash.cloneDeep(res.data.info.detail);
-        this.detail = this.lodash.cloneDeep(res.data.info.detail);
-        for ( let i = 0 ; i < this.detail.length ; i++ ){
-          this.detail[i].check = false;
-        }
+        let details = (res.data.info.detail || []).map(item => {
+          let clone = { ...item };
+          delete clone.breed;
+          clone.check = false;
+          return clone;
+        });
+        this.bef_detail = this.lodash.cloneDeep(details);
+        this.detail = this.lodash.cloneDeep(details);
         this.$store.commit('load', false);
         return true;
       }

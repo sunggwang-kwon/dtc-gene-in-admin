@@ -8,7 +8,7 @@
       <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="$router.go(-1)" small icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
+            <v-btn @click="$router.go(-1)" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <h3 v-if="transaction=='insert'">검사종류 추가</h3>
@@ -77,10 +77,10 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pb-4 pr-0">
-                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행추가</v-btn>
+                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행추가</v-btn>
               </v-col>
               <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pb-4">
-                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행삭제</v-btn>
+                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행삭제</v-btn>
               </v-col>
             </v-row>
           </div>
@@ -97,10 +97,10 @@
             </v-row>
             <v-row v-if="get_menu_authority('M003')=='A'" align="center" justify="end">
               <v-col cols="auto" class="pt-1 pr-0 pb-4">
-                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행추가</v-btn>
+                <v-btn @click="insert_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행추가</v-btn>
               </v-col>
               <v-col cols="auto" class="pt-1 pb-4">
-                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" small dark :elevation="0">행삭제</v-btn>
+                <v-btn @click="delete_row" :color="transaction=='view'?'grey':'primary'" :ripple="transaction!='view'" dark :elevation="0">행삭제</v-btn>
               </v-col>
             </v-row>
           </div>
@@ -122,7 +122,6 @@
                       <th width="8%" style="text-align:center; font-size:10pt; font-weight:bold;">risk2</th>
                       <th width="8%" style="text-align:center; font-size:10pt; font-weight:bold;">타입명3</th>
                       <th width="8%" style="text-align:center; font-size:10pt; font-weight:bold;">risk3</th>
-                      <th width="8%" style="text-align:center; font-size:10pt; font-weight:bold;">평균값</th>
                       <th style="text-align:center; font-size:10pt; font-weight:bold;">출력순서</th>
                     </tr>
                   </thead>
@@ -166,16 +165,13 @@
                         <v-text-field v-model="snp_item.snp_risk3" :readonly="transaction=='view'" inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g, '$1')" dense outlined hide-details></v-text-field>
                       </td>
                       <td v-if="snp_item.flag!='D'">
-                        <v-text-field v-model="snp_item.risk_avg" :readonly="transaction=='view'" inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g, '$1')" dense outlined hide-details></v-text-field>
-                      </td>
-                      <td v-if="snp_item.flag!='D'">
                         <v-text-field v-model="snp_item.order_no" :readonly="transaction=='view'" inputmode="decimal" oninput="this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*)\./g, '$1')" dense outlined hide-details></v-text-field>
                       </td>
                     </tr>
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td :colspan="14" style="text-align:center;">데이터가 없습니다.</td>
+                      <td :colspan="13" style="text-align:center;">데이터가 없습니다.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -189,20 +185,20 @@
       <v-app-bar color="rgb(255,255,255)" style="border:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
         <v-row v-if="transaction=='insert'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M003')=='A'" @click="set_check" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M003')=='A'" @click="set_check" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='view'" align="center" justify="end">
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M003')=='A'" @click="transaction='update'" small dark :elevation="0">수정</v-btn>
+            <v-btn v-if="get_menu_authority('M003')=='A'" @click="transaction='update'" dark :elevation="0">수정</v-btn>
           </v-col>
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="update_cancel" color="grey" small dark :elevation="0">취소</v-btn>
+            <v-btn @click="update_cancel" color="grey" dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
-            <v-btn v-if="get_menu_authority('M003')=='A'" @click="set_check" small dark :elevation="0">저장</v-btn>
+            <v-btn v-if="get_menu_authority('M003')=='A'" @click="set_check" dark :elevation="0">저장</v-btn>
           </v-col>
         </v-row>
       </v-app-bar>
@@ -246,7 +242,6 @@ export default {
         snp_risk2:'',
         snp_type3:'',
         snp_risk3:'',
-        risk_avg:'',
         flag:'',//D-삭제, U-수정
       }
       */
@@ -266,7 +261,6 @@ export default {
         snp_risk2:'',
         snp_type3:'',
         snp_risk3:'',
-        risk_avg:'',
         order_no:'',
         flag:'',//D-삭제, U-수정
       }
@@ -331,7 +325,6 @@ export default {
         snp_risk2:null,
         snp_type3:null,
         snp_risk3:null,
-        risk_avg:null,
         order_no:null,
         flag: 'I',
       };
@@ -409,6 +402,7 @@ export default {
             }
           }
           delete temp['check'];
+          delete temp['risk_avg'];
           snp.push(temp);
         }
       });
@@ -447,6 +441,8 @@ export default {
         this.snp = this.lodash.cloneDeep(res.data.info.snp);
         for ( let i = 0 ; i < this.snp.length ; i++ ){
           this.snp[i].check = false;
+          delete this.snp[i].risk_avg;
+          delete this.bef_snp[i].risk_avg;
         }
         this.$store.commit('load', false);
         return true;

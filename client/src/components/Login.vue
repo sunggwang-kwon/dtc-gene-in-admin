@@ -59,17 +59,17 @@ export default {
       if ( this.get_menu_authority('M001') ){
         this.$router.replace({name:'Member'});
       }
-      else if ( this.get_menu_authority('M002') ){
-        this.$router.replace({name:'Company'});
-      }
       else if ( this.get_menu_authority('M003') ){
         this.$router.replace({name:'Type'});
       }
-      else if ( this.get_menu_authority('M004') ){
-        this.$router.replace({name:'Manage'});
-      }
       else if ( this.get_menu_authority('M005') ){
         this.$router.replace({name:'Gene'});
+      }
+      else if ( this.get_menu_authority('M002') ){
+        this.$router.replace({name:'Company'});
+      }
+      else if ( this.get_menu_authority('M004') ){
+        this.$router.replace({name:'Manage'});
       }
       else if ( this.get_menu_authority('M006') ){
         this.$router.replace({name:'Result'});
@@ -119,17 +119,17 @@ export default {
         if ( this.get_menu_authority('M001') ){
           this.$router.replace({name:'Member'});
         }
-        else if ( this.get_menu_authority('M002') ){
-          this.$router.replace({name:'Company'});
-        }
         else if ( this.get_menu_authority('M003') ){
           this.$router.replace({name:'Type'});
         }
-        else if ( this.get_menu_authority('M004') ){
-          this.$router.replace({name:'Manage'});
-        }
         else if ( this.get_menu_authority('M005') ){
           this.$router.replace({name:'Gene'});
+        }
+        else if ( this.get_menu_authority('M002') ){
+          this.$router.replace({name:'Company'});
+        }
+        else if ( this.get_menu_authority('M004') ){
+          this.$router.replace({name:'Manage'});
         }
         else if ( this.get_menu_authority('M006') ){
           this.$router.replace({name:'Result'});
