@@ -222,8 +222,7 @@ dtc-gene-in-admin/
         │   ├── Pgx/                  # PGx 검사 관리 (Pgx.vue)
         │   └── Common/
         │       ├── DataTable.vue     # 공통 반응형 테이블 컴포넌트
-        │       ├── Calendar.vue      # 달력 컴포넌트
-        │       └── Holiday.vue       # 영업일 관리 모달
+        │       └── Calendar.vue      # 달력 컴포넌트
         └── mixin/
             └── authority.js          # 메뉴 권한 체크 믹스인
 ```
