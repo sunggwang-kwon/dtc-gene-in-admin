@@ -23,14 +23,11 @@
         <div v-if="is_show_search">
           <v-row class="mx-1" align="end">
             <v-col cols="3" style="min-width:260px;">
-              <div v-if="date_type=='R'" style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
-              <div v-else-if="date_type=='C'" style="font-size:11pt; color:rgba(0,0,0,0.5)">등록일자</div>
-              <div><v-text-field :value="date_range" readonly dense outlined hide-details append-icon="mdi-calendar-month" @click:append="open_calendar"></v-text-field></div>
+              <v-text-field :value="date_range" readonly dense outlined hide-details append-icon="mdi-calendar-month" @click:append="open_calendar" :label="date_type=='R' ? '의뢰일자' : '등록일자'"></v-text-field>
               <calendar ref="calendar" @commit="set_calendar" @date_type="set_date_type"></calendar>
             </v-col>
             <v-col cols="4">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">ID/검사자명/연락처</div>
-              <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
+              <v-text-field v-model="search_value" dense outlined hide-details clearable label="ID/검사자명/연락처"></v-text-field>
             </v-col>
           </v-row>
           <v-row class="mx-1" align="center" justify="end">
@@ -111,14 +108,11 @@
         </v-row>
         <v-row v-if="is_show_search" class="mx-1" align="center">
           <v-col cols="12">
-            <div v-if="date_type=='R'" style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
-            <div v-else-if="date_type=='C'" style="font-size:11pt; color:rgba(0,0,0,0.5)">등록일자</div>
-            <div><v-text-field :value="date_range" readonly dense outlined hide-details append-icon="mdi-calendar-month" @click:append="open_calendar"></v-text-field></div>
+            <v-text-field :value="date_range" readonly dense outlined hide-details append-icon="mdi-calendar-month" @click:append="open_calendar" :label="date_type=='R' ? '의뢰일자' : '등록일자'"></v-text-field>
             <m-calendar ref="calendar" @commit="set_calendar" @date_type="set_date_type"></m-calendar>
           </v-col>
           <v-col cols="12" class="pt-0">
-            <div style="font-size:11pt; color:rgba(0,0,0,0.5)">ID/검사자명/연락처</div>
-            <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
+            <v-text-field v-model="search_value" dense outlined hide-details clearable label="ID/검사자명/연락처"></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-btn @click="page=1;get_patient_list();" dark color="search_btn" block :elevation="0">조회</v-btn>

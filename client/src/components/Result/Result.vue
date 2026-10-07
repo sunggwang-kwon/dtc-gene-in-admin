@@ -24,20 +24,16 @@
           <v-form ref="form">
             <v-row class="mx-1" align="end">
               <v-col cols="2">
-                <div style="font-size:11pt; color:rgba(0,0,0,0.5)">검색조건<span style="color:red"> *</span></div>
-                <div><v-select v-model="search_type" @change="patient_id=null;request_date=null;" dense outlined hide-details :items="['ID', '이름']"></v-select></div>
+                <v-select v-model="search_type" @change="patient_id=null;request_date=null;" dense outlined hide-details :items="['ID', '이름']" label="검색조건"></v-select>
               </v-col>
               <v-col cols="2" class="pl-0">
-                <div style="font-size:11pt; color:rgba(0,0,0,0.5)">검색어<span style="color:red"> *</span></div>
-                <div><v-text-field v-model="search_value" @change="patient_id=null;request_date=null;" dense outlined hide-details :rules="[required]"></v-text-field></div>
+                <v-text-field v-model="search_value" @change="patient_id=null;request_date=null;" dense outlined hide-details :rules="[required]" label="검색어"></v-text-field>
               </v-col>
               <v-col cols="2" class="pl-0">
-                <div style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
-                <div><v-text-field v-model="request_date" readonly dense outlined hide-details></v-text-field></div>
+                <v-text-field v-model="request_date" readonly dense outlined hide-details label="의뢰일자"></v-text-field>
               </v-col>
               <v-col cols="auto" class="pl-0">
-                <div style="font-size:11pt; color:rgba(0,0,0,0.5)">결과지 템플릿 버전</div>
-                <div><v-text-field v-model="selected_template_name" dense outlined hide-details :readonly="true" append-icon="mdi-cog" @click:append="open_template_dialog"></v-text-field></div>
+                <v-text-field v-model="selected_template_name" dense outlined hide-details :readonly="true" append-icon="mdi-cog" @click:append="open_template_dialog" label="결과지 템플릿 버전"></v-text-field>
               </v-col>
             </v-row>
             <v-row class="mx-1" align="center" justify="end">
@@ -163,16 +159,13 @@
         <v-form ref="form">
           <v-row v-if="is_show_search" class="mx-1" align="center">
             <v-col cols="12" class="pt-0">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">검색조건<span style="color:red"> *</span></div>
-              <div><v-select v-model="search_type" @change="patient_id=null;request_date=null;" dense outlined hide-details :items="['ID', '이름']"></v-select></div>
+              <v-select v-model="search_type" @change="patient_id=null;request_date=null;" dense outlined hide-details :items="['ID', '이름']" label="검색조건"></v-select>
             </v-col>
             <v-col cols="12" class="pt-0">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">검색어<span style="color:red"> *</span></div>
-              <div><v-text-field v-model="search_value" @change="patient_id=null;request_date=null;" dense outlined hide-details :rules="[required]"></v-text-field></div>
+              <v-text-field v-model="search_value" @change="patient_id=null;request_date=null;" dense outlined hide-details :rules="[required]" label="검색어"></v-text-field>
             </v-col>
             <v-col cols="12" class="pt-0">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자</div>
-              <div><v-text-field v-model="request_date" readonly dense outlined hide-details></v-text-field></div>
+              <v-text-field v-model="request_date" readonly dense outlined hide-details label="의뢰일자"></v-text-field>
             </v-col>
             <v-col cols="12" class="pt-0">
               <v-btn @click="page=1;get_result_list(true);" dark color="search_btn" block :elevation="0">조회</v-btn>

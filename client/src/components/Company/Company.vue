@@ -23,8 +23,7 @@
         <div v-if="is_show_search">
           <v-row class="mx-1" align="end">
             <v-col cols="3">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">거래처명/담당자</div>
-              <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
+              <v-text-field v-model="search_value" dense outlined hide-details clearable label="거래처명/담당자"></v-text-field>
             </v-col>
             <v-spacer></v-spacer>
             <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
@@ -96,8 +95,7 @@
         </v-row>
         <v-row v-if="is_show_search" class="mx-1" align="center">
           <v-col cols="12">
-            <div style="font-size:11pt; color:rgba(0,0,0,0.5)">거래처명/담당자</div>
-            <div><v-text-field v-model="search_value" dense outlined hide-details clearable placeholder="전체"></v-text-field></div>
+            <v-text-field v-model="search_value" dense outlined hide-details clearable label="거래처명/담당자"></v-text-field>
           </v-col>
           <v-col cols="12">
             <v-btn @click="page=1;get_company_list()" dark color="search_btn" block :elevation="0">조회</v-btn>

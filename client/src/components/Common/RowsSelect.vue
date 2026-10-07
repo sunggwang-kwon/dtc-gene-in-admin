@@ -7,6 +7,7 @@
     outlined
     hide-details
     style="width:120px;"
+    class="rows-select-box"
   ></v-select>
 </template>
 
