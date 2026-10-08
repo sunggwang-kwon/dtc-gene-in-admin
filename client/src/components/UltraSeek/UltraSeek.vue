@@ -32,7 +32,26 @@
             <v-col cols="4">
               <v-text-field v-model="search_value" @keydown.enter="page=1;get_ultraseek_list();" dense outlined hide-details clearable label="ID/수검자명/기관명"></v-text-field>
             </v-col>
-            <v-spacer></v-spacer>
+          </v-row>
+          <v-row class="mx-1 pt-2" align="center" justify="end">
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="excel_upload_patient" dark :elevation="0">검사자업로드</v-btn>
+            </v-col>
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="excel_download_patient" dark :elevation="0">검사자다운로드</v-btn>
+            </v-col>
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="excel_upload_result" dark :elevation="0">결과지 업로드</v-btn>
+            </v-col>
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="selected_item.length > 0 ? download_results() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">결과지 다운로드</v-btn>
+            </v-col>
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="add_patient" dark :elevation="0">추가</v-btn>
+            </v-col>
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+              <v-btn @click="selected_item.length > 0 ? delete_patients() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
+            </v-col>
             <v-col cols="auto">
               <v-btn @click="page=1;get_ultraseek_list();" dark color="search_btn" :elevation="0">조회</v-btn>
             </v-col>
@@ -58,7 +77,7 @@
       </v-row>
       <v-row class="mx-1" align="center">
         <v-col class="pt-0">
-          <data-table @sort="sort_item" @link="click_file" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :select="false" :detail="false"></data-table>
+          <data-table @select="select_item" @sort="sort_item" @link="click_file" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :detail="false"></data-table>
         </v-col>
       </v-row>
     </div>
@@ -71,6 +90,9 @@
         </v-row>
       </v-app-bar>
     </div>
+    <excel-upload-patient ref="excel_upload_patient" :endpoint="api_endpoints.UPLOAD_PATIENT" @refresh="get_ultraseek_list"></excel-upload-patient>
+    <upload-result ref="upload_result" :endpoint="api_endpoints.UPLOAD_RESULT" @refresh="get_ultraseek_list"></upload-result>
+    <add-patient-modal ref="add_patient_modal" :endpoint="api_endpoints.ADD_PATIENT" @refresh="get_ultraseek_list"></add-patient-modal>
   </v-container>
 
   <!-- mobile -->
@@ -121,9 +143,38 @@
       </v-row>
       <v-row class="mx-1" align="center">
         <v-col>
-          <data-table @sort="sort_item" @link="click_file" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :select="false" :detail="false"></data-table>
+          <data-table @select="select_item" @sort="sort_item" @link="click_file" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :detail="false"></data-table>
         </v-col>
       </v-row>
+    </div>
+    <div :style="'position:fixed; bottom:' + ($vuetify.application.bottom) + 'px;right:10%;'">
+      <v-menu offset-y top>
+        <template v-slot:activator="{on, attrs}">
+          <v-btn v-bind="attrs" v-on="on" icon :elevation="0">
+            <v-icon size="50">mdi-plus-circle</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="excel_upload_patient" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle>검사자업로드</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="excel_download_patient" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle>검사자다운로드</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="excel_upload_result" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle>결과지 업로드</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="selected_item.length > 0 ? download_results() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">결과지 다운로드</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="add_patient" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle>추가</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="selected_item.length > 0 ? delete_patients() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제</v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
     <div id="tail">
       <v-app-bar color="#f5f9fa" style="border-left:1px solid rgba(0,0,0,0.12);border-right:1px solid rgba(0,0,0,0.12);" bottom app :elevation="0">
@@ -134,6 +185,9 @@
         </v-row>
       </v-app-bar>
     </div>
+    <excel-upload-patient ref="excel_upload_patient" :endpoint="api_endpoints.UPLOAD_PATIENT" @refresh="get_ultraseek_list"></excel-upload-patient>
+    <upload-result ref="upload_result" :endpoint="api_endpoints.UPLOAD_RESULT" @refresh="get_ultraseek_list"></upload-result>
+    <add-patient-modal ref="add_patient_modal" :endpoint="api_endpoints.ADD_PATIENT" @refresh="get_ultraseek_list"></add-patient-modal>
   </v-container>
 </template>
 
@@ -146,6 +200,9 @@ import mpagination from '@/components/Common/MPagination'
 import rowsselect from '@/components/Common/RowsSelect'
 import calendar from '@/components/Common/Calendar'
 import mcalendar from '@/components/Common/MCalendar'
+import exceluploadpatient from '@/components/UltraSeek/ExcelUploadPatient'
+import uploadresult from '@/components/UltraSeek/UploadResult'
+import addpatientmodal from '@/components/UltraSeek/AddPatientModal'
 
 export default {
   name: 'UltraSeek',
@@ -156,7 +213,10 @@ export default {
     'm-pagination': mpagination,
     'rows-select': rowsselect,
     'calendar': calendar,
-    'm-calendar': mcalendar
+    'm-calendar': mcalendar,
+    'excel-upload-patient': exceluploadpatient,
+    'upload-result': uploadresult,
+    'add-patient-modal': addpatientmodal
   },
   data: () => ({
     is_show_search: true,
@@ -174,6 +234,16 @@ export default {
       { text: '등록일자', value: '' },
       { text: '완료일자', value: 'complete' }
     ],
+
+    selected_item: [],
+    api_endpoints: {
+      UPLOAD_PATIENT: '',
+      DOWNLOAD_PATIENT: '',
+      UPLOAD_RESULT: '',
+      DOWNLOAD_RESULT: '',
+      ADD_PATIENT: '',
+      DELETE_PATIENT: ''
+    },
 
     table_top: null,
     item_cnt: 0,
@@ -280,6 +350,9 @@ export default {
       this.page = 1;
       this.get_ultraseek_list();
     },
+    select_item: function(item) {
+      this.selected_item = item;
+    },
     sort_item: function(sort, order) {
       if (this.item_cnt === 0) return;
       this.sort = sort;
@@ -293,7 +366,121 @@ export default {
       }
       alert('결과 파일: ' + item.fseq);
     },
+    excel_upload_patient: function() {
+      this.$refs.excel_upload_patient.open();
+    },
+    excel_download_patient: async function() {
+      if (!this.api_endpoints.DOWNLOAD_PATIENT) {
+        alert('해당 기능은 준비 중입니다.');
+        return;
+      }
+      if (this.item_cnt === 0 || !this.items || this.items.length === 0) {
+        alert('다운로드할 검사자 데이터가 없습니다.');
+        return;
+      }
+      let data = {
+        fromDate: this.from_date,
+        toDate: this.to_date,
+        dtType: this.dt_type || null
+      };
+      let ids = [];
+      if (this.selected_item.length > 0) {
+        this.selected_item.forEach(index => {
+          ids.push(this.items[index].patient_id);
+        });
+        data.patient_ids = ids;
+      }
+      this.$store.commit('load', true);
+      let res = await this.postDownload(this.api_endpoints.DOWNLOAD_PATIENT, data);
+      this.$store.commit('load', false);
+      if (res && res.data) {
+        if (res.data.size !== undefined && res.data.size === 0) {
+          alert('다운로드할 검사자 데이터가 없습니다.');
+          return false;
+        }
+        let fileURL = window.URL.createObjectURL(new Blob([res.data], { type: 'application/vnd.ms-excel' }));
+        let fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        let fileName = ids.length > 0 ? ('UltraSeek_list_' + ids[0] + (ids.length > 1 ? '_외' + (ids.length - 1) + '건' : '') + '.xls') : ('UltraSeek_list_' + this.from_date + '_' + this.to_date + '.xls');
+        fileLink.setAttribute('download', fileName);
+        document.body.appendChild(fileLink);
+        fileLink.click();
+        return true;
+      }
+      return false;
+    },
+    excel_upload_result: function() {
+      this.$refs.upload_result.open();
+    },
+    download_results: async function() {
+      if (this.selected_item.length === 0) {
+        alert('다운로드할 대상을 선택하세요.');
+        return;
+      }
+      if (!this.api_endpoints.DOWNLOAD_RESULT) {
+        alert('해당 기능은 준비 중입니다.');
+        return;
+      }
+      let ids = [];
+      this.selected_item.forEach(index => {
+        ids.push(this.items[index].patient_id);
+      });
+      let data = {
+        patient_ids: ids
+      };
+      this.$store.commit('load', true);
+      let res = await this.postDownload(this.api_endpoints.DOWNLOAD_RESULT, data);
+      this.$store.commit('load', false);
+      if (res && res.data) {
+        let fileURL = window.URL.createObjectURL(new Blob([res.data]));
+        let fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        let fileName = ids.length > 0 ? ('UltraSeek_results_' + ids[0] + (ids.length > 1 ? '_외' + (ids.length - 1) + '건' : '') + '.zip') : 'UltraSeek_results.zip';
+        fileLink.setAttribute('download', fileName);
+        document.body.appendChild(fileLink);
+        fileLink.click();
+        return true;
+      }
+      return false;
+    },
+    add_patient: function() {
+      this.$refs.add_patient_modal.open();
+    },
+    delete_patients: async function() {
+      if (this.selected_item.length === 0) {
+        alert('삭제할 대상을 선택하세요.');
+        return;
+      }
+      let con = confirm('선택한 검사자 ' + this.selected_item.length + '건을 삭제하시겠습니까?');
+      if (!con) return;
+
+      if (!this.api_endpoints.DELETE_PATIENT) {
+        alert('해당 기능은 준비 중입니다.');
+        return;
+      }
+      let error_cnt = 0;
+      this.$store.commit('load', true);
+      for (let i = 0; i < this.selected_item.length; i++) {
+        let data = {
+          transaction: 'delete',
+          patient_id: this.items[this.selected_item[i]].patient_id
+        };
+        let res = await this.post(this.api_endpoints.DELETE_PATIENT, data);
+        if (!res) {
+          error_cnt++;
+        }
+      }
+      this.$store.commit('load', false);
+      if (error_cnt === 0) {
+        alert('삭제되었습니다.');
+      } else {
+        alert('에러가 ' + error_cnt + '건 발생했습니다.');
+      }
+      this.selected_item = [];
+      this.get_ultraseek_list();
+    },
     get_ultraseek_list: async function() {
+      this.selected_item = [];
       let searchVal = this.search_value ? this.search_value.trim() : null;
       let data = {
         page: this.page,

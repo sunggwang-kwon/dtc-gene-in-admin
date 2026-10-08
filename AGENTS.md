@@ -139,6 +139,8 @@
 - **검색 영역 필드 및 라벨 정책**:
   - 각 목록 페이지 상단의 검색 영역 필드는 별도의 상단 `<div>` 라벨을 분리하지 않고 컴포넌트 내장 `label` 속성으로 일원화합니다.
   - 검색 헤더 영역(`#header > div`)에는 `#f9fafb` 연회색 배경이 적용되어 본문 테이블과 자연스럽게 구분됩니다.
+- **검색 영역 상/하 2단 분리 표준화**:
+  - 모든 목록 조회 화면(`Manage`, `Result`, `UltraSeek`, `Company`, `Member`, `Gene`)은 검색 입력 필드(날짜 피커, 셀렉트, 텍스트필드 등)를 상단 1열에 두고, 액션 버튼 그룹(`검사자업로드`, `다운로드`, `추가`, `삭제`, `조회` 등)은 하단 2열에 우측 정렬(`v-row class="mx-1 pt-2" align="center" justify="end"`)로 분리 배치하여 입력창 너비 확보와 시각적 안정성을 일원화합니다.
 - **하단 툴바 (`v-toolbar--bottom`)**: 페이지네이션 및 액션 버튼이 위치하는 하단 바는 `#f9fafb` 배경과 상단 경계선(`1px solid rgb(223, 223, 223)`)을 적용하여 화면 하단에 안정감 있게 고정됩니다.
 - **데이터 테이블 헤더 & RowsSelect**:
   - 테이블 헤더는 `#f1f3f4` 배경을 적용하여 시각적 피로도를 낮췄습니다.
@@ -223,10 +225,10 @@ dtc-gene-in-admin/
         │   ├── Member/               # 회원/사용자 관리 (Member.vue, DetailMember.vue)
         │   ├── Company/              # 거래처 관리 (Company.vue, DetailCompany.vue)
         │   ├── Type/                 # 검사항목 관리 (Type.vue, DetailType.vue)
-        │   ├── Manage/               # 검사자(환자) 관리 (Manage.vue, DetailManage.vue)
+        │   ├── Manage/               # 검사자(환자) 관리 (Manage.vue, DetailManage.vue, ExcelUploadPatient.vue)
         │   ├── Gene/                 # 유전자 관리 (Gene.vue, DetailGene.vue)
-        │   ├── Result/               # 검사결과 관리 (Result.vue, DetailResult.vue)
-        │   ├── UltraSeek/            # UltraSEEK 검사 관리 (UltraSeek.vue)
+        │   ├── Result/               # 검사결과 관리 (Result.vue, DetailResult.vue, ExcelUploadResult.vue)
+        │   ├── UltraSeek/            # UltraSEEK 검사 관리 (UltraSeek.vue, ExcelUploadPatient.vue, UploadResult.vue, AddPatientModal.vue)
         │   ├── Pgx/                  # PGx 검사 관리 (Pgx.vue)
         │   └── Common/
         │       ├── DataTable.vue     # 공통 반응형 테이블 컴포넌트

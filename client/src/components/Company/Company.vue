@@ -25,7 +25,8 @@
             <v-col cols="3">
               <v-text-field v-model="search_value" dense outlined hide-details clearable label="거래처명/담당자"></v-text-field>
             </v-col>
-            <v-spacer></v-spacer>
+          </v-row>
+          <v-row class="mx-1 pt-2" align="center" justify="end">
             <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
               <v-btn @click="$router.push({name:'DetailCompany', query:{transaction:'insert'}})" dark :elevation="0">추가</v-btn>
             </v-col>
