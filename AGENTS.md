@@ -249,7 +249,7 @@ dtc-gene-in-admin/
 | **`M002`** | 거래처관리 | `/company` | `Company.vue` / `DetailCompany.vue` | 분석 의뢰 거래처 및 담당자 관리 |
 | **`M004`** | 검사자관리 | `/manage` | `Manage.vue` / `DetailManage.vue` | 검사 대상자(환자) 접수 및 검체 관리 |
 | **`M006`** | 검사결과 | `/result` | `Result.vue` / `DetailResult.vue` | 분석 결과 등록, 엑셀 업로드, 결과지 출력 |
-| **`M007`** | UltraSEEK 검사 | `/ultraseek` | `UltraSeek.vue` | UltraSEEK 분석 관리 (준비 중 안내 화면) |
+| **`M007`** | UltraSEEK 검사 | `/ultraseek` | `UltraSeek.vue` | UltraSEEK 검사 수검자 목록 조회 및 관리 |
 | **`M008`** | PGx 검사 | `/pgx` | `Pgx.vue` | PGx 약물유전체 검사 관리 (준비 중 안내 화면) |
 
 ### 8.1. 폼 컨트롤 및 타이포그래피 표준 규격

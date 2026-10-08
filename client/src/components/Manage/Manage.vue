@@ -223,14 +223,15 @@ export default {
       {key:'patient_id', text:'아이디', align:'center'},
       {key:'patient_name', text:'검사자명', align:'center'},
       {key:'gender', text:'성별', align:'center', width:'6%'},
-      {key:'request_date', text:'의뢰일자', align:'center', width:'9%'},
-      {key:'receipt_date', text:'입고일자', align:'center', width:'9%'}, // 백엔드 수정 전: create_time 임시 매핑
-      {key:'result_date', text:'결과입력일', align:'center', width:'9%'},
-      {key:'age', text:'나이', align:'center', width:'6%'},
+      {key:'mobile', text:'연락처', align:'center', width:'10%'},
+      {key:'request_date', text:'의뢰일자', align:'center', width:'8%'},
+      {key:'receipt_date', text:'입고일자', align:'center', width:'8%'}, // 백엔드 수정 전: create_time 임시 매핑
+      {key:'result_date', text:'결과입력일', align:'center', width:'8%'},
+      {key:'age', text:'나이', align:'center', width:'5%'},
       {key:'check_status', text:'진행상태', align:'center', width:'8%'},
       {key:'lims_id', text:'등록자', align:'center'},
-      {key:'create_time', text:'등록일', align:'center', width:'9%'},
-      {key:'modify_time', text:'수정일', align:'center', width:'9%', link:true}
+      {key:'create_time', text:'등록일', align:'center', width:'8%'},
+      {key:'modify_time', text:'수정일', align:'center', width:'8%', link:true}
     ],
     items: [
       /*
@@ -448,12 +449,18 @@ export default {
       this.get_patient_list();
     },
     get_patient_list:async function(){
+      let searchVal = this.search_value ? this.search_value.trim() : null;
+      if (searchVal) {
+        if (/^[\d-]+$/.test(searchVal) && searchVal.includes('-')) {
+          searchVal = searchVal.replace(/-/g, '');
+        }
+      }
       let data = {
         page: this.page,
         rows: this.rows,
         sort: this.sort,
         order: this.order,
-        search_value: this.search_value?'%'+this.search_value+'%':null,
+        search_value: searchVal ? '%' + searchVal + '%' : null,
         from_date: this.from_date,
         to_date: this.to_date,
         date_type: this.date_type
@@ -465,7 +472,8 @@ export default {
         this.items = (res.data.info || []).map(item => ({
           ...item,
           // 백엔드 수정 전: 입고일자 키가 없으므로 create_time을 임시 매핑
-          receipt_date: item.create_time
+          receipt_date: item.create_time,
+          mobile: item.mobile || '-'
         }));
         this.$store.commit('manage', {
           page: this.page,
