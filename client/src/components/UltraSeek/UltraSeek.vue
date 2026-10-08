@@ -33,26 +33,26 @@
               <v-text-field v-model="search_value" @keydown.enter="page=1;get_ultraseek_list();" dense outlined hide-details clearable label="ID/수검자명/기관명"></v-text-field>
             </v-col>
           </v-row>
-          <v-row class="mx-1 pt-2" align="center" justify="end">
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+          <v-row class="mx-1" align="center" justify="end">
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="excel_upload_patient" dark :elevation="0">검사자업로드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="excel_download_patient" dark :elevation="0">검사자다운로드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="excel_upload_result" dark :elevation="0">결과지 업로드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? download_results() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">결과지 다운로드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="add_patient" dark :elevation="0">추가</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? delete_patients() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
             </v-col>
-            <v-col cols="auto">
+            <v-col cols="auto" class="py-1">
               <v-btn @click="page=1;get_ultraseek_list();" dark color="search_btn" :elevation="0">조회</v-btn>
             </v-col>
           </v-row>

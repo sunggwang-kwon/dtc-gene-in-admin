@@ -31,22 +31,22 @@
             </v-col>
           </v-row>
           <v-row class="mx-1" align="center" justify="end">
-            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="excel_upload" dark :elevation="0">검사자업로드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="excel_download" dark :elevation="0">다운로드</v-btn>
             </v-col>
-            <v-col cols="auto" class="pr-0">
+            <v-col cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? get_barcode() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">바코드</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="$router.push({name:'DetailManage', query:{transaction:'insert'}})" dark :elevation="0">추가</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? set_patient() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
             </v-col>
-            <v-col cols="auto">
+            <v-col cols="auto" class="py-1">
               <v-btn @click="page=1;get_patient_list();" dark color="search_btn" :elevation="0">조회</v-btn>
             </v-col>
           </v-row>

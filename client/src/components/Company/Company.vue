@@ -26,14 +26,14 @@
               <v-text-field v-model="search_value" dense outlined hide-details clearable label="거래처명/담당자"></v-text-field>
             </v-col>
           </v-row>
-          <v-row class="mx-1 pt-2" align="center" justify="end">
-            <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
+          <v-row class="mx-1" align="center" justify="end">
+            <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="$router.push({name:'DetailCompany', query:{transaction:'insert'}})" dark :elevation="0">추가</v-btn>
             </v-col>
-            <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="pr-0">
+            <v-col v-if="get_menu_authority('M002')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? set_company() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
             </v-col>
-            <v-col cols="auto">
+            <v-col cols="auto" class="py-1">
               <v-btn @click="page=1;get_company_list();" dark color="search_btn" :elevation="0">조회</v-btn>
             </v-col>
           </v-row>

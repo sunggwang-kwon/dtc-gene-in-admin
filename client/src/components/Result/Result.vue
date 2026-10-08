@@ -37,22 +37,22 @@
               </v-col>
             </v-row>
             <v-row class="mx-1" align="center" justify="end">
-              <v-col cols="auto" class="pr-0">
+              <v-col cols="auto" class="py-1 pr-0">
                 <v-btn @click="print_result" :color="item_cnt>0?'primary':'grey'" :ripple="item_cnt>0" dark :elevation="0">결과지 출력</v-btn>
               </v-col>
-              <v-col cols="auto" class="pr-0">
+              <v-col cols="auto" class="py-1 pr-0">
                 <v-btn @click="$refs.result_term_list.open();" dark :elevation="0">기간별 결과지 출력</v-btn>
               </v-col>
-              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
+              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="py-1 pr-0">
                 <v-btn  @click="excel_upload" dark :elevation="0">검사결과 업로드</v-btn>
               </v-col>
-              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
+              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="py-1 pr-0">
                 <v-btn @click="$router.push({name:'DetailResult'})" dark :elevation="0">추가</v-btn>
               </v-col>
-              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="pr-0">
+              <v-col v-if="get_menu_authority('M006')=='A'" cols="auto" class="py-1 pr-0">
                 <v-btn @click="selected_item.length > 0 ? set_result() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
               </v-col>
-              <v-col cols="auto">
+              <v-col cols="auto" class="py-1">
                 <v-btn @click="page=1;get_result_list(true);" dark color="search_btn" :elevation="0">조회</v-btn>
               </v-col>
             </v-row>
