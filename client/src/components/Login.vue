@@ -55,7 +55,19 @@ export default {
     if ( this.$session.has('Lang') ){
       setI18nLocale(this.$session.get('Lang'));
     }
+  },
+  created:function(){
     if ( this.$session.has("jwt") ){
+      this.redirect_to_authorized_menu();
+      return;
+    }
+    if ( this.$cookies.isKey('user_id') ){
+      this.user_id = this.$cookies.get('user_id');
+      this.reg = true;
+    }
+  },
+  methods:{
+    redirect_to_authorized_menu: function(){
       if ( this.get_menu_authority('M001') ){
         this.$router.replace({name:'Member'});
       }
@@ -80,15 +92,7 @@ export default {
       else if ( this.get_menu_authority('M008') ){
         this.$router.replace({name:'Pgx'});
       }
-    }
-  },
-  created:function(){
-    if ( this.$cookies.isKey('user_id') ){
-      this.user_id = this.$cookies.get('user_id');
-      this.reg = true;
-    }
-  },
-  methods:{
+    },
     login: async function(){
       const valid = this.$refs.form.validate();
       if ( !valid ) return;
@@ -115,31 +119,7 @@ export default {
           this.$cookies.remove('user_id');
         }
 
-        //router
-        if ( this.get_menu_authority('M001') ){
-          this.$router.replace({name:'Member'});
-        }
-        else if ( this.get_menu_authority('M003') ){
-          this.$router.replace({name:'Type'});
-        }
-        else if ( this.get_menu_authority('M005') ){
-          this.$router.replace({name:'Gene'});
-        }
-        else if ( this.get_menu_authority('M002') ){
-          this.$router.replace({name:'Company'});
-        }
-        else if ( this.get_menu_authority('M004') ){
-          this.$router.replace({name:'Manage'});
-        }
-        else if ( this.get_menu_authority('M006') ){
-          this.$router.replace({name:'Result'});
-        }
-        else if ( this.get_menu_authority('M007') ){
-          this.$router.replace({name:'UltraSeek'});
-        }
-        else if ( this.get_menu_authority('M008') ){
-          this.$router.replace({name:'Pgx'});
-        }
+        this.redirect_to_authorized_menu();
       }
     }
   }

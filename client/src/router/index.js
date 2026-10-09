@@ -118,11 +118,55 @@ const DETAIL_MAP = {
   Result: 'DetailResult',
 };
 
+const MENU_AUTHORITY_ORDER = [
+  { code: 'M001', name: 'Member' },
+  { code: 'M003', name: 'Type' },
+  { code: 'M005', name: 'Gene' },
+  { code: 'M002', name: 'Company' },
+  { code: 'M004', name: 'Manage' },
+  { code: 'M006', name: 'Result' },
+  { code: 'M007', name: 'UltraSeek' },
+  { code: 'M008', name: 'Pgx' },
+];
+
+function getDefaultAuthorizedRoute() {
+  const session = Vue.prototype.$session;
+  if (!session || !session.has || !session.has('jwt')) {
+    return 'Member';
+  }
+  const auth = session.get('Auth');
+  if (Array.isArray(auth)) {
+    for (let i = 0; i < MENU_AUTHORITY_ORDER.length; i++) {
+      for (let j = 0; j < auth.length; j++) {
+        if (auth[j].menu_code === MENU_AUTHORITY_ORDER[i].code && auth[j].auth) {
+          return MENU_AUTHORITY_ORDER[i].name;
+        }
+      }
+    }
+  }
+  return 'Member';
+}
+
 router.beforeEach((to, from, next) => {
   if (DETAIL_MAP[to.name] && from.name !== DETAIL_MAP[to.name]) {
     store.commit(to.name.toLowerCase(), null);
   }
-  next();
+
+  const session = Vue.prototype.$session;
+  const isLoggedIn = Boolean(session && session.has && session.has('jwt'));
+  const isWildcard = to.matched.some(record => record.path === '*');
+
+  if (isLoggedIn) {
+    if (to.name === 'Login' || to.path === '/login' || isWildcard) {
+      return next({ name: getDefaultAuthorizedRoute() });
+    }
+    return next();
+  } else {
+    if (to.name === 'Login') {
+      return next();
+    }
+    return next({ name: 'Login' });
+  }
 });
 
 export default router;
