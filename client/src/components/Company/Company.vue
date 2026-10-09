@@ -118,7 +118,7 @@
       </v-row>
       <v-row class="mx-1" align="center">
         <v-col class="pt-0">
-          <data-table @click="click_item" @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top"></data-table>
+          <data-table @click="click_item" @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order"></data-table>
         </v-col>
       </v-row>
     </div>
@@ -291,9 +291,11 @@ export default {
       else{
         alert("에러가 " + error_cnt + "건 발생했습니다.");
       }
+      this.selected_item = [];
       this.get_company_list();
     },
     get_company_list:async function(){
+      this.selected_item = [];
       let data = {
         page: this.page,
         rows: this.rows,

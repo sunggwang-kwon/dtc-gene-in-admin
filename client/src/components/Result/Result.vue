@@ -107,12 +107,14 @@
         <v-card-text class="mt-5">
           <v-row>
             <v-col>
-              <table style="position:relactive; min-width:100%; table-layout:fixed;" border="1">
+              <table style="position:relative; min-width:100%; table-layout:fixed;" border="1">
                 <thead>
-                  <td style="text-align:center;">버전</td>
-                  <td style="text-align:center;">템플릿명</td>
-                  <td style="text-align:center;">시작일</td>
-                  <td style="text-align:center;">종료일</td>
+                  <tr>
+                    <th style="text-align:center;">버전</th>
+                    <th style="text-align:center;">템플릿명</th>
+                    <th style="text-align:center;">시작일</th>
+                    <th style="text-align:center;">종료일</th>
+                  </tr>
                 </thead>
                 <tbody v-if="template_items.length>0">
                   <tr v-for="template_item in template_items" :key="template_item.seq" class="cursor-pointer" @click="select_template(template_item)">
@@ -188,7 +190,7 @@
       </v-row>
       <v-row class="mx-1" align="center">
         <v-col class="pt-0">
-          <data-table @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top" :detail="false"></data-table>
+          <data-table @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :detail="false"></data-table>
         </v-col>
       </v-row>
     </div>
@@ -498,6 +500,7 @@ export default {
       else{
         alert("에러가 " + error_cnt + "건 발생했습니다.");
       }
+      this.selected_item = [];
       this.get_result_list();
     },
     get_template_list:async function(){
@@ -519,6 +522,7 @@ export default {
       return false;
     },
     get_result_list:async function(button){
+      this.selected_item = [];
       if ( this.$refs.form && !this.$refs.form.validate() ){
         return false;
       }

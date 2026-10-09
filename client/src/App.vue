@@ -14,7 +14,7 @@
     </v-app-bar>
     <v-navigation-drawer v-model="navi_drawer" app clipped color="#F0F5FE" :width="$vuetify.breakpoint.smAndDown?226:256" floating>
       <v-list nav>
-        <v-list-item v-if="get_menu_authority('M001')" prepend-icon="mdi-account" to="/member" @click="click_menu('member')" link dense>
+        <v-list-item v-if="get_menu_authority('M001')" to="/member" @click="click_menu('member')" link dense>
           <v-list-item-icon>
             <v-icon color="#444444">mdi-human-male</v-icon>
           </v-list-item-icon>
@@ -30,7 +30,7 @@
             <v-list-item-title>{{ $t('app.menu.type') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="get_menu_authority('M005')" prepend-icon="mdi-dna" to="/gene" @click="click_menu('gene')" link dense>
+        <v-list-item v-if="get_menu_authority('M005')" to="/gene" @click="click_menu('gene')" link dense>
           <v-list-item-icon>
             <v-icon color="#444444">mdi-dna</v-icon>
           </v-list-item-icon>
@@ -99,7 +99,7 @@
   </v-app>
   <v-app v-else>
     <v-main>
-      <router-view :key="$router.fullPath"></router-view>
+      <router-view :key="$route.fullPath"></router-view>
     </v-main>
   </v-app>
 </template>
@@ -123,9 +123,7 @@ export default {
   created:async function(){
     this.sync_locale_from_session();
 
-    window.addEventListener('click', function(){
-      this.click_event = new Date().getTime();
-    }.bind(this));
+    window.addEventListener('click', this.on_window_click);
 
     this.interval = setInterval(async () => {
       if ( this.$session.has('jwt') ){
@@ -168,14 +166,15 @@ export default {
     }, 1000*60*20); //20분 마다 refresh token
   },
   beforeDestroy:function(){
-    window.removeEventListener('click', function(){
-      this.click_event = null;
-    });
+    window.removeEventListener('click', this.on_window_click);
     if ( this.interval ){
       clearInterval(this.interval);
     }
   },
   methods:{
+    on_window_click: function(){
+      this.click_event = new Date().getTime();
+    },
     sync_locale_from_session:function(){
       if ( this.$session.has('Lang') ){
         setI18nLocale(this.$session.get('Lang'));
@@ -202,7 +201,8 @@ export default {
 @import '@/assets/content.css';
 </style>
 
-<style lang="scss"> // 모바일 환경 중앙 배치
+<style lang="scss">
+/* 모바일 환경 중앙 배치 */
 @media (pointer:coarse){
   #app {
     height: calc(var(--vh, 1vh) * 100);

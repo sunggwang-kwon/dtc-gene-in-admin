@@ -84,7 +84,7 @@
           <v-row align="center">
             <v-col class="pt-0">
               <div class="tinycss" style="overflow-x:auto;">
-                <table style="position:relactive; min-width:1200px; table-layout:fixed;" border="1">
+                <table style="position:relative; min-width:1200px; table-layout:fixed;" border="1">
                   <thead>
                     <tr>
                       <th width="40px"></th>

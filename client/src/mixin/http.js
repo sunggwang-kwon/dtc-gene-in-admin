@@ -27,6 +27,7 @@ export default{
         alert(err.message);
         return null;
       });
+      if ( !res ) return null;
       if ( res.status == 200 ){
         if ( res.data.ret == '0000' || res.data.ret == '8888' ){
           return res;
@@ -69,6 +70,7 @@ export default{
         alert(err.message);
         return null;
       });
+      if ( !res ) return null;
       if ( res.status == 200 ){
         if ( res.data.ret == '0000' ){
           return res;
@@ -111,6 +113,7 @@ export default{
         alert(err.message);
         return null;
       });
+      if ( !res ) return null;
       if ( res.status == 200 ){
         return res;
       }
@@ -145,6 +148,7 @@ export default{
         alert(err.message);
         return null;
       });
+      if ( !res ) return null;
       if ( res.status == 200 ){
         return res;
       }

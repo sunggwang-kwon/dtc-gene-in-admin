@@ -300,9 +300,11 @@ export default {
       else{
         alert("에러가 " + error_cnt + "건 발생했습니다.");
       }
+      this.selected_item = [];
       this.get_member_list();
     },
     get_member_list:async function(){
+      this.selected_item = [];
       let data = {
         page: this.page,
         rows: this.rows,

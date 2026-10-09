@@ -446,9 +446,11 @@ export default {
       else{
         alert("에러가 " + error_cnt + "건 발생했습니다.");
       }
+      this.selected_item = [];
       this.get_patient_list();
     },
     get_patient_list:async function(){
+      this.selected_item = [];
       let searchVal = this.search_value ? this.search_value.trim() : null;
       if (searchVal) {
         if (/^[\d-]+$/.test(searchVal) && searchVal.includes('-')) {

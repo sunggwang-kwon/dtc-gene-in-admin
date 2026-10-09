@@ -114,7 +114,7 @@
       </v-row>
       <v-row class="mx-1" align="center">
         <v-col>
-          <data-table @click="click_item" @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top"></data-table>
+          <data-table @click="click_item" @select="select_item" @sort="sort_item" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order"></data-table>
         </v-col>
       </v-row>
     </div>
@@ -278,27 +278,29 @@ export default {
       if ( !con ) return;
       let cnt = 0;
 
+      this.$store.commit('load', true);
       for ( let i = 0 ; i < this.selected_item.length ; i++ ){
         let data = {
           transaction: 'delete',
           seq: this.items[this.selected_item[i]].seq
         }
-        this.$store.commit('load', true);
         let res = await this.post(this.$rootUrl+'/server/gene/set_gene.php', data);
         if ( res ){
           cnt++;
         }
-        this.$store.commit('load', false);
       }
+      this.$store.commit('load', false);
       if ( cnt == this.selected_item.length ){
         alert("삭제되었습니다.");
       }
       else{
         alert("총 " + this.selected_item.length + "건 중 " + cnt + "건 삭제에 성공했습니다.");
       }
+      this.selected_item = [];
       this.get_gene_list();
     },
     get_gene_list:async function(){
+      this.selected_item = [];
       let data = {
         page: this.page,
         rows: this.rows,

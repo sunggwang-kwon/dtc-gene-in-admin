@@ -204,7 +204,7 @@ export default {
     },
     get_snp_code_combo: async function(){
       if ( !this.type_id || this.type_id.length == 0 ){
-        this.snp = null;
+        this.snp_cd = null;
         this.snp_cd_list = [];
         return;
       }
@@ -214,7 +214,7 @@ export default {
       this.$store.commit('load', true);
       let res = await this.get(this.$rootUrl+'/server/result/get_snp_code_combo.php', data);
       if ( res ){
-        this.snp = null;
+        this.snp_cd = null;
         this.snp_cd_list = res.data.info;
       }
       this.$store.commit('load', false);
