@@ -70,6 +70,8 @@ export const store = new Vuex.Store({
    */
     gene:null,
     company:null,
+    ultraseek:null,
+    pgx:null,
     rows: DEFAULT_ROWS, // 목록 페이지당 노출 건수 (사용자별 localStorage 영구 저장)
   },
   getters:{
@@ -94,6 +96,12 @@ export const store = new Vuex.Store({
     company: function(state){
       return state.company;
     },
+    ultraseek: function(state){
+      return state.ultraseek;
+    },
+    pgx: function(state){
+      return state.pgx;
+    },
     rows: function(state){
       return state.rows;
     }
@@ -107,6 +115,8 @@ export const store = new Vuex.Store({
       state.result = null;
       state.gene = null;
       state.company = null;
+      state.ultraseek = null;
+      state.pgx = null;
       state.rows = DEFAULT_ROWS; // localStorage 값은 유지 (재로그인 시 사용자별 복원)
     },
     load: function(state, payload){
@@ -142,6 +152,12 @@ export const store = new Vuex.Store({
     },
     company: function(state, payload){
       state.company = payload;
+    },
+    ultraseek: function(state, payload){
+      state.ultraseek = payload;
+    },
+    pgx: function(state, payload){
+      state.pgx = payload;
     }
   }
 });
