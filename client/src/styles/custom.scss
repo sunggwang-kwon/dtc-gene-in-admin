@@ -863,3 +863,14 @@ table {
 }
 
 
+
+/* 모바일 환경 중앙 배치 */
+@media (pointer:coarse){
+  #app {
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: scroll;
+    .v-application--wrap {
+      min-height: calc(var(--vh, 1vh) * 100) !important;
+    }
+  }
+}

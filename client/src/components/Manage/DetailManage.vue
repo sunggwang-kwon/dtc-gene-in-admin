@@ -8,7 +8,7 @@
       <div :class="$vuetify.breakpoint.mobile?'py-5':'px-3 py-5'" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="$router.go(-1)" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
+            <v-btn @click="go_back" icon><v-icon large>mdi-chevron-left</v-icon></v-btn>
           </v-col>
           <v-col cols="auto" class="pl-0">
             <h3 v-if="transaction=='insert'">검사자 추가</h3>
@@ -77,27 +77,26 @@
                 <v-text-field v-model="birth_date" @input="calc_age" :readonly="transaction=='view'" inputmode="numeric" dense outlined placeholder="YYYY-MM-DD" :rules="[required, birthday_rule]"></v-text-field>
               </v-col>
             </v-row>
-            <!-- 암발생 (백엔드 수정 전 임의 필드: cancer_yn) -->
+            <!-- 암발생 (백엔드 미지원 필드 - 준비중 비활성화) -->
             <v-row align="start" no-gutters>
               <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1">암발생</div>
+                <div class="pt-1 text--secondary">암발생 (준비중)</div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field v-if="transaction=='view'" :value="cancer_yn=='Y' ? '발생' : (cancer_yn=='N' ? '미발생' : '-')" readonly dense outlined></v-text-field>
-                <v-select v-else v-model="cancer_yn" dense outlined :items="[{text:'미발생', value:'N'},{text:'발생', value:'Y'}]" item-text="text" item-value="value"></v-select>
+                <v-text-field value="준비 중" disabled dense outlined hide-details></v-text-field>
               </v-col>
             </v-row>
-            <!-- 암종류 (백엔드 수정 전 임의 필드: cancer_type) -->
-            <v-row align="start" no-gutters>
+            <!-- 암종류 (백엔드 미지원 필드 - 준비중 비활성화) -->
+            <v-row align="start" no-gutters class="mt-4">
               <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1">암종류</div>
+                <div class="pt-1 text--secondary">암종류 (준비중)</div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field v-model="cancer_type" :readonly="transaction=='view'" dense outlined placeholder="암종류 입력 (예: 위암, 대장암 등)"></v-text-field>
+                <v-text-field value="준비 중" disabled dense outlined hide-details></v-text-field>
               </v-col>
             </v-row>
             <!-- 변경사유 -->
-            <v-row v-if="transaction=='update'" align="start" no-gutters>
+            <v-row v-if="transaction=='update'" align="start" no-gutters class="mt-4">
               <v-col cols="12" lg="1" style="min-width:135px;">
                 <div class="pt-1">변경사유<span style="color:red">(*)</span></div>
               </v-col>
@@ -124,7 +123,7 @@
                       <tr>
                         <th width="40px"></th>
                         <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">의뢰일자</th>
-                        <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">입고일자</th>
+                        <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">입고일자 (준비중)</th>
                         <th style="text-align:center; font-size:10pt; font-weight:bold;">검사항목</th>
                       </tr>
                     </thead>
@@ -137,9 +136,9 @@
                         <td v-if="detail_item.flag!='D'">
                           <v-text-field v-model="detail_item.request_date" @change="detail_item.flag!='I'?detail_item.flag='U':null" :readonly="transaction=='view'" dense outlined hide-details placeholder="YYYY-MM-DD" :rules="[birthday_rule]"></v-text-field>
                         </td>
-                        <!-- 입고일자 (백엔드 수정 전 임의 필드: warehousing_date) -->
+                        <!-- 입고일자 (백엔드 미지원 필드 - 준비중 비활성화) -->
                         <td v-if="detail_item.flag!='D'">
-                          <v-text-field v-model="detail_item.warehousing_date" @change="detail_item.flag!='I'?detail_item.flag='U':null" :readonly="transaction=='view'" dense outlined hide-details placeholder="YYYY-MM-DD"></v-text-field>
+                          <v-text-field value="준비 중" disabled dense outlined hide-details></v-text-field>
                         </td>
                         <!-- 검사항목 -->
                         <td v-if="detail_item.flag!='D'">
@@ -181,7 +180,7 @@
         </v-row>
         <v-row v-else-if="transaction=='update'" align="center" justify="end">
           <v-col cols="auto" class="pr-0">
-            <v-btn @click="get_patient().then(()=>{transaction='view'})" color="grey" dark :elevation="0">취소</v-btn>
+            <v-btn @click="update_cancel" color="grey" dark :elevation="0">취소</v-btn>
           </v-col>
           <v-col cols="auto">
             <v-btn v-if="get_menu_authority('M004')=='A'" @click="set_patient" dark :elevation="0">저장</v-btn>
@@ -294,8 +293,15 @@ export default {
         })
       }
     },
+    go_back: function(){
+      if ( window.history.length > 1 ){
+        this.$router.go(-1);
+      } else {
+        this.$router.push({name: 'Manage'});
+      }
+    },
     update_cancel: function(){
-      this.get_member().then(()=>{
+      this.get_patient().then(()=>{
         this.transaction='view';
       });
     },
@@ -313,10 +319,16 @@ export default {
       this.detail.unshift(row);
     },
     calc_age: function(){
-      if ( this.birth_date && this.birth_date.length >= 4 ){
-        let birth_year = parseInt(this.birth_date.split('-')[0]);
-        if ( !isNaN(birth_year) && birth_year > 1900 ){
-          this.age = new Date().getFullYear() - birth_year + 1;
+      if ( this.birth_date && this.birth_date.length >= 10 ){
+        let birth = new Date(this.birth_date);
+        let today = new Date();
+        if ( !isNaN(birth.getTime()) ){
+          let age = today.getFullYear() - birth.getFullYear();
+          let m = today.getMonth() - birth.getMonth();
+          if ( m < 0 || (m === 0 && today.getDate() < birth.getDate()) ){
+            age--;
+          }
+          this.age = age >= 0 ? age : 0;
         }
       }
     },
@@ -345,7 +357,10 @@ export default {
       if ( !this.$refs.form.validate() ){
         return;
       }
-      let con = confirm("입력한 내용으로 검사자 정보를 추가/수정하시겠습니까?");
+      let confirmMsg = this.transaction === 'insert'
+        ? "입력한 내용으로 검사자 정보를 추가하시겠습니까?"
+        : "입력한 내용으로 검사자 정보를 수정하시겠습니까?";
+      let con = confirm(confirmMsg);
       if ( !con ) return;
 
       //빈값 행 제거
@@ -365,13 +380,10 @@ export default {
         delete element['check'];
       });
       
-      let calculated_age = this.age;
-      if ( (calculated_age === null || calculated_age === undefined || calculated_age === '') && this.birth_date ){
-        let birth_year = parseInt(this.birth_date.split('-')[0]);
-        if ( !isNaN(birth_year) ){
-          calculated_age = new Date().getFullYear() - birth_year + 1;
-        }
+      if ( (this.age === null || this.age === undefined || this.age === '') && this.birth_date ){
+        this.calc_age();
       }
+      let calculated_age = this.age;
 
       let data = {
         transaction: this.transaction,

@@ -269,19 +269,23 @@ export default {
         alert("삭제할 대상을 선택하세요.");
         return;
       }
-      let con = confirm("선택한 거래처 " + this.selected_item.length + "건을 삭제하시겠습니까?");
+      let con = confirm("선택한 거래처 " + this.selected_item.length + "건을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.");
       if ( !con ) return;
 
       let error_cnt = 0;
+      let failed_items = [];
       this.$store.commit('load', true);
       for ( let i = 0 ; i < this.selected_item.length ; i++ ){
+        let target_item = this.items[this.selected_item[i]];
+        let target_id = target_item.company_name || target_item.seq || ('선택' + (i + 1));
         let data = {
           transaction: 'delete',
-          seq: this.items[this.selected_item[i]].seq
+          seq: target_item.seq
         };
         let res = await this.post(this.$rootUrl+'/server/company/set_company.php', data);
         if ( !res ){
           error_cnt++;
+          failed_items.push(target_id);
         }
       }
       this.$store.commit('load', false);
@@ -289,7 +293,7 @@ export default {
         alert("삭제되었습니다.");
       }
       else{
-        alert("에러가 " + error_cnt + "건 발생했습니다.");
+        alert("에러가 " + error_cnt + "건 발생했습니다.\n(실패 대상: " + failed_items.join(', ') + ")");
       }
       this.selected_item = [];
       this.get_company_list();

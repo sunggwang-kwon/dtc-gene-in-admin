@@ -2,13 +2,13 @@ import axios from 'axios'
 axios.defaults.headers.get['Pragma'] = 'no-cache';
 axios.defaults.headers.get['Cache-Control'] = 'no-cache, no-store';
 
+function isHtml(data) {
+  return typeof data === 'string' && /<[a-z][\s\S]*>/i.test(data);
+}
+
 export default{
   methods:{
     get:async function(url, data){
-      //let headers = this.$session.getAll();
-      //for ( let key in headers ){
-      //  headers[key] = encodeURI(headers[key]);
-      //}
       let params = new Object;
       for ( let key in data ){
         if ( data[key] ){
@@ -23,21 +23,21 @@ export default{
         },
         params: params,
         responseType: "json"
-      }).catch(err=>{
-        alert(err.message);
+      }).catch(()=>{
+        alert(this.$t('common.networkError'));
         return null;
       });
       if ( !res ) return null;
-      if ( res.status == 200 ){
+      if ( res.status == 200 && res.data && typeof res.data === 'object' && !isHtml(res.data) ){
         if ( res.data.ret == '0000' || res.data.ret == '8888' ){
           return res;
         }
         else{
-          if ( res.data.msg ){
+          if ( res.data.msg && !isHtml(res.data.msg) ){
             alert(res.data.msg);
           }
           else{
-            alert(res.data);
+            alert(this.$t('common.networkError'));
           }
           return null;
         }
@@ -48,10 +48,6 @@ export default{
       }
     },
     post:async function(url, data){
-      //let headers = this.$session.getAll();
-      //for ( let key in headers ){
-      //  headers[key] = encodeURI(headers[key]);
-      //}
       let form_data = new FormData();
       for ( let key in data ){
         if ( data[key] ){
@@ -66,21 +62,21 @@ export default{
         },
         data: form_data,
         responseType: "json"
-      }).catch(err=>{
-        alert(err.message);
+      }).catch(()=>{
+        alert(this.$t('common.networkError'));
         return null;
       });
       if ( !res ) return null;
-      if ( res.status == 200 ){
+      if ( res.status == 200 && res.data && typeof res.data === 'object' && !isHtml(res.data) ){
         if ( res.data.ret == '0000' ){
           return res;
         }
         else{
-          if ( res.data.msg ){
+          if ( res.data.msg && !isHtml(res.data.msg) ){
             alert(res.data.msg);
           }
           else{
-            alert(res.data);
+            alert(this.$t('common.networkError'));
           }
           return null;
         }
@@ -91,10 +87,6 @@ export default{
       }
     },
     download:async function(url, data){
-      //let headers = this.$session.getAll();
-      //for ( let key in headers ){
-      //  headers[key] = encodeURI(headers[key]);
-      //}
       let params = new Object;
       for ( let key in data ){
         if ( data[key] ){
@@ -109,8 +101,8 @@ export default{
         },
         params: params,
         responseType: "blob"
-      }).catch(err=>{
-        alert(err.message);
+      }).catch(()=>{
+        alert(this.$t('common.networkError'));
         return null;
       });
       if ( !res ) return null;
@@ -144,8 +136,8 @@ export default{
         },
         data: form_data,
         responseType: "blob"
-      }).catch(err=>{
-        alert(err.message);
+      }).catch(()=>{
+        alert(this.$t('common.networkError'));
         return null;
       });
       if ( !res ) return null;

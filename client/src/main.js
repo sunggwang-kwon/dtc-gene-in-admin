@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import '@/styles/custom.scss'
+import '@/assets/content.css'
 import i18n, { translateDynamicText } from './i18n'
 import { initDomTranslator } from './i18n/domTranslator'
 
@@ -13,6 +14,19 @@ import VueCookies from 'vue-cookies'
 import VueJWT from 'vuejs-jwt'
 
 Vue.config.productionTip = false
+
+Vue.config.errorHandler = function(err, vm, info) {
+  console.error('[Vue Runtime Error]:', err, info);
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', function(event) {
+    console.error('[Window Error]:', event.error || event.message);
+  });
+  window.addEventListener('unhandledrejection', function(event) {
+    console.error('[Unhandled Promise Rejection]:', event.reason);
+  });
+}
 
 Vue.prototype.lodash = lodash;
 Vue.prototype.$tr = function(text, params){
@@ -28,7 +42,7 @@ Vue.use(VueJWT)
 Vue.use(VueSession, sessionOption)
 Vue.use(VueCookies);
 
-VueCookies.config('1y');
+VueCookies.config('30d');
 
 if (typeof window !== 'undefined' && !window.__i18nDialogPatched) {
   const nativeAlert = window.alert.bind(window);

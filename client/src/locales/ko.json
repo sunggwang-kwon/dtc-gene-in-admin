@@ -1,13 +1,13 @@
 {
   "common": {
-    "networkError": "네트워크 에러가 발생했습니다. 잠시 후 다시 시도하세요."
+    "networkError": "서버와의 연결에 문제가 발생했습니다. 다시 로그인해 주세요."
   },
   "app": {
     "language": "언어",
     "profileEdit": "개인정보수정",
     "logout": "로그아웃",
     "confirmLogout": "로그아웃 하시겠습니까?",
-    "autoLogout": "일정시간 서비스 미사용으로 자동 로그아웃 되었습니다.",
+    "autoLogout": "60분간 활동이 없어 자동으로 로그아웃되었습니다. 다시 로그인해 주세요.",
     "menu": {
       "member": "사용자관리",
       "company": "거래처관리",
@@ -26,7 +26,7 @@
     "rememberId": "아이디저장"
   },
   "validation": {
-    "required": "필수입력입니다.",
+    "required": "필수 입력 항목입니다.",
     "idRule": "4~20자 영문 대/소문자, 숫자를 사용해주세요.",
     "emailRule": "메일 형식이 올바르지 않습니다.",
     "birthdayRule": "날짜 형식이 올바르지 않습니다.",

@@ -35,19 +35,47 @@
           </v-row>
           <v-row class="mx-1" align="center" justify="end">
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
-              <v-btn @click="excel_upload_patient" dark :elevation="0">검사자업로드</v-btn>
+              <v-tooltip bottom color="rgba(0,0,0,0.7)">
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on" class="d-inline-block">
+                    <v-btn :disabled="!api_endpoints.UPLOAD_PATIENT" @click="excel_upload_patient" dark :elevation="0">검사자업로드</v-btn>
+                  </span>
+                </template>
+                <span>준비 중인 기능입니다</span>
+              </v-tooltip>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
-              <v-btn @click="excel_download_patient" dark :elevation="0">검사자다운로드</v-btn>
+              <v-tooltip bottom color="rgba(0,0,0,0.7)">
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on" class="d-inline-block">
+                    <v-btn :disabled="!api_endpoints.DOWNLOAD_PATIENT" @click="excel_download_patient" dark :elevation="0">검사자다운로드</v-btn>
+                  </span>
+                </template>
+                <span>준비 중인 기능입니다</span>
+              </v-tooltip>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
-              <v-btn @click="excel_upload_result" dark :elevation="0">결과지 업로드</v-btn>
+              <v-tooltip bottom color="rgba(0,0,0,0.7)">
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on" class="d-inline-block">
+                    <v-btn :disabled="!api_endpoints.UPLOAD_RESULT" @click="excel_upload_result" dark :elevation="0">결과지 업로드</v-btn>
+                  </span>
+                </template>
+                <span>준비 중인 기능입니다</span>
+              </v-tooltip>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? download_results() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">결과지 다운로드</v-btn>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
-              <v-btn @click="add_patient" dark :elevation="0">추가</v-btn>
+              <v-tooltip bottom color="rgba(0,0,0,0.7)">
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on" class="d-inline-block">
+                    <v-btn :disabled="!api_endpoints.ADD_PATIENT" @click="add_patient" dark :elevation="0">추가</v-btn>
+                  </span>
+                </template>
+                <span>준비 중인 기능입니다</span>
+              </v-tooltip>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? delete_patients() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
@@ -155,20 +183,20 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="excel_upload_patient" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>검사자업로드</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.UPLOAD_PATIENT" @click="api_endpoints.UPLOAD_PATIENT ? excel_upload_patient() : null" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="!api_endpoints.UPLOAD_PATIENT ? 'color: #888888 !important;' : ''">검사자업로드 (준비중)</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="excel_download_patient" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>검사자다운로드</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.DOWNLOAD_PATIENT" @click="api_endpoints.DOWNLOAD_PATIENT ? excel_download_patient() : null" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="!api_endpoints.DOWNLOAD_PATIENT ? 'color: #888888 !important;' : ''">검사자다운로드 (준비중)</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="excel_upload_result" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>결과지 업로드</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.UPLOAD_RESULT" @click="api_endpoints.UPLOAD_RESULT ? excel_upload_result() : null" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="!api_endpoints.UPLOAD_RESULT ? 'color: #888888 !important;' : ''">결과지 업로드 (준비중)</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="get_menu_authority('M007')=='A'" @click="selected_item.length > 0 ? download_results() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">결과지 다운로드</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="add_patient" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>추가</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.ADD_PATIENT" @click="api_endpoints.ADD_PATIENT ? add_patient() : null" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="!api_endpoints.ADD_PATIENT ? 'color: #888888 !important;' : ''">추가 (준비중)</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="get_menu_authority('M007')=='A'" @click="selected_item.length > 0 ? delete_patients() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제</v-list-item-subtitle>
@@ -451,7 +479,7 @@ export default {
         alert('삭제할 대상을 선택하세요.');
         return;
       }
-      let con = confirm('선택한 검사자 ' + this.selected_item.length + '건을 삭제하시겠습니까?');
+      let con = confirm('선택한 검사자 ' + this.selected_item.length + '건을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.');
       if (!con) return;
 
       if (!this.api_endpoints.DELETE_PATIENT) {
@@ -459,22 +487,26 @@ export default {
         return;
       }
       let error_cnt = 0;
+      let failed_items = [];
       this.$store.commit('load', true);
       for (let i = 0; i < this.selected_item.length; i++) {
+        let target_item = this.items[this.selected_item[i]];
+        let target_id = target_item.patient_name || target_item.patient_id || ('선택' + (i + 1));
         let data = {
           transaction: 'delete',
-          patient_id: this.items[this.selected_item[i]].patient_id
+          patient_id: target_item.patient_id
         };
         let res = await this.post(this.api_endpoints.DELETE_PATIENT, data);
         if (!res) {
           error_cnt++;
+          failed_items.push(target_id);
         }
       }
       this.$store.commit('load', false);
       if (error_cnt === 0) {
         alert('삭제되었습니다.');
       } else {
-        alert('에러가 ' + error_cnt + '건 발생했습니다.');
+        alert('에러가 ' + error_cnt + '건 발생했습니다.\n(실패 대상: ' + failed_items.join(', ') + ')');
       }
       this.selected_item = [];
       this.get_ultraseek_list();

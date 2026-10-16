@@ -5,28 +5,29 @@
         <v-card class="px-5 py-10" outlined>
           <v-form ref="form">
             <v-row align="center">
-              <v-col>
-                <v-img src="@/assets/images/geni-in-logo.svg" max-width="200" height="70" contain style="left:50%; transform: translate(-50%);" alt="지니인사이트 로고"></v-img>
+              <v-col class="text-center">
+                <v-img src="@/assets/images/geni-in-logo.svg" max-width="200" height="70" contain style="left:50%; transform: translate(-50%);" alt="지니인사이트 로고" role="img" aria-label="지니인사이트 로고"></v-img>
+                <div class="font-weight-bold text-subtitle-2 mt-2 mb-4" style="color:#555555; user-select:none;">지니인사이트 관리자 시스템</div>
               </v-col>
             </v-row>
             <v-row align="center">
               <v-col class="pb-0">
-              <v-text-field v-model="user_id" :autofocus="true" dense outlined :placeholder="$t('login.idPlaceholder')" :rules="[required]"></v-text-field>
+                <v-text-field v-model="user_id" :autofocus="true" dense outlined :placeholder="$t('login.idPlaceholder')" :rules="[required]" maxlength="50" autocomplete="username"></v-text-field>
               </v-col>
             </v-row>
             <v-row align="center">
               <v-col class="py-0">
-              <v-text-field v-model="user_pw" @keydown.enter="login" type="password" dense outlined :placeholder="$t('login.passwordPlaceholder')" :rules="[required]"></v-text-field>
+                <v-text-field v-model="user_pw" @keydown.enter="login" :type="show_pw ? 'text' : 'password'" :append-icon="show_pw ? 'mdi-eye' : 'mdi-eye-off'" @click:append="show_pw = !show_pw" dense outlined :placeholder="$t('login.passwordPlaceholder')" :rules="[required]" maxlength="100" autocomplete="current-password"></v-text-field>
               </v-col>
             </v-row>
             <v-row align="center">
               <v-col class="pt-0">
-              <v-btn @click="login" dark block dense :elevation="0">{{ $t('login.submit') }}</v-btn>
+                <v-btn @click="login" dark block dense :elevation="0">{{ $t('login.submit') }}</v-btn>
               </v-col>
             </v-row>
             <v-row align="center">
               <v-col class="pb-0">
-              <v-checkbox v-model="reg" class="pa-0 ma-0" hide-details :label="$t('login.rememberId')"></v-checkbox>
+                <v-checkbox v-model="reg" class="pa-0 ma-0" hide-details :label="$t('login.rememberId')"></v-checkbox>
               </v-col>
             </v-row>
           </v-form>
@@ -49,6 +50,7 @@ export default {
       reg: false,
       user_id: null,
       user_pw: null,
+      show_pw: false,
     }
   },
   beforeCreate:function(){
