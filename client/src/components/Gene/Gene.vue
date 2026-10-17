@@ -178,7 +178,7 @@ export default {
     table_top: null,
     item_cnt: 0,
     headers: [
-      {key:'seq', text:'고유번호', align:'right', width:'50px'},
+      {key:'seq', text:'고유번호', align:'center', width:'70px'},
       {key:'test_type_name', text:'검사명', align:'center'},
       {key:'gene_cd', text:'유전자', align:'center'},
       {key:'normal_type', text:'정상타입', align:'center'},

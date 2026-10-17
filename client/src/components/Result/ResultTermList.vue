@@ -23,7 +23,7 @@
             </v-col>
             <v-col cols="3">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">정렬순서<span style="color:red;">(*)</span></div>
-              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'id', value:'ID'},{key:'request_date',value:'의뢰일'},{key:'name',value:'이름'}]"></v-select></div>
+              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'id', value:'ID'},{key:'date', value:'의뢰일'},{key:'name', value:'이름'}]"></v-select></div>
             </v-col>
             <v-col cols="3">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">출력여부<span style="color:red;">(*)</span></div>
@@ -44,7 +44,7 @@
         <div v-else>
           <v-row class="ma-0" align="end">
             <v-col cols="12" style="min-width:200px;">
-              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">의뢰일자<span style="color:red;">(*)</span></div>
+              <div style="font-size:11pt; color:rgba(0,0,0,0.5)">결과등록일<span style="color:red;">(*)</span></div>
               <div><v-text-field :value="date_range" readonly dense outlined hide-details append-icon="mdi-calendar-month" @click:append="open_calendar"></v-text-field></div>
               <m-calendar ref="calendar" @commit="set_calendar"></m-calendar>
             </v-col>
@@ -52,7 +52,7 @@
           <v-row class="ma-0" align="end">
             <v-col cols="12" class="py-0">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">정렬순서<span style="color:red;">(*)</span></div>
-              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'id', value:'ID'},{key:'request_date',value:'의뢰일'},{key:'name',value:'이름'}]"></v-select></div>
+              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'id', value:'ID'},{key:'date', value:'의뢰일'},{key:'name', value:'이름'}]"></v-select></div>
             </v-col>
           </v-row>
           <v-row class="ma-0" align="end">
@@ -63,7 +63,7 @@
           </v-row>
           <v-row class="ma-0" align="end">
             <v-col cols="12">
-              <v-btn @click="page=1;get_term_result_list();" block dark color="red" :elevation="0">조회</v-btn>
+              <v-btn @click="page=1;get_term_result_list();" block dark color="search_btn" :elevation="0">조회</v-btn>
             </v-col>
           </v-row>
           <v-row class="ma-0" align="end">
@@ -112,9 +112,10 @@ export default {
     print_yn: '전체',
 
     headers: [
-      {key:'patient_id', text:'아이디', align:'center'},
-      {key:'patient_name', text:'이름', align:'center'},
+      {key:'request_date', text:'의뢰일자', align:'center'},
       {key:'create_date', text:'결과등록일', align:'center'},
+      {key:'patient_name', text:'검사자명', align:'center'},
+      {key:'patient_id', text:'아이디', align:'center'},
       {key:'print_yn', text:'출력여부', align:'center'}
     ],
     item_cnt: 0,

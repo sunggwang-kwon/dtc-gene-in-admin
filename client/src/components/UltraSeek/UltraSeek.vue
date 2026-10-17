@@ -65,7 +65,14 @@
               </v-tooltip>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
-              <v-btn @click="selected_item.length > 0 ? download_results() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">결과지 다운로드</v-btn>
+              <v-tooltip bottom color="rgba(0,0,0,0.7)">
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on" class="d-inline-block">
+                    <v-btn :class="{'btn-inactive': !api_endpoints.DOWNLOAD_RESULT || selected_item.length === 0}" @click="api_endpoints.DOWNLOAD_RESULT && selected_item.length > 0 ? download_results() : null" :color="api_endpoints.DOWNLOAD_RESULT && selected_item.length > 0 ? 'primary' : ''" :dark="!!api_endpoints.DOWNLOAD_RESULT && selected_item.length > 0" :ripple="!!api_endpoints.DOWNLOAD_RESULT && selected_item.length > 0" :elevation="0">결과지 다운로드</v-btn>
+                  </span>
+                </template>
+                <span>{{ !api_endpoints.DOWNLOAD_RESULT ? '준비 중인 기능입니다' : (selected_item.length === 0 ? '대상을 선택하세요' : '결과지 일괄 다운로드') }}</span>
+              </v-tooltip>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
               <v-tooltip bottom color="rgba(0,0,0,0.7)">
@@ -78,7 +85,14 @@
               </v-tooltip>
             </v-col>
             <v-col v-if="get_menu_authority('M007')=='A'" cols="auto" class="py-1 pr-0">
-              <v-btn @click="selected_item.length > 0 ? delete_patients() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">삭제</v-btn>
+              <v-tooltip bottom color="rgba(0,0,0,0.7)">
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on" class="d-inline-block">
+                    <v-btn :class="{'btn-inactive': !api_endpoints.DELETE_PATIENT || selected_item.length === 0}" @click="api_endpoints.DELETE_PATIENT && selected_item.length > 0 ? delete_patients() : null" :color="api_endpoints.DELETE_PATIENT && selected_item.length > 0 ? 'primary' : ''" :dark="!!api_endpoints.DELETE_PATIENT && selected_item.length > 0" :ripple="!!api_endpoints.DELETE_PATIENT && selected_item.length > 0" :elevation="0">삭제</v-btn>
+                  </span>
+                </template>
+                <span>{{ !api_endpoints.DELETE_PATIENT ? '준비 중인 기능입니다' : (selected_item.length === 0 ? '대상을 선택하세요' : '선택 삭제') }}</span>
+              </v-tooltip>
             </v-col>
             <v-col cols="auto" class="py-1">
               <v-btn @click="page=1;get_ultraseek_list();" dark color="search_btn" :elevation="0">조회</v-btn>
@@ -105,7 +119,7 @@
       </v-row>
       <v-row class="mx-1" align="center">
         <v-col class="pt-0">
-          <data-table @select="select_item" @sort="sort_item" @link="click_file" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :detail="false"></data-table>
+          <data-table @select="select_item" @sort="sort_item" @link="click_file" @click="click_item" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :detail="false"></data-table>
         </v-col>
       </v-row>
     </div>
@@ -171,7 +185,7 @@
       </v-row>
       <v-row class="mx-1" align="center">
         <v-col>
-          <data-table @select="select_item" @sort="sort_item" @link="click_file" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :detail="false"></data-table>
+          <data-table @select="select_item" @sort="sort_item" @link="click_file" @click="click_item" :headers="headers" :items="items" :top="table_top" :sort_="sort" :order_="order" :detail="false"></data-table>
         </v-col>
       </v-row>
     </div>
@@ -192,14 +206,14 @@
           <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.UPLOAD_RESULT" @click="api_endpoints.UPLOAD_RESULT ? excel_upload_result() : null" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle :style="!api_endpoints.UPLOAD_RESULT ? 'color: #888888 !important;' : ''">결과지 업로드 (준비중)</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="selected_item.length > 0 ? download_results() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">결과지 다운로드</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.DOWNLOAD_RESULT || selected_item.length === 0" @click="api_endpoints.DOWNLOAD_RESULT && selected_item.length > 0 ? download_results() : null" :style="!api_endpoints.DOWNLOAD_RESULT || selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="!api_endpoints.DOWNLOAD_RESULT || selected_item.length === 0 ? 'color: #888888 !important;' : ''">결과지 다운로드 {{ !api_endpoints.DOWNLOAD_RESULT ? '(준비중)' : '' }}</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.ADD_PATIENT" @click="api_endpoints.ADD_PATIENT ? add_patient() : null" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle :style="!api_endpoints.ADD_PATIENT ? 'color: #888888 !important;' : ''">추가 (준비중)</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M007')=='A'" @click="selected_item.length > 0 ? delete_patients() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M007')=='A'" :disabled="!api_endpoints.DELETE_PATIENT || selected_item.length === 0" @click="api_endpoints.DELETE_PATIENT && selected_item.length > 0 ? delete_patients() : null" :style="!api_endpoints.DELETE_PATIENT || selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12);border-bottom:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="!api_endpoints.DELETE_PATIENT || selected_item.length === 0 ? 'color: #888888 !important;' : ''">삭제 {{ !api_endpoints.DELETE_PATIENT ? '(준비중)' : '' }}</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -276,16 +290,18 @@ export default {
     table_top: null,
     item_cnt: 0,
     headers: [
-      { key: 'patient_id', text: '아이디', align: 'center', width: '10%' },
-      { key: 'patient_name', text: '검사자명', align: 'center', width: '10%' },
-      { key: 'patient_eng_name', text: '영문명', align: 'center', width: '10%' },
-      { key: 'gender', text: '성별', align: 'center', width: '6%' },
-      { key: 'age', text: '나이', align: 'center', width: '6%' },
-      { key: 'company_name', text: '기관명', align: 'center', width: '14%' },
-      { key: 'blood_date', text: '채혈일자', align: 'center', width: '10%' },
-      { key: 'reg_date', text: '등록일자', align: 'center', width: '10%' },
-      { key: 'fseq', text: '결과파일', align: 'center', width: '12%', link: true },
-      { key: 'bigo', text: '비고', align: 'left' }
+      { key: 'no', text: '번호', align: 'center', width: '5%', sortable: false },
+      { key: 'patient_id', text: 'ID', align: 'center', width: '9%' },
+      { key: 'fseq', text: '파일명', align: 'center', width: '14%', link: true },
+      { key: 'download_yn', text: '다운로드여부', align: 'center', width: '7%' },
+      { key: 'company_name', text: '거래처명', align: 'center', width: '12%' },
+      { key: 'patient_name', text: '검사자명', align: 'center', width: '8%' },
+      { key: 'age', text: '나이', align: 'center', width: '5%' },
+      { key: 'gender', text: '성별', align: 'center', width: '5%' },
+      { key: 'blood_date', text: '채혈일', align: 'center', width: '9%' },
+      { key: 'reg_date', text: '접수일', align: 'center', width: '9%' },
+      { key: 'finish_date', text: '완료일', align: 'center', width: '9%' },
+      { key: 'status', text: '상태', align: 'center', width: '8%' }
     ],
     items: []
   }),
@@ -387,12 +403,34 @@ export default {
       this.order = order;
       this.get_ultraseek_list();
     },
-    click_file: function(item) {
-      if (!item.fseq || item.fseq === '-') {
+    click_file: async function(item) {
+      if (!item || !item.fseq || item.fseq === '-') {
         alert('첨부된 결과 파일이 없습니다.');
         return;
       }
-      alert('결과 파일: ' + item.fseq);
+      if (!this.api_endpoints.DOWNLOAD_RESULT) {
+        alert('결과 파일 다운로드 기능은 준비 중입니다. (파일명: ' + item.fseq + ')');
+        return;
+      }
+      let data = {
+        patient_ids: [item.patient_id]
+      };
+      this.$store.commit('load', true);
+      let res = await this.postDownload(this.api_endpoints.DOWNLOAD_RESULT, data);
+      this.$store.commit('load', false);
+      if (res && res.data) {
+        let fileURL = window.URL.createObjectURL(new Blob([res.data]));
+        let fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', item.fseq);
+        document.body.appendChild(fileLink);
+        fileLink.click();
+      }
+    },
+    click_item: function(item) {
+      if (this.get_menu_authority('M007') === 'A' && this.api_endpoints.ADD_PATIENT) {
+        this.$refs.add_patient_modal.open(item);
+      }
     },
     excel_upload_patient: function() {
       this.$refs.excel_upload_patient.open();
@@ -530,10 +568,14 @@ export default {
       if (res && res.data) {
         if (res.data.ret === '0000' || res.data.ret === '8888') {
           this.item_cnt = (res.data.total || 0) * 1;
-          this.items = (res.data.info || []).map(item => ({
+          this.items = (res.data.info || []).map((item, idx) => ({
             ...item,
+            no: (this.page - 1) * this.rows + idx + 1,
             gender: item.gender === 'M' ? '남자' : (item.gender === 'F' ? '여자' : (item.gender || '-')),
-            fseq: item.fseq || '-'
+            fseq: item.fseq || '-',
+            download_yn: item.download_yn || '-',
+            finish_date: item.finish_date || '-',
+            status: item.status || '-'
           }));
           return true;
         } else {

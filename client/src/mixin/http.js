@@ -50,8 +50,15 @@ export default{
     post:async function(url, data){
       let form_data = new FormData();
       for ( let key in data ){
-        if ( data[key] ){
-          form_data.append(key, data[key]);
+        if ( data[key] !== null && data[key] !== undefined && data[key] !== '' ){
+          if ( Array.isArray(data[key]) ){
+            data[key].forEach(item => {
+              form_data.append(key + '[]', item);
+            });
+          }
+          else{
+            form_data.append(key, data[key]);
+          }
         }
       }
       let res = await axios({

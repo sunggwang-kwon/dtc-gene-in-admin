@@ -291,5 +291,50 @@ dtc-gene-in-admin/
 - Vue 컴포넌트 렌더링 중 발생하는 예외는 `Vue.config.errorHandler`를 통해 콘솔에 추적 로그(`[Vue Runtime Error]:`)를 출력합니다.
 - 브라우저 전역 레벨의 비동기 오류 및 미처리 Promise 거부는 `window.addEventListener('error')` 및 `window.addEventListener('unhandledrejection')`를 통해 안정적으로 포착하여 클라이언트 런타임 무응답 상태를 진단할 수 있도록 지원합니다.
 
+---
 
+## 9. 스토리보드 요구사항 명세 및 구현 현황 (`required/gene_insight_storyboard_v1.0.pptx`)
 
+요구사항 정의서(`required/gene_insight_storyboard_v1.0.pptx`, 총 13페이지) 기준 도메인별 핵심 명세와 현재 프론트엔드/백엔드 구현 상태입니다.
+
+### 9.1. 슬라이드별 요구사항 및 구현 상태 요약
+
+| 슬라이드 | 대상 화면 | 프론트엔드 컴포넌트 | 구현 상태 및 주요 명세 |
+| :---: | :--- | :--- | :--- |
+| **Slide 1** | 관리자 로그인 | `Login.vue` | **[완료]** ID/비밀번호 로그인, 아이디 저장(쿠키), 권한 보유 첫 메뉴 자동 리다이렉트 |
+| **Slide 2** | 사용자 관리 | `Member.vue`, `DetailMember.vue` | **[완료]** ID/사용자명 검색, 읽기/쓰기(`A`) 권한자만 추가/삭제 가능, 일반 사용자는 본인 정보만 수정 가능, 거래처 목록 연동, 언어 항목 제외 |
+| **Slide 3** | 검사종류 | `Type.vue`, `DetailType.vue` | **[완료]** 페이징/검색 없이 전체 목록 단일 페이지 출력, 유전자 마스터 팝업(`Common/Gene.vue`) 연동, 상세 SNP 테이블 내 `평균값` 컬럼 제외, 메인 목록 `번호(no)`, `평균값(risk_avg)` 컬럼 복원 및 `DataTable.vue` 가상 번호 정렬 클릭 방어 완료 |
+| **Slide 4** | 유전자 관리 | `Gene.vue`, `DetailGene.vue` | **[완료]** 검사명/유전자 검색, 목록 및 상세에서 `인종(breed)` 컬럼 제외, 정상/위험 타입 및 빈도율 관리, 목록 `고유번호` 컬럼 전사 일관성 위해 가운데 정렬(`align: 'center'`) 통일 |
+| **Slide 5** | 거래처 관리 | `Company.vue`, `DetailCompany.vue` | **[완료]** 거래처명/담당자 검색, 목록에서 `언어` 항목 삭제, 상세 화면 거래처명/담당자/이메일/연락처/주소/메모 관리 |
+| **Slide 6** | 검사자 관리 | `Manage.vue`, `DetailManage.vue`, `ManageHistory.vue` | **[부분 완료]** 목록 테이블 `번호(no)` 컬럼 추가, 검색 연계를 위한 `연락처` 컬럼 유지, TAT/영업일 관리 제외, 수정 시 변경사유 필수 입력, 수정일 클릭 시 변경내역 팝업 표시 완료. `입고일자`, `암발생`, `암종류`는 백엔드 DB/API 미지원으로 클라이언트에서 준비중(비활성화) 처리 |
+| **Slide 7~8** | 검사 결과 | `Result.vue`, `DetailResult.vue`, `ResultTermList.vue`, `ResultExistPopup.vue` | **[완료]** 초기 디폴트 조회 없음, 다건 존재 시 선택 팝업 표시, 결과 존재 시 결과지 출력 활성, 기간별 결과지 출력 정렬 키 버그(`'date'`) 수정, 모바일 조회 버튼 테마 색상(`search_btn`) 적용, 라벨 결과등록일 통일 및 테이블 헤더에 의뢰일자 컬럼 추가 완료 |
+| **Slide 9~10** | UltraSEEK 검사 | `UltraSeek.vue`, `AddPatientModal.vue`, `UploadResult.vue`, `ExcelUploadPatient.vue` | **[클라이언트 완료]** 테이블 12개 컬럼 체계 매핑, 미구현 액션 버튼 툴팁/비활성화 통일, 추가/수정 모달(거래처 셀렉트, 파일명 정규식 검증, 취소 버튼), 다중 파일 업로드 및 `http.js` 배열 전송 지원 완료 (백엔드 API 배포 전까지 안전 가드 적용) |
+| **Slide 11** | PGx 검사 | `Pgx.vue` | **[클라이언트 완료]** 스토리보드 규격의 UltraSEEK 동일 레이아웃, `엑셀 업로드` 등 전용 명칭 분기, `title-prefix="PGx"` 모달 연동 및 안전 가드 구축 완료 (백엔드 API 배포 시 즉시 연동 가능) |
+| **Slide 12~13** | 고객용 조회 | `dtc-gene-in` (`Login.vue`, `Progress.vue`) | **[완료]** ID(바코드)/성명 로그인, 의뢰일자 콤보박스 변경 시 재조회, 진행사항 및 완료일 표시, 결과 유무별 하단 안내 문구 분기 |
+
+### 9.2. 클라이언트(프론트엔드) 조치 완료 및 연동 대기 현황
+
+1. **검사종류 목록 컬럼 복원 (`Type.vue`)**:
+   - `Type.vue`에 `번호(no)` 및 `평균값(risk_avg)` 컬럼을 복원하였으며, 공통 컴포넌트인 `DataTable.vue`에 가상 번호 및 `sortable: false` 컬럼 클릭 시 서버 정렬 요청을 차단하는 가드를 적용하여 백엔드 SQL 오류를 원천 차단했습니다.
+2. **기간별 결과지 출력 팝업 정비 (`ResultTermList.vue`)**:
+   - 백엔드 명세(`$sort == "date"`)에 맞춰 정렬 키값을 `'date'`로 수정하고, 모바일 조회 버튼을 테마 컬러(`search_btn`)로 표준화했습니다. 또한 백엔드 쿼리 기준(`c.create_time`)에 맞춰 라벨을 `결과등록일`로 일원화하고 테이블 헤더에 `의뢰일자`를 추가했습니다.
+3. **UltraSEEK 검사 화면 및 모달 규격화 (`UltraSeek.vue`, `AddPatientModal.vue`, `UploadResult.vue`, `http.js`)**:
+   - 테이블 헤더를 스토리보드 12개 컬럼 체계로 개편하고 미구현 액션 버튼에 대한 비활성화/툴팁 가드를 일원화했습니다.
+   - `AddPatientModal.vue`에 `titlePrefix` prop(기본값: 'UltraSEEK'), 수정 모드, 거래처 셀렉트, 접수일, 결과지 첨부(ID_파일명.확장자 정규식 검증) 및 취소 버튼을 반영했습니다.
+   - `http.js`의 `post` 메서드에 `Array.isArray` `FormData` 배열(`key + '[]'`) 지원을 추가하고, `UploadResult.vue`를 다중 파일(`multiple`) 선택 및 파일명 규칙 검증으로 개편했습니다.
+4. **PGx 검사 화면 구축 (`Pgx.vue`)**:
+   - 스토리보드 Slide 11 명세에 맞춰 UltraSEEK와 동일한 테이블/검색/모달 연동 레이아웃을 구축하고, 상단 버튼을 `엑셀 업로드`, `엑셀다운로드` 등 PGx 전용 명칭으로 분기했으며 `title-prefix="PGx"`를 주입했습니다. 백엔드 API 배포 전까지 안전 가드가 동작합니다.
+
+### 9.3. 백엔드(서버) 선행 및 보완 필요 명세 (`/home/sgkwon/git/.server/dtc-gene`)
+
+1. **권한 코드(`$auth_`) 매핑 불일치**:
+   - `base/get_check_list.php`, `base/get_check.php`, `base/set_check.php`: 검사종류 권한 코드인 `M003` 대신 `$auth_["M002"]`를 참조함.
+   - `company/get_company_list.php`, `company/get_company.php`, `company/set_company.php`: 거래처관리 권한 코드인 `M002` 대신 `$auth_["M007"]`를 참조함.
+   - `patient/get_patient.php`: 검사자관리 권한 코드인 `M004` 대신 `$auth_["M003"]`를 참조함.
+2. **백엔드 SQL 및 로직 버그**:
+   - `patient/get_patient_list.php` (123라인): TAT 제거 시 `CASE WHEN ...` 절만 주석 처리되고 `END as tat_day`가 주석 해제된 채 남아 있어 조회 건수가 1건 이상일 때 SQL 구문 오류가 발생함.
+   - `company/set_company.php` (67라인): `insert` 분기 내 미완성 조건문 `if( !isset($birth_date) || $birth_date == "" )`이 남아 있어 바로 다음 줄인 `$hlDB->TransactionBegin();` 구문이 조건부로 묶여 있음.
+3. **미구현 DB 컬럼 및 API 엔드포인트**:
+   - 검사자 관리(`patient/`): `입고일자`, `암발생`, `암종류` DB 컬럼 및 조회/저장 로직 미구현.
+   - UltraSEEK 검사(`ultraseek/`): `get_ultraseek_list.php` 내 `완료일(finish_date)`, `상태(status)`, `다운로드여부` 실제 값 반환 미구현 및 검사자 추가/수정/삭제, 검사자 엑셀 업로드/다운로드, 결과지 단일/다중 업로드 및 압축 다운로드 API 미구현.
+   - PGx 검사(`pgx/`): 관련 테이블 및 백엔드 API 전체 미구현.

@@ -19,7 +19,14 @@
               zIndex: top? '1' : '',
             }"
           >
-            <v-btn @click="set_sort(header.key)" :class="sort==header.key?'pa-0 ma-0':'py-0 px-2 ma-0'" text :ripple="false" plain>
+            <v-btn
+              @click="header.key !== 'no' && header.sortable !== false ? set_sort(header.key) : null"
+              :class="sort==header.key?'pa-0 ma-0':'py-0 px-2 ma-0'"
+              :style="header.key === 'no' || header.sortable === false ? 'cursor: default;' : ''"
+              text
+              :ripple="header.key !== 'no' && header.sortable !== false"
+              plain
+            >
               <span style="font-weight:bold;">{{ header.text }}</span>
               <v-icon v-if="sort==header.key&&order=='asc'">mdi-menu-up</v-icon>
               <v-icon v-else-if="sort==header.key&&order=='desc'">mdi-menu-down</v-icon>
@@ -140,6 +147,10 @@ export default {
       this.$emit('select', checked_items);
     },
     set_sort: function(key){
+      let header = (this.headers || []).find(h => h.key === key);
+      if ( key === 'no' || (header && header.sortable === false) ){
+        return;
+      }
       if ( !this.sort || this.sort != key ){
         this.sort = key;
         this.order = 'desc';

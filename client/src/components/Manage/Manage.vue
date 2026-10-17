@@ -220,6 +220,7 @@ export default {
     table_top: null,
     item_cnt: 0,
     headers: [
+      {key:'no', text:'번호', align:'center', width:'5%', sortable:false},
       {key:'patient_id', text:'아이디', align:'center'},
       {key:'patient_name', text:'검사자명', align:'center'},
       {key:'gender', text:'성별', align:'center', width:'6%'},
@@ -475,8 +476,9 @@ export default {
       let res = await this.get(this.$rootUrl+'/server/patient/get_patient_list.php', data);
       if ( res ){
         this.item_cnt = res.data.total*1;
-        this.items = (res.data.info || []).map(item => ({
+        this.items = (res.data.info || []).map((item, idx) => ({
           ...item,
+          no: (this.page - 1) * this.rows + idx + 1,
           // 백엔드 수정 전: 입고일자 키가 없으므로 create_time을 임시 매핑
           receipt_date: item.create_time,
           mobile: item.mobile || '-'

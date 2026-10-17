@@ -145,10 +145,11 @@ export default {
     table_top: null,
     item_cnt: 0,
     headers: [
-      //{key:'no', text:'번호', align:'center'},
+      {key:'no', text:'번호', align:'center', width:'6%', sortable:false},
       {key:'type_name', text:'분류명', align:'center'},
       {key:'type_id', text:'분류코드', align:'center'},
       {key:'type_eng_name', text:'영문명', align:'center'},
+      {key:'risk_avg', text:'평균값', align:'center', width:'8%'},
       {key:'disp_order', text:'출력순서', align:'center', width:'8%'},
       {key:'count', text:'검사등록수', align:'center', width:'10%'},
       {key:'use_yn', text:'사용여부', align:'center', width:'8%'},
@@ -273,6 +274,9 @@ export default {
           this.items.sort((a,b)=>{
             return a.disp_order*1 - b.disp_order*1;
           });
+        }
+        for ( let i = 0 ; i < this.items.length ; i++ ){
+          this.items[i].no = i + 1;
         }
         this.$store.commit('type', {
           sort: this.sort,
