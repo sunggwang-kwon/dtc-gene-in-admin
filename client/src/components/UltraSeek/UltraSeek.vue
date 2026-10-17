@@ -38,7 +38,7 @@
               <v-tooltip bottom color="rgba(0,0,0,0.7)">
                 <template v-slot:activator="{ on, attrs }">
                   <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn :disabled="!api_endpoints.UPLOAD_PATIENT" @click="excel_upload_patient" dark :elevation="0">검사자업로드</v-btn>
+                    <v-btn :class="{'btn-inactive': !api_endpoints.UPLOAD_PATIENT}" @click="api_endpoints.UPLOAD_PATIENT ? excel_upload_patient() : null" :color="api_endpoints.UPLOAD_PATIENT ? 'primary' : ''" :dark="!!api_endpoints.UPLOAD_PATIENT" :elevation="0">검사자업로드</v-btn>
                   </span>
                 </template>
                 <span>준비 중인 기능입니다</span>
@@ -48,7 +48,7 @@
               <v-tooltip bottom color="rgba(0,0,0,0.7)">
                 <template v-slot:activator="{ on, attrs }">
                   <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn :disabled="!api_endpoints.DOWNLOAD_PATIENT" @click="excel_download_patient" dark :elevation="0">검사자다운로드</v-btn>
+                    <v-btn :class="{'btn-inactive': !api_endpoints.DOWNLOAD_PATIENT}" @click="api_endpoints.DOWNLOAD_PATIENT ? excel_download_patient() : null" :color="api_endpoints.DOWNLOAD_PATIENT ? 'primary' : ''" :dark="!!api_endpoints.DOWNLOAD_PATIENT" :elevation="0">검사자다운로드</v-btn>
                   </span>
                 </template>
                 <span>준비 중인 기능입니다</span>
@@ -58,7 +58,7 @@
               <v-tooltip bottom color="rgba(0,0,0,0.7)">
                 <template v-slot:activator="{ on, attrs }">
                   <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn :disabled="!api_endpoints.UPLOAD_RESULT" @click="excel_upload_result" dark :elevation="0">결과지 업로드</v-btn>
+                    <v-btn :class="{'btn-inactive': !api_endpoints.UPLOAD_RESULT}" @click="api_endpoints.UPLOAD_RESULT ? excel_upload_result() : null" :color="api_endpoints.UPLOAD_RESULT ? 'primary' : ''" :dark="!!api_endpoints.UPLOAD_RESULT" :elevation="0">결과지 업로드</v-btn>
                   </span>
                 </template>
                 <span>준비 중인 기능입니다</span>
@@ -71,7 +71,7 @@
               <v-tooltip bottom color="rgba(0,0,0,0.7)">
                 <template v-slot:activator="{ on, attrs }">
                   <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn :disabled="!api_endpoints.ADD_PATIENT" @click="add_patient" dark :elevation="0">추가</v-btn>
+                    <v-btn :class="{'btn-inactive': !api_endpoints.ADD_PATIENT}" @click="api_endpoints.ADD_PATIENT ? add_patient() : null" :color="api_endpoints.ADD_PATIENT ? 'primary' : ''" :dark="!!api_endpoints.ADD_PATIENT" :elevation="0">추가</v-btn>
                   </span>
                 </template>
                 <span>준비 중인 기능입니다</span>
