@@ -312,20 +312,7 @@ dtc-gene-in-admin/
 | **Slide 11** | PGx 검사 | `Pgx.vue` | **[클라이언트 완료]** 스토리보드 규격의 UltraSEEK 동일 레이아웃, `엑셀 업로드` 등 전용 명칭 분기, `title-prefix="PGx"` 모달 연동 및 안전 가드 구축 완료 (백엔드 API 배포 시 즉시 연동 가능) |
 | **Slide 12~13** | 고객용 조회 | `dtc-gene-in` (`Login.vue`, `Progress.vue`) | **[완료]** ID(바코드)/성명 로그인, 의뢰일자 콤보박스 변경 시 재조회, 진행사항 및 완료일 표시, 결과 유무별 하단 안내 문구 분기 |
 
-### 9.2. 클라이언트(프론트엔드) 조치 완료 및 연동 대기 현황
-
-1. **검사종류 목록 컬럼 복원 (`Type.vue`)**:
-   - `Type.vue`에 `번호(no)` 및 `평균값(risk_avg)` 컬럼을 복원하였으며, 공통 컴포넌트인 `DataTable.vue`에 가상 번호 및 `sortable: false` 컬럼 클릭 시 서버 정렬 요청을 차단하는 가드를 적용하여 백엔드 SQL 오류를 원천 차단했습니다.
-2. **기간별 결과지 출력 팝업 정비 (`ResultTermList.vue`)**:
-   - 백엔드 명세(`$sort == "date"`)에 맞춰 정렬 키값을 `'date'`로 수정하고, 모바일 조회 버튼을 테마 컬러(`search_btn`)로 표준화했습니다. 또한 백엔드 쿼리 기준(`c.create_time`)에 맞춰 라벨을 `결과등록일`로 일원화하고 테이블 헤더에 `의뢰일자`를 추가했습니다.
-3. **UltraSEEK 검사 화면 및 모달 규격화 (`UltraSeek.vue`, `AddPatientModal.vue`, `UploadResult.vue`, `http.js`)**:
-   - 테이블 헤더를 스토리보드 12개 컬럼 체계로 개편하고 미구현 액션 버튼에 대한 비활성화/툴팁 가드를 일원화했습니다.
-   - `AddPatientModal.vue`에 `titlePrefix` prop(기본값: 'UltraSEEK'), 수정 모드, 거래처 셀렉트, 접수일, 결과지 첨부(ID_파일명.확장자 정규식 검증) 및 취소 버튼을 반영했습니다.
-   - `http.js`의 `post` 메서드에 `Array.isArray` `FormData` 배열(`key + '[]'`) 지원을 추가하고, `UploadResult.vue`를 다중 파일(`multiple`) 선택 및 파일명 규칙 검증으로 개편했습니다.
-4. **PGx 검사 화면 구축 (`Pgx.vue`)**:
-   - 스토리보드 Slide 11 명세에 맞춰 UltraSEEK와 동일한 테이블/검색/모달 연동 레이아웃을 구축하고, 상단 버튼을 `엑셀 업로드`, `엑셀다운로드` 등 PGx 전용 명칭으로 분기했으며 `title-prefix="PGx"`를 주입했습니다. 백엔드 API 배포 전까지 안전 가드가 동작합니다.
-
-### 9.3. 백엔드(서버) 선행 및 보완 필요 명세 (`/home/sgkwon/git/.server/dtc-gene`)
+### 9.2. 백엔드(서버) 선행 및 보완 필요 결함 명세 (`/home/sgkwon/git/.server/dtc-gene`)
 
 1. **권한 코드(`$auth_`) 매핑 불일치**:
    - `base/get_check_list.php`, `base/get_check.php`, `base/set_check.php`: 검사종류 권한 코드인 `M003` 대신 `$auth_["M002"]`를 참조함.
