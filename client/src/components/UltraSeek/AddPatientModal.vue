@@ -53,7 +53,7 @@
             </v-col>
           </v-row>
 
-          <!-- 고객명 -->
+          <!-- 고객명 (마스킹 안내) -->
           <v-row align="center" no-gutters class="mb-3">
             <v-col cols="12" sm="3">
               <div>고객명<span style="color:red">(*)</span></div>
@@ -65,7 +65,25 @@
                 outlined
                 hide-details="auto"
                 :rules="[required]"
-                placeholder="성명"
+                :placeholder="transaction === 'update' ? '실제 성명을 다시 입력하세요' : '성명'"
+                :hint="transaction === 'update' ? '마스킹된 이름은 복원할 수 없어 실제 이름을 다시 입력해야 합니다' : ''"
+                :persistent-hint="transaction === 'update'"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <!-- 영문명 -->
+          <v-row align="center" no-gutters class="mb-3">
+            <v-col cols="12" sm="3">
+              <div>영문명</div>
+            </v-col>
+            <v-col cols="12" sm="9">
+              <v-text-field
+                v-model="patient_eng_name"
+                dense
+                outlined
+                hide-details="auto"
+                placeholder="영문 성명"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -86,10 +104,10 @@
             </v-col>
           </v-row>
 
-          <!-- 나이 -->
+          <!-- 나이 (필수) -->
           <v-row align="center" no-gutters class="mb-3">
             <v-col cols="12" sm="3">
-              <div>나이</div>
+              <div>나이<span style="color:red">(*)</span></div>
             </v-col>
             <v-col cols="12" sm="9">
               <v-text-field
@@ -98,12 +116,13 @@
                 dense
                 outlined
                 hide-details="auto"
+                :rules="[required]"
                 placeholder="나이"
               ></v-text-field>
             </v-col>
           </v-row>
 
-          <!-- 채취일 (채혈일) -->
+          <!-- 채취일 (채혈일, 수정 시 readonly) -->
           <v-row align="center" no-gutters class="mb-3">
             <v-col cols="12" sm="3">
               <div>채취일</div>
@@ -111,6 +130,7 @@
             <v-col cols="12" sm="9">
               <v-text-field
                 v-model="blood_date"
+                :readonly="transaction === 'update'"
                 type="date"
                 dense
                 outlined
@@ -135,27 +155,19 @@
             </v-col>
           </v-row>
 
-          <!-- 결과지 첨부 (단일 파일, 형식: ID_xxxxxxxxx.zzz) -->
+          <!-- 비고 -->
           <v-row align="center" no-gutters class="mb-3">
             <v-col cols="12" sm="3">
-              <div>결과지 첨부</div>
+              <div>비고</div>
             </v-col>
             <v-col cols="12" sm="9">
-              <v-file-input
-                v-model="result_file"
+              <v-text-field
+                v-model="bigo"
                 dense
                 outlined
                 hide-details="auto"
-                show-size
-                accept=".pdf,.xlsx,.xls,.zip"
-                placeholder="파일 형식: [ID]_[파일명].[확장자]"
-                append-icon="mdi-attachment"
-                prepend-icon=""
-                :rules="[result_file_rule]"
-              ></v-file-input>
-              <div class="caption grey--text mt-1">
-                * 결과지 파일은 1개만 첨부 가능하며, 파일명은 ID_xxxxxxxxx.zzz 형식이어야 합니다.
-              </div>
+                placeholder="비고"
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-form>
@@ -187,6 +199,10 @@ export default {
       type: String,
       default: ''
     },
+    enabled: {
+      type: Boolean,
+      default: true
+    },
     titlePrefix: {
       type: String,
       default: 'UltraSEEK'
@@ -195,15 +211,17 @@ export default {
   data: () => ({
     is_open: false,
     transaction: 'insert',
+    seq: null,
     patient_id: null,
     company_seq: null,
     company_list: [],
     patient_name: null,
+    patient_eng_name: null,
     gender: 'M',
     age: null,
     blood_date: null,
     reg_date: null,
-    result_file: null
+    bigo: null
   }),
   methods: {
     open: async function(item = null) {
@@ -211,32 +229,34 @@ export default {
 
       let now = new Date();
       let year = now.getFullYear();
-      let month = now.getMonth() + 1;
-      let day = now.getDate();
-      if (month < 10) month = '0' + month;
-      if (day < 10) day = '0' + day;
-      const todayStr = year + '-' + month + '-' + day;
+      let month = String(now.getMonth() + 1).padStart(2, '0');
+      let day = String(now.getDate()).padStart(2, '0');
+      const todayStr = `${year}-${month}-${day}`;
 
-      if (item && item.patient_id) {
+      if (item && (item.seq || item.patient_id)) {
         this.transaction = 'update';
+        this.seq = item.seq || null;
         this.patient_id = item.patient_id;
         this.company_seq = item.company_seq || (this.company_list.find(c => c.company_name === item.company_name) || {}).seq || null;
-        this.patient_name = item.patient_name ? item.patient_name.replace(/\*/g, '') : null;
+        this.patient_name = (item.patient_name && !item.patient_name.includes('*')) ? item.patient_name : null;
+        this.patient_eng_name = item.patient_eng_name || null;
         this.gender = item.gender === '여자' || item.gender === 'F' ? 'F' : 'M';
         this.age = item.age || null;
         this.blood_date = item.blood_date || null;
         this.reg_date = item.reg_date || todayStr;
-        this.result_file = null;
+        this.bigo = item.bigo || null;
       } else {
         this.transaction = 'insert';
+        this.seq = null;
         this.patient_id = null;
         this.company_seq = null;
         this.patient_name = null;
+        this.patient_eng_name = null;
         this.gender = 'M';
         this.age = null;
         this.blood_date = null;
         this.reg_date = todayStr;
-        this.result_file = null;
+        this.bigo = null;
       }
 
       this.is_open = true;
@@ -251,7 +271,6 @@ export default {
       if (this.$refs.form) {
         this.$refs.form.reset();
       }
-      this.result_file = null;
       Object.assign(this.$data, this.$options.data());
     },
     get_company_list: async function() {
@@ -261,43 +280,33 @@ export default {
         this.company_list = res.data.info;
       }
     },
-    result_file_rule: function(file) {
-      if (!file) return true;
-      const name = file.name || '';
-      const id = (this.patient_id || '').trim();
-      if (!id) {
-        return '먼저 ID를 입력해 주세요.';
-      }
-      const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp('^' + escapedId + '_.+\\.[^.]+$');
-      if (!regex.test(name)) {
-        return '파일 형식은 ' + id + '_파일명.확장자 이어야 합니다.';
-      }
-      return true;
-    },
     save: async function() {
       if (!this.$refs.form.validate()) {
-        return;
-      }
-      if (!this.endpoint) {
-        alert('해당 기능은 준비 중입니다.');
         return;
       }
       const actionText = this.transaction === 'update' ? '수정' : '등록';
       let con = confirm(this.titlePrefix + ' 검사자 정보를 ' + actionText + '하시겠습니까?');
       if (!con) return;
 
+      let selectedCompany = this.company_list.find(c => c.seq === this.company_seq);
+      let hospitalName = selectedCompany ? selectedCompany.company_name : '';
+
       let data = {
         transaction: this.transaction,
-        patient_id: this.patient_id,
-        company_seq: this.company_seq,
-        patient_name: this.patient_name,
+        patientId: this.patient_id,
+        patientName: this.patient_name,
+        patientEngName: this.patient_eng_name || '',
         gender: this.gender,
+        hospitalName: hospitalName,
         age: this.age,
-        blood_date: this.blood_date,
-        reg_date: this.reg_date,
-        result_file: this.result_file
+        bloodDate: this.blood_date || '',
+        createDate: this.reg_date || '',
+        bigo: this.bigo || ''
       };
+      if (this.transaction === 'update') {
+        data.seq = this.seq;
+      }
+
       this.$store.commit('load', true);
       let res = await this.post(this.endpoint, data);
       this.$store.commit('load', false);

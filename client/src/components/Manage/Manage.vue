@@ -35,7 +35,7 @@
               <v-btn @click="excel_upload" dark :elevation="0">검사자업로드</v-btn>
             </v-col>
             <v-col v-if="get_menu_authority('M004')=='A'" cols="auto" class="py-1 pr-0">
-              <v-btn @click="excel_download" dark :elevation="0">다운로드</v-btn>
+              <v-btn :class="{'btn-inactive': item_cnt === 0}" @click="item_cnt > 0 ? excel_download() : null" :color="item_cnt > 0 ? 'primary' : ''" :dark="item_cnt > 0" :ripple="item_cnt > 0" :elevation="0">다운로드</v-btn>
             </v-col>
             <v-col cols="auto" class="py-1 pr-0">
               <v-btn @click="selected_item.length > 0 ? get_barcode() : null" :color="selected_item.length > 0 ? 'primary' : ''" :class="{'btn-inactive': selected_item.length === 0}" :dark="selected_item.length > 0" :ripple="selected_item.length > 0" :elevation="0">바코드</v-btn>
@@ -149,8 +149,8 @@
           <v-list-item v-if="get_menu_authority('M004')=='A'" @click="excel_upload" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>검사자업로드</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item v-if="get_menu_authority('M004')=='A'" @click="excel_download" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>다운로드</v-list-item-subtitle>
+          <v-list-item v-if="get_menu_authority('M004')=='A'" :disabled="item_cnt === 0" @click="item_cnt > 0 ? excel_download() : null" :style="item_cnt === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="item_cnt === 0 ? 'color: #888888 !important;' : ''">다운로드</v-list-item-subtitle>
           </v-list-item>
           <v-list-item @click="selected_item.length > 0 ? get_barcode() : null" :style="selected_item.length === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle :style="selected_item.length === 0 ? 'color: #888888 !important;' : ''">바코드</v-list-item-subtitle>

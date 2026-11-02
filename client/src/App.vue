@@ -76,10 +76,7 @@
               <v-icon color="#444444">mdi-pill</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>
-                {{ $t('app.menu.pgx') }}
-                <v-chip x-small color="grey lighten-2" class="ml-1" style="font-size: 10px; height: 18px;">준비중</v-chip>
-              </v-list-item-title>
+              <v-list-item-title>{{ $t('app.menu.pgx') }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>

@@ -28,9 +28,6 @@
             accept=".pdf,.xlsx,.xls,.zip"
             :rules="[files_required_rule, files_name_rule]"
           ></v-file-input>
-          <div class="caption grey--text mt-1">
-            * 파일 형식: [수검자ID]_[파일명].[확장자] (예: 8704050010_결과지.pdf)
-          </div>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
@@ -87,36 +84,41 @@ export default {
     },
     files_name_rule: function(v) {
       if (!Array.isArray(v) || v.length === 0) return true;
-      const invalidFiles = v.filter(file => {
+      const invalid = v.filter(file => {
         const name = file ? file.name : '';
-        return !/^[^_]+_.+\.[^.]+$/.test(name);
+        const m = name.match(/^(\d{4})(\d{2})(\d{2})([^_]+)_.+\.[^.]+$/);
+        if (!m) return true;
+        const y = parseInt(m[1], 10), mo = parseInt(m[2], 10), d = parseInt(m[3], 10);
+        const dt = new Date(y, mo - 1, d);
+        return !(dt.getFullYear() === y && dt.getMonth() === mo - 1 && dt.getDate() === d);
       });
-      if (invalidFiles.length > 0) {
-        return '파일명 형식이 올바르지 않습니다: ' + invalidFiles.map(f => f.name).join(', ') + ' (규칙: ID_파일명.확장자)';
+      if (invalid.length > 0) {
+        return '파일명 형식이 올바르지 않습니다: ' + invalid.map(f => f.name).join(', ') +
+               ' (규칙: YYYYMMDD(채혈일) + 수검자ID + _파일명.확장자)';
       }
       return true;
     },
     upload_result: async function() {
-      if (!this.$refs.form.validate()) {
-        return;
-      }
-      if (!this.endpoint) {
-        alert('해당 기능은 준비 중입니다.');
-        return;
-      }
-      let con = confirm(this.files.length + '개의 결과지 업로드를 진행하시겠습니까?');
-      if (!con) return;
+      if (!this.$refs.form.validate()) return;
+      if (!confirm(this.files.length + '개의 결과지 업로드를 진행하시겠습니까? (동일 파일명은 서버에서 덮어쓰기 됩니다)')) return;
 
-      let data = {
-        files: this.files
-      };
       this.$store.commit('load', true);
-      let res = await this.post(this.endpoint, data);
+      let res = await this.postText(this.endpoint, { files: this.files });
       this.$store.commit('load', false);
-      if (res) {
-        alert('저장되었습니다.');
+      if (!res) return;
+
+      let text = res.text;
+      if (!text) {
+        alert('서버에서 처리된 파일이 없습니다. 파일 용량 초과 가능성이 있습니다. 파일 크기를 줄이거나 나누어 업로드해 주세요.');
+        return;
+      }
+      let successCnt = (text.match(/업로드 성공/g) || []).length;
+      if (successCnt > 0) {
+        alert(text);
         this.close();
         this.$emit('refresh');
+      } else {
+        alert(text || '결과지 업로드에 실패했습니다.');
       }
     }
   }

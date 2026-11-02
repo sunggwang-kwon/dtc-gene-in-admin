@@ -23,11 +23,11 @@
             </v-col>
             <v-col cols="3">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">정렬순서<span style="color:red;">(*)</span></div>
-              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'id', value:'ID'},{key:'date', value:'의뢰일'},{key:'name', value:'이름'}]"></v-select></div>
+              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'date', value:'의뢰일'},{key:'id', value:'ID'},{key:'name', value:'검사자명'}]"></v-select></div>
             </v-col>
             <v-col cols="3">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">출력여부<span style="color:red;">(*)</span></div>
-              <div><v-select v-model="print_yn" dense outlined hide-details :items="['전체', 'Y', 'N']"></v-select></div>
+              <div><v-select v-model="print_yn" dense outlined hide-details :items="[{text:'전체', value:'전체'},{text:'출력', value:'Y'},{text:'미출력', value:'N'}]"></v-select></div>
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
@@ -52,13 +52,13 @@
           <v-row class="ma-0" align="end">
             <v-col cols="12" class="py-0">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">정렬순서<span style="color:red;">(*)</span></div>
-              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'id', value:'ID'},{key:'date', value:'의뢰일'},{key:'name', value:'이름'}]"></v-select></div>
+              <div><v-select v-model="sort" dense outlined hide-details item-text="value" item-value="key" :items="[{key:'date', value:'의뢰일'},{key:'id', value:'ID'},{key:'name', value:'검사자명'}]"></v-select></div>
             </v-col>
           </v-row>
           <v-row class="ma-0" align="end">
             <v-col cols="12" class="pb-0">
               <div style="font-size:11pt; color:rgba(0,0,0,0.5)">출력여부<span style="color:red;">(*)</span></div>
-              <div><v-select v-model="print_yn" dense outlined hide-details :items="['전체', 'Y', 'N']"></v-select></div>
+              <div><v-select v-model="print_yn" dense outlined hide-details :items="[{text:'전체', value:'전체'},{text:'출력', value:'Y'},{text:'미출력', value:'N'}]"></v-select></div>
             </v-col>
           </v-row>
           <v-row class="ma-0" align="end">

@@ -77,22 +77,23 @@
                 <v-text-field v-model="birth_date" @input="calc_age" :readonly="transaction=='view'" inputmode="numeric" dense outlined placeholder="YYYY-MM-DD" :rules="[required, birthday_rule]"></v-text-field>
               </v-col>
             </v-row>
-            <!-- 암발생 (백엔드 미지원 필드 - 준비중 비활성화) -->
+            <!-- 암발생 -->
             <v-row align="start" no-gutters>
               <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1 text--secondary">암발생 (준비중)</div>
+                <div class="pt-1">암발생</div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field value="준비 중" disabled dense outlined hide-details></v-text-field>
+                <v-text-field v-if="transaction=='view'" :value="cancer_yn=='Y' ? '발생' : (cancer_yn=='N' ? '미발생' : '-')" readonly dense outlined hide-details></v-text-field>
+                <v-select v-else v-model="cancer_yn" dense outlined hide-details :items="[{text:'미발생', value:'N'},{text:'발생', value:'Y'}]" item-text="text" item-value="value"></v-select>
               </v-col>
             </v-row>
-            <!-- 암종류 (백엔드 미지원 필드 - 준비중 비활성화) -->
+            <!-- 암종류 -->
             <v-row align="start" no-gutters class="mt-4">
               <v-col cols="12" :lg="$i18n.locale === 'en' ? 2 : 1" :style="$i18n.locale === 'en' ? 'min-width:220px;' : 'min-width:135px;'">
-                <div class="pt-1 text--secondary">암종류 (준비중)</div>
+                <div class="pt-1">암종류</div>
               </v-col>
               <v-col lg="4" xl="3">
-                <v-text-field value="준비 중" disabled dense outlined hide-details></v-text-field>
+                <v-text-field v-model="cancer_type" :readonly="transaction=='view'" dense outlined hide-details placeholder="암종류 입력 (예: 위암, 대장암 등)"></v-text-field>
               </v-col>
             </v-row>
             <!-- 변경사유 -->
@@ -123,7 +124,7 @@
                       <tr>
                         <th width="40px"></th>
                         <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">의뢰일자</th>
-                        <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">입고일자 (준비중)</th>
+                        <th width="140px" style="text-align:center; font-size:10pt; font-weight:bold;">입고일자</th>
                         <th style="text-align:center; font-size:10pt; font-weight:bold;">검사항목</th>
                       </tr>
                     </thead>
@@ -136,9 +137,9 @@
                         <td v-if="detail_item.flag!='D'">
                           <v-text-field v-model="detail_item.request_date" @change="detail_item.flag!='I'?detail_item.flag='U':null" :readonly="transaction=='view'" dense outlined hide-details placeholder="YYYY-MM-DD" :rules="[birthday_rule]"></v-text-field>
                         </td>
-                        <!-- 입고일자 (백엔드 미지원 필드 - 준비중 비활성화) -->
+                        <!-- 입고일자 -->
                         <td v-if="detail_item.flag!='D'">
-                          <v-text-field value="준비 중" disabled dense outlined hide-details></v-text-field>
+                          <v-text-field v-model="detail_item.warehousing_date" @change="detail_item.flag!='I'?detail_item.flag='U':null" :readonly="transaction=='view'" dense outlined hide-details placeholder="YYYY-MM-DD" :rules="[birthday_rule]"></v-text-field>
                         </td>
                         <!-- 검사항목 -->
                         <td v-if="detail_item.flag!='D'">

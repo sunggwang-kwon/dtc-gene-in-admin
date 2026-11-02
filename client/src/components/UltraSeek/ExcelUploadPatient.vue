@@ -15,7 +15,17 @@
       <v-divider class="pb-5"></v-divider>
       <v-card-text :class="$vuetify.breakpoint.mobile?'px-1':null">
         <v-form ref="form">
-          <v-file-input v-model="file" placeholder="파일명" show-size dense outlined append-icon="mdi-attachment" prepend-icon="" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :rules="[required]"></v-file-input>
+          <v-file-input
+            v-model="file"
+            placeholder="Excel 97-2003 파일 (.xls)"
+            show-size
+            dense
+            outlined
+            append-icon="mdi-attachment"
+            prepend-icon=""
+            accept=".xls,application/vnd.ms-excel"
+            :rules="[required, xls_only_rule]"
+          ></v-file-input>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
@@ -67,30 +77,39 @@ export default {
       }
       Object.assign(this.$data, this.$options.data());
     },
-    example_file_download: async function() {
-      alert('해당 기능은 준비 중입니다.');
+    xls_only_rule: function(file) {
+      if (!file) return true;
+      const name = file.name || '';
+      if ((name.match(/\./g) || []).length !== 1) {
+        return '파일명에 마침표(.)는 확장자 구분용 1개만 사용할 수 있습니다. (예: sample.xls)';
+      }
+      return name.toLowerCase().endsWith('.xls') || 'Excel 97-2003 (.xls) 파일만 업로드할 수 있습니다.';
+    },
+    example_file_download: function() {
+      let link = document.createElement('a');
+      link.href = this.$rootUrl + '/server/document/ultraseek_upload_sample.xls';
+      link.setAttribute('download', 'ultraseek_upload_sample.xls');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
     excel_upload_patient: async function() {
-      if (!this.$refs.form.validate()) {
-        return;
-      }
-      if (!this.endpoint) {
-        alert('해당 기능은 준비 중입니다.');
-        return;
-      }
-      let con = confirm('검사자 업로드를 진행하시겠습니까?');
-      if (!con) return;
+      if (!this.$refs.form.validate()) return;
+      if (!confirm('검사자 엑셀 업로드를 진행하시겠습니까? (이미 등록된 검사자는 중복 등록될 수 있습니다)')) return;
 
-      let data = {
-        file: this.file
-      };
       this.$store.commit('load', true);
-      let res = await this.post(this.endpoint, data);
+      let res = await this.postText(this.endpoint, { upload_file: this.file });
       this.$store.commit('load', false);
-      if (res) {
-        alert('저장되었습니다.');
+      if (!res) return;
+
+      let m = res.text.match(/총\s*(\d+)\s*건\s*입력됨/);
+      let cnt = m ? parseInt(m[1], 10) : -1;
+      if (cnt > 0) {
+        alert(res.text);
         this.close();
         this.$emit('refresh');
+      } else {
+        alert(res.text || '검사자 업로드에 실패했습니다.');
       }
     }
   }

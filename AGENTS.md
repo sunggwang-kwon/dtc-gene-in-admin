@@ -20,7 +20,7 @@
 - **패키지 매니저**: **`pnpm` 전용** (`npm` 사용 절대 금지, `~/.bashrc`에 `alias npm='pnpm'` 설정됨)
 - **실제 배포 서버 환경**:
   - Apache 2.4 (Ubuntu) 웹 서버
-  - 접속 호스트, SFTP 포트 및 계정 정보는 `client/.deploy.env` 참조
+  - 자격증명 관리: Google Cloud Secret Manager(`sgkwon-vault`)의 `DTC_GENE_SFTP_*` 시크릿을 공용 헬퍼 스크립트(`/home/sgkwon/scripts/get-gcp-secret.mjs`)를 통해 실시간 주입받아 배포 수행 (로컬 평문 `.deploy.env` 파일은 완전히 제거됨)
   - 업로드 대상 경로: `/var/www/html`
 - **백엔드 서버 소스코드 참조 정보 (로컬 스냅샷 동기화 방식)**:
   - 서버 소스코드 원격 경로: `/var/www/html/server`
@@ -173,7 +173,7 @@ cd client && pnpm run build
 # client 디렉토리에서 대화형 확인을 생략하고 자동 배포
 cd client && bash deploy.sh -y
 ```
-- **배포 설정 파일**: `client/.deploy.env` (Git 추적 제외, 실제 접속 호스트 및 계정 정보는 해당 파일 참조)
+- **자격증명 및 배포 설정**: Google Cloud Secret Manager(`sgkwon-vault`)의 `DTC_GENE_SFTP_*` 시크릿을 통해 메모리 상에서 실시간 주입
 - **배포 메커니즘**:
   - `lftp`를 사용하여 변경되거나 새로 생성된 파일만 원격 서버로 스마트 동기화(Smart Sync)합니다.
   - 배포 완료 후 Apache 웹 서버에서 즉시 갱신 반영됩니다.
@@ -194,9 +194,8 @@ dtc-gene-in-admin/
 ├── AGENTS.md                         # 본 에이전트 지침서
 ├── README.md
 └── client/
-    ├── .deploy.env                   # 원격 SFTP 배포 접속 환경설정 (비공개)
     ├── .deploy.env.default           # 배포 환경설정 템플릿
-    ├── deploy.sh                     # lftp 기반 원격 배포 자동화 스크립트
+    ├── deploy.sh                     # lftp 기반 원격 배포 자동화 스크립트 (Secret Manager 실시간 주입)
     ├── package.json                  # 의존성 및 스크립트 (pnpm 사용)
     ├── vue.config.js                 # Vue CLI 빌드 및 Webpack 프록시 설정
     ├── public/
@@ -279,12 +278,13 @@ dtc-gene-in-admin/
   - 네트워크 장애 또는 서버 응답 에러로 `axios` 호출이 실패했을 때 `res`가 `null`인 상태에서 `res.status`를 참조하여 발생하는 런타임 크래시를 방지하기 위해, 모든 공통 요청 메서드(`get`, `post`, `download`, `postDownload`)는 `if (!res) return null;` 방어 검사를 거칩니다.
   - 백엔드 PHP 오류나 웹서버 에러로 정형 객체가 아닌 HTML 에러 페이지 및 스택 트레이스 문자열이 반환될 경우, `isHtml()` 함수로 감지하여 원문 HTML 태그가 네이티브 `alert()`에 노출되는 것을 차단하고 `common.networkError` 다국어 메시지로 일원화하여 표출합니다.
 
-### 8.4. 미구현 기능 및 고스트 필드 UI 제어 정책
-- **미구현 메뉴/액션 버튼 제어 (`UltraSeek`, `Pgx`)**:
-  - 백엔드 API 엔드포인트가 미구현된 상태인 `UltraSeek.vue`의 4대 액션 버튼(`검사자업로드`, `검사자다운로드`, `결과지 업로드`, `추가`)은 데스크톱 화면에서 `:disabled` 속성을 부여하고 `"준비 중인 기능입니다"` 안내 툴팁을 제공하며, 모바일 뷰에서도 비활성화 스타일 및 `(준비중)` 텍스트를 고정합니다.
-  - 준비 중 상태인 PGx 검사 메뉴는 사이드바(`App.vue`) 항목 텍스트 우측에 `[준비중]` 칩(`v-chip`)을 부착하여 사전 인지성을 확보합니다.
-- **검사자 상세 고스트 필드 제어 (`DetailManage.vue`)**:
-  - 백엔드 미지원 필드인 `암발생`, `암종류`, 테이블 내 `입고일자`는 사용자에게 입력 가능한 상태로 방치하지 않고 `disabled` 처리 및 `"준비 중"` 표기를 적용하여 데이터 유실 착각을 방지합니다.
+### 8.4. 기능 활성화 및 API 연동 규격 (`UltraSeek`, `Pgx`, `DetailManage`)
+- **UltraSEEK 및 PGx 검사 메뉴 정식 연동**:
+  - 백엔드 API 명세(`documents/genein-api.docx`)에 따라 UltraSEEK 및 PGx 화면의 액션 버튼(`검사자업로드`, `검사자다운로드`, `결과지 업로드`, `결과지 다운로드`, `추가`, `삭제`)을 실연동하였습니다.
+  - 사이드바(`App.vue`) 내 PGx 검사 메뉴의 준비중 칩을 제거하고 정식 오픈 상태로 전환하였습니다.
+  - 검사자 업로드 시 `.xls` 단일 확장자 및 마침표(.) 단일 사용 검증, 결과지 업로드 시 파일명 정규식(`YYYYMMDD(채혈일) + 수검자ID + _파일명.확장자`) 검증을 거쳐 `postText`로 안전하게 전송합니다.
+- **검사자 상세 필드 연동 (`DetailManage.vue`)**:
+  - `암발생`(`cancer_yn`), `암종류`(`cancer_type`), 테이블 내 `입고일자`(`warehousing_date`) 필드의 입력/수정 UI를 정상 활성화하여 조회 및 변경이 가능하도록 구현되었습니다.
   - 생년월일 입력에 따른 나이 자동 계산은 대한민국 법적 기준인 만 나이(`calc_age()`)로 일원화 계산합니다.
 
 ### 8.5. 클라이언트 런타임 예외 추적 체계 (`main.js`)
@@ -293,11 +293,11 @@ dtc-gene-in-admin/
 
 ---
 
-## 9. 스토리보드 요구사항 명세 및 구현 현황 (`required/gene_insight_storyboard_v1.0.pptx`)
+## 9. 요구사항 및 API 명세 현황 (`documents/`)
 
-요구사항 정의서(`required/gene_insight_storyboard_v1.0.pptx`, 총 13페이지) 기준 도메인별 핵심 명세와 현재 프론트엔드/백엔드 구현 상태입니다.
+요구사항 정의서(`documents/genein-storyboard_v1.0.pptx`) 및 백엔드 API 명세서(`documents/genein-api.docx`) 기준 도메인별 핵심 명세와 현재 프론트엔드/백엔드 구현 상태입니다.
 
-### 9.1. 슬라이드별 요구사항 및 구현 상태 요약
+### 9.1. 도메인별 요구사항 및 구현 상태 요약
 
 | 슬라이드 | 대상 화면 | 프론트엔드 컴포넌트 | 구현 상태 및 주요 명세 |
 | :---: | :--- | :--- | :--- |
@@ -306,10 +306,10 @@ dtc-gene-in-admin/
 | **Slide 3** | 검사종류 | `Type.vue`, `DetailType.vue` | **[완료]** 페이징/검색 없이 전체 목록 단일 페이지 출력, 유전자 마스터 팝업(`Common/Gene.vue`) 연동, 상세 SNP 테이블 내 `평균값` 컬럼 제외, 메인 목록 `번호(no)`, `평균값(risk_avg)` 컬럼 복원 및 `DataTable.vue` 가상 번호 정렬 클릭 방어 완료 |
 | **Slide 4** | 유전자 관리 | `Gene.vue`, `DetailGene.vue` | **[완료]** 검사명/유전자 검색, 목록 및 상세에서 `인종(breed)` 컬럼 제외, 정상/위험 타입 및 빈도율 관리, 목록 `고유번호` 컬럼 전사 일관성 위해 가운데 정렬(`align: 'center'`) 통일 |
 | **Slide 5** | 거래처 관리 | `Company.vue`, `DetailCompany.vue` | **[완료]** 거래처명/담당자 검색, 목록에서 `언어` 항목 삭제, 상세 화면 거래처명/담당자/이메일/연락처/주소/메모 관리 |
-| **Slide 6** | 검사자 관리 | `Manage.vue`, `DetailManage.vue`, `ManageHistory.vue` | **[부분 완료]** 목록 테이블 `번호(no)` 컬럼 추가, 검색 연계를 위한 `연락처` 컬럼 유지, TAT/영업일 관리 제외, 수정 시 변경사유 필수 입력, 수정일 클릭 시 변경내역 팝업 표시 완료. `입고일자`, `암발생`, `암종류`는 백엔드 DB/API 미지원으로 클라이언트에서 준비중(비활성화) 처리 |
+| **Slide 6** | 검사자 관리 | `Manage.vue`, `DetailManage.vue`, `ManageHistory.vue` | **[완료]** 목록 테이블 `번호(no)` 컬럼 추가, 검색 연계를 위한 `연락처` 컬럼 유지, TAT/영업일 관리 제외, 수정 시 변경사유 필수 입력, 수정일 클릭 시 변경내역 팝업 표시 완료. `입고일자`, `암발생`, `암종류` 필드 UI 활성화 |
 | **Slide 7~8** | 검사 결과 | `Result.vue`, `DetailResult.vue`, `ResultTermList.vue`, `ResultExistPopup.vue` | **[완료]** 초기 디폴트 조회 없음, 다건 존재 시 선택 팝업 표시, 결과 존재 시 결과지 출력 활성, 기간별 결과지 출력 정렬 키 버그(`'date'`) 수정, 모바일 조회 버튼 테마 색상(`search_btn`) 적용, 라벨 결과등록일 통일 및 테이블 헤더에 의뢰일자 컬럼 추가 완료 |
-| **Slide 9~10** | UltraSEEK 검사 | `UltraSeek.vue`, `AddPatientModal.vue`, `UploadResult.vue`, `ExcelUploadPatient.vue` | **[클라이언트 완료]** 테이블 12개 컬럼 체계 매핑, 미구현 액션 버튼 툴팁/비활성화 통일, 추가/수정 모달(거래처 셀렉트, 파일명 정규식 검증, 취소 버튼), 다중 파일 업로드 및 `http.js` 배열 전송 지원 완료 (백엔드 API 배포 전까지 안전 가드 적용) |
-| **Slide 11** | PGx 검사 | `Pgx.vue` | **[클라이언트 완료]** 스토리보드 규격의 UltraSEEK 동일 레이아웃, `엑셀 업로드` 등 전용 명칭 분기, `title-prefix="PGx"` 모달 연동 및 안전 가드 구축 완료 (백엔드 API 배포 시 즉시 연동 가능) |
+| **Slide 9~10** | UltraSEEK 검사 | `UltraSeek.vue`, `AddPatientModal.vue`, `UploadResult.vue`, `ExcelUploadPatient.vue` | **[완료]** 테이블 12개 컬럼 체계 매핑, 검사자 단건 추가/수정/삭제, 검사자 엑셀 업로드/다운로드, 결과지 다중 업로드/다운로드 API 명세 연동 완료 |
+| **Slide 11** | PGx 검사 | `Pgx.vue` | **[완료]** 사이드바 준비중 해제, UltraSEEK 동일 UI 규격 기반 검사자 등록/수정/삭제, 엑셀 업로드/다운로드, 결과지 업로드/다운로드 API 연동 완료 |
 | **Slide 12~13** | 고객용 조회 | `dtc-gene-in` (`Login.vue`, `Progress.vue`) | **[완료]** ID(바코드)/성명 로그인, 의뢰일자 콤보박스 변경 시 재조회, 진행사항 및 완료일 표시, 결과 유무별 하단 안내 문구 분기 |
 
 ### 9.2. 백엔드(서버) 선행 및 보완 필요 결함 명세 (`/home/sgkwon/git/.server/dtc-gene`)

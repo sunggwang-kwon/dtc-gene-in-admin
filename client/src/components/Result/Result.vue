@@ -38,7 +38,7 @@
             </v-row>
             <v-row class="mx-1" align="center" justify="end">
               <v-col cols="auto" class="py-1 pr-0">
-                <v-btn @click="print_result" :color="item_cnt>0?'primary':'grey'" :ripple="item_cnt>0" dark :elevation="0">결과지 출력</v-btn>
+                <v-btn :class="{'btn-inactive': item_cnt <= 0}" @click="item_cnt > 0 ? print_result() : null" :color="item_cnt>0?'primary':''" :ripple="item_cnt>0" :dark="item_cnt>0" :elevation="0">결과지 출력</v-btn>
               </v-col>
               <v-col cols="auto" class="py-1 pr-0">
                 <v-btn @click="$refs.result_term_list.open();" dark :elevation="0">기간별 결과지 출력</v-btn>
@@ -202,8 +202,8 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item @click="print_result" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>결과지 출력</v-list-item-subtitle>
+          <v-list-item :disabled="item_cnt <= 0" @click="item_cnt > 0 ? print_result() : null" :style="item_cnt <= 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
+            <v-list-item-subtitle :style="item_cnt <= 0 ? 'color: #888888 !important;' : ''">결과지 출력</v-list-item-subtitle>
           </v-list-item>
           <v-list-item @click="$refs.result_term_list.open();" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>기간별 결과지 출력</v-list-item-subtitle>
