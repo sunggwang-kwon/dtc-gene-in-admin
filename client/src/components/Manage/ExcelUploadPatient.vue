@@ -60,13 +60,13 @@ export default {
     },
     example_file_download:async function(){
       const isEn = this.$i18n.locale === 'en';
-      const docPath = isEn ? '/server/document/Subject Upload Template(ENG).xlsx' : '/server/document/DTC검사자업로드양식.xlsx';
-      let res = await this.download(this.$rootUrl + docPath);
+      const docPath = isEn ? '/server/document/Subject Upload Template(ENG).xlsx' : '/server/document/암만성질환검사자업로드양식.xlsx';
+      let res = await this.download(this.$rootUrl + encodeURI(docPath));
       if ( res ){
-        let fileURL = window.URL.createObjectURL(new Blob([res.data], {type:'application/vnd.ms-excel'}));
+        let fileURL = window.URL.createObjectURL(new Blob([res.data], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
         let fileLink = document.createElement('a');
         fileLink.href = fileURL;
-        fileLink.setAttribute('download', isEn ? 'Subject Upload Template(ENG).xlsx' : '검사자업로드양식.xlsx');
+        fileLink.setAttribute('download', isEn ? 'Subject Upload Template(ENG).xlsx' : '암만성질환검사자업로드양식.xlsx');
         document.body.appendChild(fileLink);
         fileLink.click();
       }
