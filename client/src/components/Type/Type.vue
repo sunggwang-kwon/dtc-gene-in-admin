@@ -6,7 +6,7 @@
       top: $vuetify.application.top+'px',
       zIndex:1
     }">
-      <div class="px-3 py-5" style="background-color:white;">
+      <div class="px-3 pt-5 pb-3" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto">
             <h3>검사종류</h3>
@@ -20,7 +20,7 @@
             </v-tooltip>
           </v-col>
         </v-row>
-        <v-row v-if="is_show_search" class="mx-1" align="end">
+        <v-row v-if="is_show_search" class="mx-1 mb-1" align="end">
           <v-spacer></v-spacer>
           <v-col v-if="get_menu_authority('M003')=='A'" cols="auto" class="pr-0">
             <v-btn @click="$router.push({name:'DetailType', query:{transaction:'insert'}})" dark :elevation="0">추가</v-btn>
@@ -33,9 +33,9 @@
           </v-col>
         </v-row>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
-        <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
-        <v-icon v-else>mdi-menu-down</v-icon>
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; width:24px; height:24px; min-width:24px; padding:0; border:1px solid rgba(0,0,0,0.12); z-index:2;">
+        <v-icon size="16" v-if="is_show_search">mdi-menu-up</v-icon>
+        <v-icon size="16" v-else>mdi-menu-down</v-icon>
       </v-btn>
       <v-divider style="border-color: rgb(223, 223, 223)"></v-divider>
       <div class="content-background" style="height:25px;"></div>
@@ -81,9 +81,9 @@
           </v-col>
         </v-row>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
-        <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
-        <v-icon v-else>mdi-menu-down</v-icon>
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; width:24px; height:24px; min-width:24px; padding:0; border:1px solid rgba(0,0,0,0.12); z-index:2;">
+        <v-icon size="16" v-if="is_show_search">mdi-menu-up</v-icon>
+        <v-icon size="16" v-else>mdi-menu-down</v-icon>
       </v-btn>
       <v-divider style="border-color: rgb(223, 223, 223)"></v-divider>
       <div class="content-background" style="height:25px;"></div>

@@ -6,7 +6,7 @@
       top: $vuetify.application.top+'px',
       zIndex:1
     }">
-      <div class="px-3 py-5" style="background-color:white;">
+      <div class="px-3 pt-5 pb-3" style="background-color:white;">
         <v-row class="mx-1" align="center">
           <v-col cols="auto">
             <h3>{{ $t('app.menu.pgx') }}</h3>
@@ -33,86 +33,44 @@
               <v-text-field v-model="search_value" @keydown.enter="page=1;get_pgx_list();" dense outlined hide-details clearable label="거래처명/검사자명/ID"></v-text-field>
             </v-col>
           </v-row>
-          <v-row class="mx-1" align="center" justify="end">
-            <!-- 엑셀 업로드 -->
+          <v-row class="mx-1 mb-1" align="center" justify="end">
+            <!-- 검사자업로드 -->
             <v-col v-if="get_menu_authority('M008')=='A'" cols="auto" class="py-1 pr-0">
-              <v-tooltip bottom color="rgba(0,0,0,0.7)">
-                <template v-slot:activator="{ on, attrs }">
-                  <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn @click="excel_upload_patient" color="primary" dark :elevation="0">엑셀 업로드</v-btn>
-                  </span>
-                </template>
-                <span>PGx 검사자 엑셀 업로드</span>
-              </v-tooltip>
+              <v-btn @click="excel_upload_patient" color="primary" dark :elevation="0">검사자업로드</v-btn>
             </v-col>
-            <!-- 엑셀다운로드 -->
+            <!-- 검사자다운로드 -->
             <v-col v-if="get_menu_authority('M008')=='A'" cols="auto" class="py-1 pr-0">
-              <v-tooltip bottom color="rgba(0,0,0,0.7)">
-                <template v-slot:activator="{ on, attrs }">
-                  <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn :class="{'btn-inactive': item_cnt === 0}" @click="item_cnt > 0 ? excel_download_patient() : null" :color="item_cnt > 0 ? 'primary' : ''" :dark="item_cnt > 0" :ripple="item_cnt > 0" :elevation="0">엑셀다운로드</v-btn>
-                  </span>
-                </template>
-                <span>{{ item_cnt === 0 ? '다운로드할 데이터가 없습니다' : 'PGx 검사자 목록 다운로드' }}</span>
-              </v-tooltip>
+              <v-btn :class="{'btn-inactive': item_cnt === 0}" @click="item_cnt > 0 ? excel_download_patient() : null" :color="item_cnt > 0 ? 'primary' : ''" :dark="item_cnt > 0" :ripple="item_cnt > 0" :elevation="0">검사자다운로드</v-btn>
             </v-col>
             <!-- 결과지 업로드 -->
             <v-col v-if="get_menu_authority('M008')=='A'" cols="auto" class="py-1 pr-0">
-              <v-tooltip bottom color="rgba(0,0,0,0.7)">
-                <template v-slot:activator="{ on, attrs }">
-                  <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn @click="excel_upload_result" color="primary" dark :elevation="0">결과지 업로드</v-btn>
-                  </span>
-                </template>
-                <span>PGx 결과지 업로드</span>
-              </v-tooltip>
+              <v-btn @click="excel_upload_result" color="primary" dark :elevation="0">결과지 업로드</v-btn>
             </v-col>
             <!-- 결과지 다운로드 -->
             <v-col v-if="get_menu_authority('M008')=='A'" cols="auto" class="py-1 pr-0">
-              <v-tooltip bottom color="rgba(0,0,0,0.7)">
-                <template v-slot:activator="{ on, attrs }">
-                  <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn
-                      :class="{'btn-inactive': selected_item.length === 0}"
-                      @click="selected_item.length > 0 ? download_results() : null"
-                      :color="selected_item.length > 0 ? 'primary' : ''"
-                      :dark="selected_item.length > 0"
-                      :ripple="selected_item.length > 0"
-                      :elevation="0"
-                    >결과지 다운로드</v-btn>
-                  </span>
-                </template>
-                <span>{{ selected_item.length === 0 ? '대상을 선택하세요' : '결과지 일괄 다운로드' }}</span>
-              </v-tooltip>
+              <v-btn
+                :class="{'btn-inactive': selected_item.length === 0}"
+                @click="selected_item.length > 0 ? download_results() : null"
+                :color="selected_item.length > 0 ? 'primary' : ''"
+                :dark="selected_item.length > 0"
+                :ripple="selected_item.length > 0"
+                :elevation="0"
+              >결과지 다운로드</v-btn>
             </v-col>
             <!-- 추가 -->
             <v-col v-if="get_menu_authority('M008')=='A'" cols="auto" class="py-1 pr-0">
-              <v-tooltip bottom color="rgba(0,0,0,0.7)">
-                <template v-slot:activator="{ on, attrs }">
-                  <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn @click="add_patient" color="primary" dark :elevation="0">추가</v-btn>
-                  </span>
-                </template>
-                <span>PGx 검사자 신규 등록</span>
-              </v-tooltip>
+              <v-btn @click="add_patient" color="primary" dark :elevation="0">추가</v-btn>
             </v-col>
             <!-- 삭제 -->
             <v-col v-if="get_menu_authority('M008')=='A'" cols="auto" class="py-1 pr-0">
-              <v-tooltip bottom color="rgba(0,0,0,0.7)">
-                <template v-slot:activator="{ on, attrs }">
-                  <span v-bind="attrs" v-on="on" class="d-inline-block">
-                    <v-btn
-                      :class="{'btn-inactive': selected_item.length === 0}"
-                      @click="selected_item.length > 0 ? delete_patients() : null"
-                      :color="selected_item.length > 0 ? 'primary' : ''"
-                      :dark="selected_item.length > 0"
-                      :ripple="selected_item.length > 0"
-                      :elevation="0"
-                    >삭제</v-btn>
-                  </span>
-                </template>
-                <span>{{ selected_item.length === 0 ? '대상을 선택하세요' : '선택 검사자 삭제' }}</span>
-              </v-tooltip>
+              <v-btn
+                :class="{'btn-inactive': selected_item.length === 0}"
+                @click="selected_item.length > 0 ? delete_patients() : null"
+                :color="selected_item.length > 0 ? 'primary' : ''"
+                :dark="selected_item.length > 0"
+                :ripple="selected_item.length > 0"
+                :elevation="0"
+              >삭제</v-btn>
             </v-col>
             <!-- 조회 -->
             <v-col cols="auto" class="py-1">
@@ -121,9 +79,9 @@
           </v-row>
         </div>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
-        <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
-        <v-icon v-else>mdi-menu-down</v-icon>
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; width:24px; height:24px; min-width:24px; padding:0; border:1px solid rgba(0,0,0,0.12); z-index:2;">
+        <v-icon size="16" v-if="is_show_search">mdi-menu-up</v-icon>
+        <v-icon size="16" v-else>mdi-menu-down</v-icon>
       </v-btn>
       <v-divider style="border-color: rgb(223, 223, 223)"></v-divider>
       <div class="content-background" style="height:25px;"></div>
@@ -191,9 +149,9 @@
           </v-col>
         </v-row>
       </div>
-      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; padding:0; border:1px solid rgba(0,0,0,0.12);">
-        <v-icon v-if="is_show_search">mdi-menu-up</v-icon>
-        <v-icon v-else>mdi-menu-down</v-icon>
+      <v-btn @click="changed=true;is_show_search=!is_show_search;" icon small :elevation="0" style="background-color:white; position:absolute; transform: translate(-50%, -50%); left:50%; width:24px; height:24px; min-width:24px; padding:0; border:1px solid rgba(0,0,0,0.12); z-index:2;">
+        <v-icon size="16" v-if="is_show_search">mdi-menu-up</v-icon>
+        <v-icon size="16" v-else>mdi-menu-down</v-icon>
       </v-btn>
       <v-divider style="border-color: rgb(223, 223, 223)"></v-divider>
       <div class="content-background" style="height:25px;"></div>
@@ -219,10 +177,10 @@
         </template>
         <v-list>
           <v-list-item v-if="get_menu_authority('M008')=='A'" @click="excel_upload_patient" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle>엑셀 업로드</v-list-item-subtitle>
+            <v-list-item-subtitle>검사자업로드</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="get_menu_authority('M008')=='A'" :disabled="item_cnt === 0" @click="item_cnt > 0 ? excel_download_patient() : null" :style="item_cnt === 0 ? 'opacity: 0.4; cursor: not-allowed;' : ''" style="border-top:1px solid rgba(0,0,0,0.12)">
-            <v-list-item-subtitle :style="item_cnt === 0 ? 'color: #888888 !important;' : ''">엑셀다운로드</v-list-item-subtitle>
+            <v-list-item-subtitle :style="item_cnt === 0 ? 'color: #888888 !important;' : ''">검사자다운로드</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="get_menu_authority('M008')=='A'" @click="excel_upload_result" style="border-top:1px solid rgba(0,0,0,0.12)">
             <v-list-item-subtitle>결과지 업로드</v-list-item-subtitle>

@@ -293,15 +293,20 @@ export default {
 
       let data = {
         transaction: this.transaction,
+        patient_id: this.patient_id,
+        patient_name: this.patient_name,
+        patient_eng_name: this.patient_eng_name || '',
+        gender: this.gender,
+        company_seq: this.company_seq,
+        age: this.age,
+        blood_date: this.blood_date || '',
+        bigo: this.bigo || '',
+        // 백엔드 파라미터 호환성을 위한 camelCase 보조 매핑
         patientId: this.patient_id,
         patientName: this.patient_name,
         patientEngName: this.patient_eng_name || '',
-        gender: this.gender,
-        hospitalName: hospitalName,
-        age: this.age,
         bloodDate: this.blood_date || '',
-        createDate: this.reg_date || '',
-        bigo: this.bigo || ''
+        hospitalName: hospitalName
       };
       if (this.transaction === 'update') {
         data.seq = this.seq;
