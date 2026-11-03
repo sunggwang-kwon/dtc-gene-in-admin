@@ -15,7 +15,7 @@
       <v-divider class="pb-5"></v-divider>
       <v-card-text :class="$vuetify.breakpoint.mobile?'px-1':null">
         <v-form ref="form">
-          <v-file-input v-model="file" placeholder="파일명" show-size dense outlined append-icon="mdi-attachment" prepend-icon="" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :rules="[required]"></v-file-input>
+          <v-file-input ref="file_input" v-model="file" @click:append="on_click_append" placeholder="파일명" show-size dense outlined append-icon="mdi-attachment" prepend-icon="" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :rules="[required]"></v-file-input>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
@@ -45,6 +45,11 @@ export default {
     file: null,
   }),
   methods:{
+    on_click_append: function(){
+      if ( this.$refs.file_input && this.$refs.file_input.$refs && this.$refs.file_input.$refs.input ){
+        this.$refs.file_input.$refs.input.click();
+      }
+    },
     open: function(){
       this.is_open = true;
     },

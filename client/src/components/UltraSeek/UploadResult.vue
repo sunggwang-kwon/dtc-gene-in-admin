@@ -16,6 +16,7 @@
       <v-card-text :class="$vuetify.breakpoint.mobile?'px-1':null">
         <v-form ref="form">
           <v-file-input
+            ref="file_input"
             v-model="files"
             multiple
             small-chips
@@ -25,6 +26,7 @@
             placeholder="결과지 파일을 선택하세요 (다중 선택 가능)"
             append-icon="mdi-attachment"
             prepend-icon=""
+            @click:append="on_click_append"
             accept=".pdf,.xlsx,.xls,.zip"
             :rules="[files_required_rule, files_name_rule]"
           ></v-file-input>
@@ -63,6 +65,11 @@ export default {
     files: []
   }),
   methods: {
+    on_click_append: function() {
+      if (this.$refs.file_input && this.$refs.file_input.$refs && this.$refs.file_input.$refs.input) {
+        this.$refs.file_input.$refs.input.click();
+      }
+    },
     open: function() {
       this.is_open = true;
     },

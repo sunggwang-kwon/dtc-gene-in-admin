@@ -16,6 +16,7 @@
       <v-card-text :class="$vuetify.breakpoint.mobile?'px-1':null">
         <v-form ref="form">
           <v-file-input
+            ref="file_input"
             v-model="file"
             placeholder="Excel 97-2003 파일 (.xls)"
             show-size
@@ -23,6 +24,7 @@
             outlined
             append-icon="mdi-attachment"
             prepend-icon=""
+            @click:append="on_click_append"
             accept=".xls,application/vnd.ms-excel"
             :rules="[required, xls_only_rule]"
           ></v-file-input>
@@ -62,6 +64,11 @@ export default {
     file: null
   }),
   methods: {
+    on_click_append: function() {
+      if (this.$refs.file_input && this.$refs.file_input.$refs && this.$refs.file_input.$refs.input) {
+        this.$refs.file_input.$refs.input.click();
+      }
+    },
     open: function() {
       this.is_open = true;
     },

@@ -20,7 +20,7 @@
               <div class="pt-1">파일명</div>
             </v-col>
             <v-col>
-              <v-file-input v-model="file" show-size dense outlined append-icon="mdi-attachment" prepend-icon="" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :rules="[required]"></v-file-input>
+              <v-file-input ref="file_input" v-model="file" @click:append="on_click_append" show-size dense outlined append-icon="mdi-attachment" prepend-icon="" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :rules="[required]"></v-file-input>
             </v-col>
           </v-row>
         </v-form>
@@ -49,6 +49,11 @@ export default {
     file: null,
   }),
   methods:{
+    on_click_append: function(){
+      if ( this.$refs.file_input && this.$refs.file_input.$refs && this.$refs.file_input.$refs.input ){
+        this.$refs.file_input.$refs.input.click();
+      }
+    },
     open: function(){
       this.is_open = true;
     },

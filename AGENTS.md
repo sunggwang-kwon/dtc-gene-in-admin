@@ -262,6 +262,7 @@ dtc-gene-in-admin/
 - **타이포그래피 및 루트 폰트**: `$font-size-root: 16px` 및 Vuetify 기본 폰트 스케일(Pretendard 폰트 기반 Body-1: 16px, Body-2: 14px, Input: 13px)을 표준으로 적용합니다.
 - **비활성화 버튼 마우스 커서 표준화**: 비활성화(`disabled`, `.v-btn--disabled`, `.btn-inactive`) 상태의 버튼에 마우스 호버 시 금지 기호(`not-allowed`)가 노출되지 않도록 일반 버튼과 동일한 포인터(`cursor: pointer !important;`)를 유지하며, 클릭 이벤트 차단은 그대로 보장합니다.
 - **다이얼로그 타이틀 폰트 규격**: 모든 모달 및 팝업 다이얼로그(`v-dialog`)의 타이틀 텍스트는 `font-size: 16px; font-weight: 600;` 표준을 적용하여 화면별 축소 왜곡 없이 통일된 크기로 표출합니다.
+- **파일 첨부 인풋(`v-file-input`) 클립 아이콘 연동**: 우측 첨부 아이콘(`append-icon="mdi-attachment"`) 클릭 시 브라우저 파일 선택 창이 즉각 열릴 수 있도록 `@click:append="on_click_append"` 및 인풋 트리거(`this.$refs.file_input.$refs.input.click()`)를 모든 파일 업로드 다이얼로그에 표준 적용합니다.
 
 ### 8.2. 라우터 네비게이션 가드 및 세션 리다이렉트 정책
 - **인증 가드 (`router.beforeEach`)**:
