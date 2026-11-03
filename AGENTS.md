@@ -276,9 +276,10 @@ dtc-gene-in-admin/
 - **목록 다중 선택 상태(`selected_item`) 초기화 및 실패 대상 추적 표준**:
   - 모든 목록 화면(`Member`, `Company`, `Type`, `Gene`, `Manage`, `Result`, `UltraSeek`)은 데이터 삭제 처리 완료 시점 및 목록 조회(`get_*_list`) 진입 시점에 `this.selected_item = []`을 명시적으로 초기화하여, 데이터 갱신 후 이전 선택 인덱스가 잔존하거나 오동작하는 문제를 차단합니다.
   - 다중 일괄 삭제 처리 중 서버 오류가 발생한 경우, 단순히 건수만 집계하지 않고 실패한 대상의 ID/이름을 수집하여 다이얼로그(`에러가 n건 발생했습니다. (실패 대상: ...)`)에 명확히 표출합니다.
-- **HTTP 통신 예외 방어 및 응답 정제 (`http.js`)**:
-  - 네트워크 장애 또는 서버 응답 에러로 `axios` 호출이 실패했을 때 `res`가 `null`인 상태에서 `res.status`를 참조하여 발생하는 런타임 크래시를 방지하기 위해, 모든 공통 요청 메서드(`get`, `post`, `download`, `postDownload`)는 `if (!res) return null;` 방어 검사를 거칩니다.
-  - 백엔드 PHP 오류나 웹서버 에러로 정형 객체가 아닌 HTML 에러 페이지 및 스택 트레이스 문자열이 반환될 경우, `isHtml()` 함수로 감지하여 원문 HTML 태그가 네이티브 `alert()`에 노출되는 것을 차단하고 `common.networkError` 다국어 메시지로 일원화하여 표출합니다.
+- **HTTP 통신 예외 방어, 세션 만료 자동 리다이렉트 및 응답 정제 (`http.js`)**:
+  - **세션 인증 만료 자동 감지 및 로그인 페이지 리다이렉트**: 백엔드 API 호출(`get`, `post`, `postFile`, `download`, `postDownload`, `postText`, `postBlobChecked`) 결과 `세션 인증 오류!` 메시지나 세션 만료 코드(`ret: 1001, 1002, 1009`), 또는 HTTP 401 응답이 반환될 경우, `isSessionError()`로 감지하여 안내 알림 후 즉시 세션 파기(`$session.destroy()`), 스토어 초기화(`$store.commit('reset')`) 및 로그인 화면(`$router.replace({ name: 'Login' })`)으로 자동 리다이렉트합니다. 이를 통해 만료된 JWT가 세션 스토리지에 잔존하여 발생하던 무한 세션 오류 루프를 원천 차단합니다.
+  - **네트워크 장애 방어 검사**: 네트워크 장애 또는 서버 응답 에러로 `axios` 호출이 실패했을 때 `res`가 `null`인 상태에서 `res.status`를 참조하여 발생하는 런타임 크래시를 방지하기 위해, 모든 공통 요청 메서드는 `if (!res) return null;` 방어 검사를 거칩니다.
+  - **HTML 에러 응답 정제**: 백엔드 PHP 오류나 웹서버 에러로 정형 객체가 아닌 HTML 에러 페이지 및 스택 트레이스 문자열이 반환될 경우, `isHtml()` 함수로 감지하여 원문 HTML 태그가 네이티브 `alert()`에 노출되는 것을 차단하고 `common.networkError` 다국어 메시지로 일원화하여 표출합니다.
 
 ### 8.4. 기능 활성화 및 API 연동 규격 (`UltraSeek`, `Pgx`, `DetailManage`, `Manage/Result`)
 - **UltraSEEK 및 PGx 검사 메뉴 정식 연동**:
