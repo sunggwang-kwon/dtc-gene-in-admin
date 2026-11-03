@@ -4,7 +4,7 @@
       <v-card-title>
         <v-row align="center">
           <v-col cols="auto">
-            <h6>변경내역</h6>
+            <span style="font-size: 16px; font-weight: 600;">변경내역</span>
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">

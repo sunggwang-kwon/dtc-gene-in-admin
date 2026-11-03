@@ -154,14 +154,14 @@ a {
     }
   }
 
-  // Disabled / Inactive state buttons (Vuetify disabled 상태에서도 투명해지지 않고 또렷한 회색 비활성화 버튼 형태로 통일)
+  // Disabled / Inactive state buttons (Vuetify disabled 상태에서도 투명해지지 않고 또렷한 회색 비활성화 버튼 형태로 통일, 커서는 일반 버튼과 동일한 pointer 유지)
   &.v-btn--disabled:not(.v-btn--icon):not(.v-btn--text):not(.v-btn--outlined),
   &:disabled:not(.v-btn--icon):not(.v-btn--text):not(.v-btn--outlined),
   &.btn-inactive {
     background-color: #e0e0e0 !important;
     border-color: #e0e0e0 !important;
     color: #757575 !important;
-    cursor: not-allowed !important;
+    cursor: pointer !important;
     box-shadow: none !important;
 
     * {
@@ -194,17 +194,24 @@ a {
 
 }
 
-// Vuetify 2 테마별 disabled 버튼 투명화 방지 오버라이드 (전역 비활성화 회색 버튼 표준화)
+// Vuetify 2 테마별 disabled 버튼 투명화 방지 오버라이드 (전역 비활성화 회색 버튼 표준화, 커서는 pointer 유지)
 .theme--light.v-btn.v-btn--disabled:not(.v-btn--icon):not(.v-btn--text):not(.v-btn--outlined),
 .theme--dark.v-btn.v-btn--disabled:not(.v-btn--icon):not(.v-btn--text):not(.v-btn--outlined) {
   background-color: #e0e0e0 !important;
   border-color: #e0e0e0 !important;
   color: #757575 !important;
+  cursor: pointer !important;
   box-shadow: none !important;
 
   * {
     color: #757575 !important;
   }
+}
+
+.v-btn--disabled,
+.v-btn:disabled,
+.btn-inactive {
+  cursor: pointer !important;
 }
 
 
@@ -521,6 +528,14 @@ a {
     font-weight: 600;
     border-bottom: 1px solid var(--color-border-light);
     padding: 20px 24px;
+
+    h6, span {
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      margin: 0 !important;
+      line-height: 1.5 !important;
+      color: var(--color-text-primary, #222222) !important;
+    }
   }
 
   .v-card__text {

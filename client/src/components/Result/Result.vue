@@ -97,7 +97,11 @@
     <v-dialog v-model="open_template" content-class="d-print-none" :width="!$vuetify.breakpoint.mobile?700:'50%'" persistent>
       <v-card>
         <v-card-title>
-          <v-row align="center" justify="end">
+          <v-row align="center">
+            <v-col cols="auto">
+              <span style="font-size: 16px; font-weight: 600;">결과지 템플릿 목록</span>
+            </v-col>
+            <v-spacer></v-spacer>
             <v-col cols="auto">
               <v-btn @click="close_template_dialog()" icon><v-icon>mdi-window-close</v-icon></v-btn>
             </v-col>

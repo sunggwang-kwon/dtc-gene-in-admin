@@ -4,7 +4,7 @@
       <v-card-title>
         <v-row align="center">
           <v-col cols="auto">
-            <h6>유전자 정보</h6>
+            <span style="font-size: 16px; font-weight: 600;">유전자 정보</span>
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
